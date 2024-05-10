@@ -15,7 +15,6 @@ use App\Models\Role;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\QueryException;
 use App\Models\User;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
@@ -230,7 +229,7 @@ public function store(Request $request)
             }
 
             // Validation pour un intérimaire
-            if ($request->has('categorie_id') && $request->has('responsable_id') && $request->has('poste_id')) {
+            if ( $request->has('categorie_id') && $request->has('responsable_id') && $request->has('poste_id')) {
                 $request->validate([
                     'categorie_id' => 'required|exists:categories,id',
                     'responsable_id' => 'required|exists:responsables,id',
@@ -244,31 +243,42 @@ public function store(Request $request)
                     'poste_id' => $request->poste_id,
                 ]);
 
+                    $defaultContractDuration = 2 * 12; 
+                    $contractDuration = $request->filled('duree_contrat') ? $request->duree_contrat : $defaultContractDuration;
+                    $remainingContractDuration = $interim->duree_contrat_restant ?? $contractDuration;
+                    $currentPresenceTime = $request->filled('temps_presence_structure_actuel') ? $request->temps_presence_structure_actuel : ($interim->temps_presence_structure_actuel ?? 0);
+                    $otherStructurePresenceTime = $interim->temps_presence_autre_structure_sonatel ?? 0;
+                    $totalSonatelPresenceTime = $otherStructurePresenceTime;
+                    $totalPresenceTime = $currentPresenceTime + $otherStructurePresenceTime;
 
-                $now = Carbon::now();
-                $dureeContrat = 730; 
-                $dateDebutContrat = $now->toDateString();
-                $dateFinContrat = $now->copy()->addDays($dureeContrat)->toDateString();
-                $dureeContratRestant = null;
+                    if ($contractDuration > $remainingContractDuration) {
+                        $remainingContractDuration = $contractDuration;
+                    }
 
-
-
-                $contrat = Contrat::create([
-                    'interim_id' => $interim->id,
-                    'date_debut_contrat' => $dateDebutContrat,
-                    'date_fin_contrat' => $dateFinContrat,
-                    'temps_presence_structure_actuel' => $interim->temps_presence_structure_actuel ?? 0,
-                    'temps_presence_autre_structure_sonatel' => $interim->temps_presence_autre_structure_sonatel ?? 0,
-                    'cumul_presence_sonatel' => $interim->cumul_presence_sonatel ?? 0,
-                    'duree_contrat' => $dureeContrat,
-                    'duree_contrat_restant' => $dureeContratRestant,
-                ]);
+                    $contrat = Contrat::create([
+                        'interim_id' => $interim->id,
+                        'date_debut_contrat' => $request->date_debut_contrat,
+                        'date_fin_contrat' => $request->date_fin_contrat,
+                        'temps_presence_structure_actuel' => $currentPresenceTime,
+                        'temps_presence_autre_structure_sonatel' => $otherStructurePresenceTime,
+                        'cumul_presence_sonatel' => $totalSonatelPresenceTime,
+                        'duree_contrat' => $contractDuration,
+                        'duree_contrat_restant' => $remainingContractDuration,
+                        'cout_mensuel' => $request->cout_mensuel,
+                        'cout_global' => $request->cout_global,
+                        'DA' => $request->DA,
+                        'DA_kangurou' => $request->DA_kangurou,
+                        'commentaire' => $request->commentaire,
+                        'etat' => $request->etat,
+                    ]);
 
                 return response()->json([
                     "status" => 200,
                     "message" => "Intérim ajouté avec succès",
-                    "data" => $interim,
-                    "contrat" => $contrat,
+                    'data' => [
+                    'interim' => $interim,
+                    'contrat' => $contrat,
+                ],
                 ]);
             }
 

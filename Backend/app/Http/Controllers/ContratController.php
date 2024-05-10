@@ -175,6 +175,7 @@ public function store(Request $request)
             'status' => 'success',
             'message' => 'Contrat créé avec succès.',
             'data' => $contrat,
+            'contrat'=>$contrat,
         ], 201);
     } catch (\Exception $e) {
         return response()->json([
