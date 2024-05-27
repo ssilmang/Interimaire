@@ -40,12 +40,17 @@ class User extends Authenticatable
         return $this->hasMany(Responsable::class);
     }
 
+    public function contrats()
+    {
+        return $this->hasMany(Contrat::class);
+    }
+
     public function departement()
     {
     return $this->belongsTo(Departement::class);
     }
 
-   
+
 
     public function Service()
     {

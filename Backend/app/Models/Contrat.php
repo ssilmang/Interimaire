@@ -30,5 +30,10 @@ class Contrat extends Model
     {
         return $this->belongsTo(Interim::class);
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'interim_id');
+    }
 }
 

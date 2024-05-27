@@ -13,4 +13,8 @@ class Categorie extends Model
         'libelle',
         'agence_id'
     ];
+    public function agence()
+    {
+        return $this->belongsTo(Agence::class);
+    }
 }

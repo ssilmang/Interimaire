@@ -14,13 +14,16 @@ class CategorieController extends Controller
             $request->validate([
                 'libelle' => 'required|string|max:255',
                 'agence_id' => 'required|exists:agences,id',
+                'cout_unitaire_journalier'=>'required|',
             ]);
 
-            $categorie = Categorie::create([
-                'libelle' => $request->libelle,
-                'agence_id' => $request->agence_id,
-            ]);
-
+            $categorie = new Categorie();
+            $categorie ->libelle = $request->libelle;
+            $categorie ->agence_id = $request->agence_id;
+            $categorie ->cout_unitaire_journalier=$request->cout_unitaire_journalier;
+            if(!$categorie->exists){
+                $categorie->save();
+            }
             return response()->json([
                 'message' => 'Le categorie a été ajouté avec succès',
                 'categorie' => $categorie

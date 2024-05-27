@@ -1,0 +1,395 @@
+<div [@pageTransition]>
+    <section class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <div class="card flex items-center gap-3">
+            <div class="rounded-lg bg-gradient-to-br from-emerald-500 to-emerald-700 px-3 py-2 text-white">
+                <span class="bi bi-clock-history text-3xl"></span>
+            </div>
+            <div>
+                <p class="text-md text-gray-400">Cumul Temps de Presence</p>
+            </div>
+        </div>
+        <div class="card flex items-center gap-3">
+            <div class="rounded-lg bg-gradient-to-br from-orange-500 to-orange-700 px-3 py-2 text-white">
+                <span class="bi bi-folder2-open text-3xl"></span>
+            </div>
+            <div>
+                <p class="text-md text-gray-400">Contrat en Cours</p>
+            </div>
+        </div>
+        <div class="card flex items-center gap-3">
+            <div class="rounded-lg bg-gradient-to-br from-violet-500 to-violet-700 px-3 py-2 text-white">
+                <span class="bi bi-folder-x text-3xl"></span>
+            </div>
+            <div>
+                <p class="text-md text-gray-400">Fin de Contrat</p>
+            </div>
+        </div>
+        <div class="card flex items-center gap-3">
+            <div class="rounded-lg bg-gradient-to-br from-cyan-500 to-cyan-700 px-3 py-2 text-white">
+                <span class="bi bi-hourglass-split text-3xl"></span>
+            </div>
+            <div>
+                <p class="text-md text-gray-400">Kangouru</p>
+            </div>
+        </div>
+    </section>
+
+    <div class="my-5"></div>
+    
+<section class="container mx-auto mt-10 w-12/12 rounded-lg bg-white p-4 shadow-lg">
+        <h2 class="mb-4 text-xl font-bold">Contrats en Cours</h2>
+        <div class="overflow-x-auto  shadow-md sm:rounded-lg">
+            <table class="min-w-full bg-white">
+                <thead>
+                    <tr>
+                        <th class="bg-gray-200 px-4 py-1">Photo</th>
+                        <th class="bg-gray-200 px-4 py-1">Prénom</th>
+                        <th class="bg-gray-200 px-4 py-1">Nom</th>
+                        <th class="bg-gray-200 px-4 py-1">Matricule</th>
+                        <th class="bg-gray-200 px-4 py-1">Poste</th>
+                        <th class="bg-gray-200 px-4 py-1">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for(interim of dataInterims; track interim.id){
+                    <tr>
+                        <td class="border px-4 text-center py-1">
+                            <div
+                                class="w-9 h-9 rounded-full flex items-center justify-center overflow-hidden  border-2 border-gray-500">
+                                <img class="w-full object-cover" [src]="'http://127.0.0.1:8000/uploads/higlights/' +interim.avatar " alt="Profile">
+                            </div>
+                        </td>
+                        <td class="border px-4 text-center py-1">{{ interim.prenom }}</td>
+                        <td class="border px-4 text-center py-1">{{ interim.nom }}</td>
+                        <td class="border px-4 text-center py-1">{{ interim.matricule }}</td>
+                        <td class="border px-4 text-center py-1">{{ interim.poste.libelle }}</td>
+                        <td class="border px-4 py-1 text-center">
+                            <button (click)="openModal(interim)" class="mr-6 rounded  btn btn-outline-info bg-white-500    px-4 py-1 font-bold  hover:bg-indigo-500  hover:bg-blue-700 ">Détails</button>
+                            <button class=" rounded btn btn-outline-danger bg-white-500    px-4 py-1 font-bold  hover:bg-indigo-500   hover:bg-red-700">Rompre</button>
+                        </td>
+                     </tr>
+                    }
+                    <!--<tr>
+                        <td class="border px-4 py-2">Dupont</td>
+                        <td class="border px-4 py-2">Jean</td>
+                        <td class="border px-4 py-2">12345</td>
+                        <td class="border px-4 py-2">Développeur</td>
+                        <td class="border px-4 py-2 text-center">
+                            <button class="mr-6 rounded bg-blue-500 px-4 py-2 font-bold text-white transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-110 hover:bg-blue-700 hover:bg-indigo-500">Détails</button>
+                            <button class="duration-300ml-6 rounded bg-blue-500 bg-red-500 px-4 py-2 font-bold text-white transition delay-150 ease-in-out hover:-translate-y-1 hover:scale-110 hover:bg-indigo-500 hover:bg-red-700">Rompre</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="border px-4 py-2">Dupont</td>
+                        <td class="border px-4 py-2">Jean</td>
+                        <td class="border px-4 py-2">12345</td>
+                        <td class="border px-4 py-2">Développeur</td>
+                        <td class="border px-4 py-2 text-center">
+                            <button class="mr-6 rounded bg-blue-500 px-4 py-2 font-bold text-white transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-110 hover:bg-blue-700 hover:bg-indigo-500">Détails</button>
+                            <button class="duration-300ml-6 rounded bg-blue-500 bg-red-500 px-4 py-2 font-bold text-white transition delay-150 ease-in-out hover:-translate-y-1 hover:scale-110 hover:bg-indigo-500 hover:bg-red-700">Rompre</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="border px-4 py-2">Dupont</td>
+                        <td class="border px-4 py-2">Jean</td>
+                        <td class="border px-4 py-2">12345</td>
+                        <td class="border px-4 py-2">Développeur</td>
+                        <td class="border px-4 py-2 text-center">
+                            <button class="mr-6 rounded bg-blue-500 px-4 py-2 font-bold text-white transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-110 hover:bg-blue-700 hover:bg-indigo-500">Détails</button>
+                            <button class="duration-300ml-6 rounded bg-blue-500 bg-red-500 px-4 py-2 font-bold text-white transition delay-150 ease-in-out hover:-translate-y-1 hover:scale-110 hover:bg-indigo-500 hover:bg-red-700">Rompre</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="border px-4 py-2">Dupont</td>
+                        <td class="border px-4 py-2">Jean</td>
+                        <td class="border px-4 py-2">12345</td>
+                        <td class="border px-4 py-2">Développeur</td>
+                        <td class="border px-4 py-2 text-center">
+                            <button class="mr-6 rounded bg-blue-500 px-4 py-2 font-bold text-white transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-110 hover:bg-blue-700 hover:bg-indigo-500">Détails</button>
+                            <button class="duration-300ml-6 rounded bg-blue-500 bg-red-500 px-4 py-2 font-bold text-white transition delay-150 ease-in-out hover:-translate-y-1 hover:scale-110 hover:bg-indigo-500 hover:bg-red-700">Rompre</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="border px-4 py-2">Dupont</td>
+                        <td class="border px-4 py-2">Jean</td>
+                        <td class="border px-4 py-2">12345</td>
+                        <td class="border px-4 py-2">Développeur</td>
+                        <td class="border px-4 py-2 text-center">
+                            <button class="mr-6 rounded bg-blue-500 px-4 py-2 font-bold text-white transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-110 hover:bg-blue-700 hover:bg-indigo-500">Détails</button>
+                            <button class="duration-300ml-6 rounded bg-blue-500 bg-red-500 px-4 py-2 font-bold text-white transition delay-150 ease-in-out hover:-translate-y-1 hover:scale-110 hover:bg-indigo-500 hover:bg-red-700">Rompre</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="border px-4 py-2">Dupont</td>
+                        <td class="border px-4 py-2">Jean</td>
+                        <td class="border px-4 py-2">12345</td>
+                        <td class="border px-4 py-2">Développeur</td>
+                        <td class="border px-4 py-2 text-center">
+                            <button class="mr-6 rounded bg-blue-500 px-4 py-2 font-bold text-white transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-110 hover:bg-blue-700 hover:bg-indigo-500">Détails</button>
+                            <button class="duration-300ml-6 rounded bg-blue-500 bg-red-500 px-4 py-2 font-bold text-white transition delay-150 ease-in-out hover:-translate-y-1 hover:scale-110 hover:bg-indigo-500 hover:bg-red-700">Rompre</button>
+                        </td>
+                    </tr> -->
+                    <!-- Ajouter d'autres lignes de contrat en cours ici -->
+                </tbody>
+            </table>
+        </div>
+    </section>
+    <!-- <button type="button" class="btn btn-primary" (click)="openModal()">Launch Demo Modal</button> -->
+
+    <!-- Example Modal -->
+    <app-modal [show]="showModal" (closeModal)="onModalCloseHandler($event)">
+         <div class="sm:flex sm:items-start">
+           <!-- <div
+                class="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+                <svg class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                </svg>
+            </div>
+            <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
+                <h3 class="text-base font-semibold leading-6 text-gray-900" id="modal-title">
+                    Deactivate account
+                </h3>
+                <div class="mt-2">
+                    <p class="text-sm text-gray-500">Are you sure you want to deactivate your account? All
+                        of your data will be permanently removed. This action cannot be undone.</p>
+                </div>
+            </div>-->
+            <div class="flex justify-between space-x-24">
+                <div class="flex items-center gap-3 sticky top-0 bg-white px-8 py-3 shadow-[0_5px_5px_-5px] shadow-gray-600">
+                    <div
+                        class="w-32 h-30 flex items-center justify-center overflow-hidden  border-2 border-emerald-600">
+                        <img class="w-full object-cover" src={{userOne}} alt="Profile">
+                    </div>
+                </div>
+                <div class="space-y-2 mt-3 justify-end">
+                    <div class="font-mono flex">
+                        <div ><strong>Prénom :</strong></div>
+                        <div>{{interimaire?.prenom}}</div>
+                    </div>
+                    <div class="flex">
+                        <div><strong>Nom :</strong></div>
+                        <div>{{interimaire?.nom}}</div>
+                    </div>
+                    <div class="flex">
+                        <div><strong>Matricule :</strong></div>
+                        <div>{{interimaire?.matricule}}</div>
+                    </div>
+                    <div class="flex">
+                        <div><strong>Telephone :</strong></div>
+                        <div>{{interimaire?.telephone}}</div>
+                    </div>
+                </div>
+            </div>
+        </div> 
+        <!-- <div class="mt-1 flex ml-1">
+           <div> Poste: </div>
+            <button type="button" class="btn btn-outline-secondary py-1  ">  {{interimaire?.poste?.libelle}}</button>
+        </div> -->
+        <div class=" flex space-x-3 mt-5">
+            <div>
+                <div  class="tooltip relative">Lieu :
+                    <span class="tooltip-text absolute bg-green-600 py-1 px-5 text-white text-xs rounded  whitespace-nowrap  bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                        lieu d'execution
+                    </span>
+                </div>
+                <button type="button" class="btn btn-outline-secondary me-2">{{interimaire?.responsable?.service?.departement?.pole?.direction?.locau?.libelle}}
+                </button>
+            </div>
+            <div>
+                <div >Responsable :</div>
+                <button type="button" class="btn btn-outline-secondary me-2">{{interimaire?.responsable?.user?.prenom }} {{interimaire?.responsable?.user?.nom}}</button>
+            </div>
+            <div>
+                <div>Structure :</div>
+               @if(interimaire?.responsable?.service?.departement?.pole?.libelle == 'N/A'){
+                   <button type="button" class="btn btn-outline-secondary me-2">{{interimaire?.responsable?.service?.departement?.pole?.direction?.locau?.code}}/{{ interimaire?.responsable?.service?.departement?.pole?.direction?.libelle}}/{{ interimaire?.responsable?.service?.departement?.libelle }}/{{ interimaire?.responsable?.service?.libelle }}</button>
+               }@else{
+                <button type="button" class="btn btn-outline-secondary me-2">{{interimaire?.responsable?.service?.departement?.pole?.direction?.locau?.code}}/{{ interimaire?.responsable?.service?.departement?.pole?.direction?.libelle}}/{{ interimaire?.responsable?.service?.departement?.pole?.libelle }}/{{ interimaire?.responsable?.service?.departement?.libelle }}/{{ interimaire?.responsable?.service?.libelle }}</button>
+               }
+            </div>
+            <div>
+                <div>Agence :</div>
+                <button type="button" class="btn btn-outline-secondary me-2">{{interimaire?.categorie?.agence?.libelle }}</button>
+            </div>
+        </div>
+        <div class="flex space-x-3 mt-5">
+           <div>
+                <div>Categorie :</div>
+                <button type="button" class="btn btn-outline-secondary me-2">{{interimaire?.categorie?.libelle }}</button>
+           </div>
+           <div  class="flex flex-col">
+                <button class="tooltip relative">Unitaire :
+                    <span class="tooltip-text absolute bg-green-600 py-1 px-5 text-white text-xs rounded  whitespace-nowrap  bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                        Coût Unitaire
+                    </span>
+                </button>
+                <button type="button" class="btn btn-outline-secondary me-2 tooltip relative">{{interimaire?.categorie?.cout_unitaire_journalier }}
+                    <span class="tooltip-text absolute bg-black text-white text-xs rounded py-1 px-2 bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                        FCFA
+                    </span>
+                </button>
+            </div>
+            <div  class="flex flex-col">
+                <button class=" tooltip relative">Durée:
+                    <span class="tooltip-text absolute bg-green-600 py-1 px-5 text-white text-xs rounded  whitespace-nowrap  bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                        Durée Kangourou
+                    </span>
+                </button>
+                <button type="button" class="btn btn-outline-secondary me-2">{{interimaire?.poste?.duree_kangurou }}
+                    <span class="tooltip-text absolute bg-black text-white text-xs rounded py-1 px-2 bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                        Jour
+                    </span>
+                </button>
+            </div>
+           <div  class="flex flex-col">
+                <button class=" tooltip relative">Montant :
+                    <span class="tooltip-text absolute bg-green-600 py-1 px-5 text-white text-xs rounded  whitespace-nowrap  bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                        Montant Kangourou
+                    </span>
+                </button>
+                <button type="button" class="btn btn-outline-secondary me-2 tooltip relative">{{interimaire?.poste?.montant_kangurou }}
+                    <span class="tooltip-text absolute bg-black text-white text-xs rounded py-1 px-2 bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                        FCFA
+                    </span>
+                </button>
+           </div>
+           <div>
+                <div> Poste: </div>
+                <button type="button" class="btn btn-outline-secondary me-2  ">  {{interimaire?.poste?.libelle}}</button>
+           </div>
+          
+        </div>
+        @for(contrat of interimaire?.contrats;track contrat.id){      
+        <div class=" flex space-x-3 mt-5">
+            <div  class="flex flex-col">
+                <button class=" tooltip relative">Début :
+                    <span class="tooltip-text absolute bg-green-600 py-1 px-5 text-white text-xs rounded  whitespace-nowrap  bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                        Début Contrat
+                    </span>
+                </button>
+                <button type="button" class="btn btn-outline-secondary me-2 tooltip relative">
+                    {{contrat?.date_debut_contrat}}
+                 </button>
+            </div>
+            <div  class="flex flex-col">
+                <button class=" tooltip relative" >Fin :
+                    <span class="tooltip-text absolute bg-green-600 py-1 px-5 text-white text-xs rounded  whitespace-nowrap  bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                        Fin Contrat
+                    </span>
+                </button> 
+                <button type="button" class="btn btn-outline-secondary me-2 tooltip relative">{{contrat?.date_fin_contrat}}</button>
+            </div>
+            <div  class="flex flex-col">
+                <button class="tooltip relative">Presence :
+                    <span class="tooltip-text absolute bg-green-600 py-1 px-5 text-white text-xs rounded  whitespace-nowrap  bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                        Temps Presence Structure
+                    </span>
+                </button>
+                <button type="button"  class="btn btn-outline-secondary me-2 tooltip relative">{{contrat?.temps_presence_structure_actuel}}
+                    <span class="tooltip-text absolute bg-black  text-white text-xs rounded py-1 px-2 bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                        JOUR
+                    </span>
+                </button>
+            </div>
+            <div  class="flex flex-col">
+                <button class="tooltip relative"> Autre  :
+                    <span class="tooltip-text absolute bg-green-600 py-1 px-5 text-white text-xs rounded  whitespace-nowrap  bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                        Presence Autre Structure
+                    </span>
+                </button>
+                <button type="button"  class="btn btn-outline-secondary me-2 tooltip relative">
+                    {{contrat?.temps_presence_autre_structure_sonatel}}
+                    <span class="tooltip-text absolute bg-black text-white text-xs rounded py-1 px-2 bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                        MOIS
+                    </span>
+                 </button>
+            </div>
+            <div  class="flex flex-col">
+                <button class="tooltip relative"> Cumule  :
+                    <span class="tooltip-text absolute bg-green-600 py-1 px-5 text-white text-xs rounded  whitespace-nowrap  bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                        Cumule Presence structure:
+                    </span>
+                </button> 
+                <button type="button"  class="btn btn-outline-secondary me-2 tooltip relative">{{contrat?.cumul_presence_sonatel}}
+                    <span class="tooltip-text absolute bg-black text-white text-xs rounded py-1 px-2 bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                        MOIS
+                    </span>
+                </button>
+            </div>
+        </div>
+        <div class=" flex space-x-3 space-y-2 mt-5">
+            <div  class="flex flex-col">
+                <button class="tooltip relative mt-1"> Contrat :
+                    <span class="tooltip-text absolute bg-green-600 py-1 px-5 text-white text-xs rounded  whitespace-nowrap  bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                        Durée Contrat
+                    </span>
+                </button>
+                <button type="button"  class="btn btn-outline-secondary me-2 tooltip relative">{{contrat?.duree_contrat}}
+                    <span class="tooltip-text absolute bg-black text-white text-xs rounded py-1 px-2 bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                        MOIS
+                    </span>
+                </button>
+            </div>
+            <div  class="flex flex-col">
+                <button class="tooltip relative"> Reste  :
+                    <span class="tooltip-text absolute bg-green-600 py-1 px-5 text-white text-xs rounded  whitespace-nowrap  bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                        Durée Restant
+                    </span>
+                </button>
+                <button type="button"  class="btn btn-outline-secondary me-2 tooltip relative">
+                    {{contrat?.duree_contrat_restant}}
+                    <span class="tooltip-text absolute bg-black text-white text-xs rounded py-1 px-2 bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                        MOIS
+                    </span>
+                 </button>
+            </div>
+            <div  class="flex flex-col">
+                <button 
+                class="tooltip relative"> Mensuel  :
+                    <span class="tooltip-text absolute bg-green-600 py-1 px-5 text-white text-xs rounded  whitespace-nowrap  bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                        Coût Mensuel
+                    </span>
+                </button> 
+                <button type="button"  class="btn btn-outline-secondary me-2 tooltip relative">{{contrat?.cout_mensuel}}
+                    <span class="tooltip-text absolute bg-black text-white text-xs rounded py-1 px-2 bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                        FCFA
+                    </span>
+                </button>
+            </div>
+            <div  class="flex flex-col">
+                <button class="tooltip relative">Global  :
+                    <span class="tooltip-text absolute bg-green-600 py-1 px-5 text-white text-xs rounded  whitespace-nowrap  bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                        Coût Global 
+                    </span>
+                </button>
+                <button type="button"  class="btn btn-outline-secondary me-2 tooltip relative">{{contrat?.cout_global}}
+                    <span class="tooltip-text absolute bg-black text-white text-xs rounded py-1 px-2 bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                        FCFA
+                    </span>
+                </button>
+            </div>
+            <div>
+                <div>DA :</div>
+                <button type="button" class="btn btn-outline-secondary me-2">
+                    {{contrat?.DA}}
+                 </button>
+            </div>
+        </div>
+        <div class=" flex space-x-3 mt-5">
+            <div class="flex flex-col">
+                <button class="tooltip relative"> Kangourou  :
+                    <span class="tooltip-text absolute bg-green-600 py-1 px-5 text-white text-xs rounded  whitespace-nowrap  bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                        DA kangourou
+                    </span>
+                </button> 
+                <button type="button" class="btn btn-outline-secondary me-2">{{contrat?.DA_kangurou}}</button>
+            </div>
+        </div>
+        }
+       
+       
+        
+    </app-modal>
+</div>

@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Contrat;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,11 +14,10 @@ return new class extends Migration
     {
         Schema::create('remplacements', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('contrat_id');
-            $table->string('statut')->nullable();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+            $table->string('statut')->nullable();
             $table->timestamps();
 
-            $table->foreign('contrat_id')->references('id')->on('contrats')->onDelete('cascade');
+            $table->foreignIdFor(Contrat::class)->constrained()->cascadeOnDelete();
         });
     }
 

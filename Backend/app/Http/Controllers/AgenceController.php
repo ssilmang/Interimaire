@@ -14,7 +14,7 @@ class AgenceController extends Controller
             'libelle' => 'required|string|max:255',
         ]);
 
-        $agence = Agence::create([
+        $agence = Agence::firstOrCreate([
             'libelle' => $request->libelle,
         ]);
         return response()->json(['message' => 'L\'Agence a été ajouté avec succès', 'agence' => $agence], 200);

@@ -14,6 +14,11 @@ class CategorieResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        return [
+            'id'=>$this->id,
+            'libelle'=>$this->libelle,
+            'cout_unitaire_journalier'=>$this->cout_unitaire_journalier,
+            'agence'=>AgenceResource::make($this->agence)
+        ];
     }
 }

@@ -16,10 +16,15 @@ class InterimResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'user'=>UserResource::make($this->user),
-            'Categorie'=>CategorieResource::make($this->categorie),
-            'Responsable'=>ResponsableResource::make($this->responsable),
+            'nom'=>$this->nom,
+            'prenom'=>$this->prenom,
+            'telephone'=>$this->telephone,
+            'matricule'=>$this->matricule,
+            'avatar'=>$this->avatar,
+            'contrats'=>ContratResource::collection($this->contrats),
+            'categorie'=>CategorieResource::make($this->categorie),
             'poste'=>PosteResource::make($this->poste),
+            'responsable'=>ResponsableResponsableResource::make($this->responsable),
         ];
     }
 }

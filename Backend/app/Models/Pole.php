@@ -13,4 +13,12 @@ class Pole extends Model
         'libelle',
         'direction_id'
     ];
+    public function departements()
+    {
+        return $this->hasMany(Departement::class);
+    }
+    public function direction()
+    {
+        return $this->belongsTo(Direction::class);
+    }
 }

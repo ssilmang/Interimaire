@@ -32,11 +32,11 @@ class DirectionController extends Controller
 {
     try {
         $request->validate([
-            'libelle' => 'required|string',
+            'libelle' => 'required',
             'locau_id' => 'required|exists:locaus,id'
         ]);
 
-        $direction = Direction::create([
+        $direction = Direction::firstOrCreate([
             'libelle' => $request->libelle,
             'locau_id' => $request->locau_id
         ]);

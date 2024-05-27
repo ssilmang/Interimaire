@@ -17,7 +17,6 @@ class ServiceResource extends JsonResource
         return [
             'id'=>$this->id,
             'libelle'=>$this->libelle,
-            'chef_de_service'=>ChefServiceResource::make($this->chefDeService),
         ];
     }
 }

@@ -18,4 +18,8 @@ class Locau extends Model
     {
         return $this->hasMany(Departement::class);
     }
+    public function directions()
+    {
+        return $this->hasMany(Direction::class);
+    }
 }

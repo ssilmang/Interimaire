@@ -18,4 +18,8 @@ class Service extends Model
     {
         return $this->hasMany(Responsable::class);
     }
+    public function departement()
+    {
+        return $this->belongsTo(Departement::class);
+    }
 }

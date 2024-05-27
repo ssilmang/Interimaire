@@ -37,10 +37,14 @@ class PoleController extends Controller
                 'direction_id' => 'required|exists:directions,id',
             ]);
 
-            $pole = Pole::create([
+            $pole =  Pole::firstOrNew([
                 'libelle' => $request->libelle,
-                'direction_id' => $request->direction_id,
+                'direction_id'=> $request->direction_id,
             ]);
+
+                if(!$pole->exists){
+                    $pole->save();
+                };
 
             return new PoleResource($pole);
         } catch (ValidationException $e) {

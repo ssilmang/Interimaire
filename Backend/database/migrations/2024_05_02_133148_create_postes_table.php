@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('libelle');
             $table->integer('duree_kangurou')->nullable();
-            $table->decimal('montant_kangurou', 10, 2)->nullable();
+            $table->integer('montant_kangurou')->nullable();
             $table->timestamps();
         });
     }

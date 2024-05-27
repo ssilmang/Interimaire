@@ -1,0 +1,150 @@
+<aside>
+    <div class="brand-wrapper">
+        <a href="#" class="brand text-center">
+            <h1 class="flex items-center font-bold text-slate-300">
+                <span class="mr-2 h-8 w-8 rounded-md bg-orange-600 text-2xl">G</span>
+                <span class="text-2xl tracking-widest">R SONATEL</span>
+            </h1>
+        </a>
+    </div>
+    <ul class="menu-links">
+        <li>
+            <a [routerLink]="commonServices.prepareRoute(appRoutes.Admin, adminRoutes.Dashboard)"
+                routerLinkActive="active" class="menu-item" ariaCurrentWhenActive="page">
+                <i class="bi bi-columns-gap"></i>
+                <span>Accueil</span>
+            </a>
+        </li>
+        <!-- <li>
+            <a class="menu-item" [routerLink]="commonServices.prepareRoute(appRoutes.Admin, adminRoutes.Events)"
+                routerLinkActive="active" ariaCurrentWhenActive="page">
+                <i class="bi bi-calendar4-event"></i>
+                <span>Events</span>
+            </a>
+        </li> -->
+        <li>
+            <a href="javascript:void(0)" class="menu-item sub-menu" aria-expanded="false"
+                (click)="subMenuToggleHandler($event)">
+                <i class="bi bi-diagram-3"></i>
+                <span>List & Add all Infos</span>
+            </a>
+            <ul class="sub-menu-item">
+                <li>
+                    <a class="menu-item"
+
+                        routerLinkActive="active" ariaCurrentWhenActive="page">
+                        <span>Agence</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="menu-item"
+                        [routerLink]="commonServices.prepareRoute(appRoutes.Admin, adminRoutes.Elements, elementRoutes.Tabs)"
+                        routerLinkActive="active" ariaCurrentWhenActive="page">
+                        <span>Categorie</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="menu-item"
+                        [routerLink]="commonServices.prepareRoute(appRoutes.Admin, adminRoutes.Elements, elementRoutes.Modal)"
+                        routerLinkActive="active" ariaCurrentWhenActive="page">
+                        <span>Poste</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="menu-item"
+                        [routerLink]="commonServices.prepareRoute(appRoutes.Admin, adminRoutes.Elements, elementRoutes.Buttons)"
+                        routerLinkActive="active" ariaCurrentWhenActive="page">
+                        <span>Entreprise</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="menu-item"
+                        [routerLink]="commonServices.prepareRoute(appRoutes.Admin, adminRoutes.Elements, elementRoutes.DataTable)"
+                        routerLinkActive="active" ariaCurrentWhenActive="page">
+                        <span>Direction</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="menu-item"
+                        [routerLink]="commonServices.prepareRoute(appRoutes.Admin, adminRoutes.Elements, elementRoutes.Forms)"
+                        routerLinkActive="active" ariaCurrentWhenActive="page">
+                        <span>User</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <li>
+            <!--  [routerLink]="commonServices.prepareRoute(appRoutes.Admin, adminRoutes.Dashboard)" -->
+                <a routerLinkActive="active" class="menu-item" ariaCurrentWhenActive="page">
+                <i class="bi bi-sunrise-fill"></i>
+                <span>Contrat</span>
+            </a>
+        </li>
+        <li>
+            <a
+                routerLinkActive="active" class="menu-item" ariaCurrentWhenActive="page">
+                <i class="bi bi-sunset"></i>
+                <span>Fin de Contrat</span>
+            </a>
+        </li>
+        <li>
+            <a
+                routerLinkActive="active" class="menu-item" ariaCurrentWhenActive="page">
+                <i class="bi bi-stack-overflow"></i>
+                <span>Kangouru</span>
+            </a>
+        </li>
+        <li>
+            <a href="javascript:void(0)" class="menu-item sub-menu" aria-expanded="false"
+                (click)="subMenuToggleHandler($event)">
+                <i class="bi bi-sliders2-vertical"></i>
+                <span>Settings</span>
+            </a>
+            <ul class="sub-menu-item">
+                <li>
+                    <a class="menu-item"
+                        [routerLink]="commonServices.prepareRoute(appRoutes.Admin, adminRoutes.Settings, settingRoutes.Profile)"
+                        routerLinkActive="active" ariaCurrentWhenActive="page">
+                        <span>Profile</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="menu-item"
+                        [routerLink]="commonServices.prepareRoute(appRoutes.Admin, adminRoutes.Settings, settingRoutes.Users)"
+                        routerLinkActive="active" ariaCurrentWhenActive="page">
+                        <span>Users</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="menu-item" ariaCurrentWhenActive="page">
+                        <span>Website</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <li>
+            <a [routerLink]="commonServices.prepareRoute(appRoutes.Admin, adminRoutes.Elements, elementRoutes.Alert)"
+                routerLinkActive="active" class="menu-item" ariaCurrentWhenActive="page">
+                <i class="bi bi-bell"></i>
+                <span>Notification</span>
+            </a>
+        </li>
+        <li>
+            <a href="#" class="menu-item">
+                <i class="bi bi-box-arrow-right"></i>
+                <span>Logout</span>
+            </a>
+        </li>
+    </ul>
+</aside>
+
+<div class="collapsible-btn-container">
+    <button id="sidebar-collapse-btn" sidebarCollapse>
+        <div class="flex h-16 w-6 items-center justify-center">
+            <div class="collapsible-icons">
+                <div class="collapsible-top-icon"></div>
+                <div class="collapsible-bottom-icon"></div>
+            </div>
+        </div>
+    </button>
+</div>

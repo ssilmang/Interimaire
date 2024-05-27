@@ -44,7 +44,7 @@ class ServiceController extends Controller
                 'departement_id' => 'required|exists:departements,id',
             ]);
 
-            $service = Service::create([
+            $service = Service::firstOrCreate([
                 'libelle' => $request->libelle,
                 'departement_id' => $request->departement_id,
             ]);

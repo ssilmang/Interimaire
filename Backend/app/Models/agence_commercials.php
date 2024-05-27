@@ -14,4 +14,5 @@ class agence_commercials extends Model
         'adresse',
         'departement_id',
     ];
+   
 }

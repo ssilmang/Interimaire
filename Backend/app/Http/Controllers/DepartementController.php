@@ -18,16 +18,20 @@ class DepartementController extends Controller
                 'pole_id' => 'required|exists:poles,id',
             ]);
 
-            $departement = Departement::create([
+            $departement = Departement::firstOrNew([
                 'libelle' => $request->libelle,
                 'pole_id' => $request->pole_id,
             ]);
+            if(!$departement->exists){
+             $departement->save();
 
+            }
             return response()->json([
                 "status" => 200,
                 "message" => "Département ajouté avec succès",
                 "data" => $departement,
             ]);
+
         });
 
        }catch(QueryException $e){

@@ -13,4 +13,12 @@ class Direction extends Model
         'libelle',
         'locau_id',
         ];
+    public function poles()
+    {
+        return $this->hasMany(Pole::class);
+    }
+    public function locau()
+    {
+        return $this->belongsTo(Locau::class);
+    }
 }

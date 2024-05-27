@@ -17,7 +17,7 @@ class PoleResource extends JsonResource
         return [
             'id' => $this->id,
             'libelle' => $this->libelle,
-            'direction_id' => $this->direction_id,
+            'departements'=>DepartementResource::collection($this->departements)
         ];
     }
 }

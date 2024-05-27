@@ -2,13 +2,25 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\LocauResource;
 use Illuminate\Http\Request;
 use App\Models\Locau;
 use Illuminate\Database\QueryException;
 use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpFoundation\Response;
 
 class LocalController extends Controller
 {
+    public function index(Request $request){
+        $locaux = Locau::all();
+        return response()->json([
+            'statut'=>Response::HTTP_OK,
+            'message'=>'all',
+            'data'=>[
+                "locaux"=>LocauResource::collection($locaux)
+            ]
+        ]);
+    }
     public function store(Request $request)
     {
         try {
@@ -23,19 +35,19 @@ class LocalController extends Controller
         ]);
 
         return response()->json([
-                "status" => 200,
+                "statut" => 200,
                 "message" => "lieu d'execution a ete ajouté avec succès",
                 "data" => $local,
             ]);
         } catch (ValidationException $e) {
             return response()->json([
-                "status" => 400,
+                "statut" => 400,
                 "message" => "Erreur de validation",
                 "errors" => $e->errors(),
             ], 400);
         } catch (QueryException $e) {
             return response()->json([
-                "status" => 500,
+                "statut" => 500,
                 "message" => "Erreur lors de l'ajout du lieu d'execution",
                 "error" => $e->getMessage(),
             ], 500);

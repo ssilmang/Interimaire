@@ -17,6 +17,8 @@ class PosteResource extends JsonResource
         return [
             'id' => $this->id,
             'libelle' => $this->libelle,
+            'duree_kangurou'=>$this->duree_kangurou,
+            'montant_kangurou'=>$this->montant_kangurou,
         ];
     }
 }

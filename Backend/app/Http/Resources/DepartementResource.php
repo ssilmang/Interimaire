@@ -17,7 +17,8 @@ class DepartementResource extends JsonResource
         return [
             'id'=>$this->id,
             'libelle'=>$this->libelle,
-            'locau'=>LocauResource::make($this->locaus),
+            'services'=>$this->services->isNotEmpty()? ServiceResource::collection($this->services): AgenceCommercialeResource::collection($this->agenceCommerciales),
+           
         ];
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\agence_commercials;
+use App\Models\AgenceCommercial;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\QueryException;
@@ -39,7 +40,7 @@ class AgenceCommercialsController extends Controller
                 'departement_id' => 'required|exists:departements,id',
             ]);
 
-            $agence_commercials = agence_commercials::create([
+            $agence_commercials = AgenceCommercial::firstOrCreate([
                 'libelle' => $request->libelle,
                 'adresse' => $request->adresse,
                 'departement_id' => $request->departement_id,
@@ -65,7 +66,7 @@ class AgenceCommercialsController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(agence_commercials $agence_commercials)
+    public function show(AgenceCommercial $agence_commercials)
     {
         //
     }
@@ -73,7 +74,7 @@ class AgenceCommercialsController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(agence_commercials $agence_commercials)
+    public function edit(AgenceCommercial $agence_commercials)
     {
         //
     }
@@ -81,7 +82,7 @@ class AgenceCommercialsController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, agence_commercials $agence_commercials)
+    public function update(Request $request, AgenceCommercial $agence_commercials)
     {
         //
     }
@@ -89,7 +90,7 @@ class AgenceCommercialsController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(agence_commercials $agence_commercials)
+    public function destroy(AgenceCommercial $agence_commercials)
     {
         //
     }

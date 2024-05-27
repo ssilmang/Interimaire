@@ -17,8 +17,8 @@ class ResponsableResource extends JsonResource
         return [
             'id'=>$this->id,
             'user'=>UserResource::make($this->user),
-            'Chef_de_Service'=>ChefServiceResource::make($this->chefDeService),
-            'Service'=>ServiceResource::make($this->service),
+            'departement'=>DepartementResource::make($this->departement),
+            'service'=>$this->service ? ServiceResource::make($this->service):AgenceCommercialeResource::make($this->agenceCommercial),
         ];
     }
 }

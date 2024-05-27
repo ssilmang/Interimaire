@@ -14,9 +14,17 @@ class Departement extends Model
         'pole_id'
         ];
 
-    public function poles()
+    public function pole()
     {
         return $this->belongsTo(Pole::class, 'pole_id');
+    }
+    public function services()
+    {
+        return $this->hasMany(Service::class);
+    }
+    public function agenceCommerciales()
+    {
+        return $this->hasMany(AgenceCommercial::class);
     }
 
 

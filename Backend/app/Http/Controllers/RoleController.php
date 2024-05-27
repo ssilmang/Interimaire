@@ -16,13 +16,18 @@ class RoleController extends Controller
             'libelle' => 'required|string|max:255',
         ]);
 
-        $role = Role::create([
+        $role = Role::firstOrNew([
             'libelle' => $request->libelle,
         ]);
+        $message = "Ce role existe dèjà";
+        if(!$role->exists){
+            $role->save();
+            $message =  "Role ajouté avec succès";
+        }
 
         return response()->json([
                 "status" => 200,
-                "message" => "Role ajouté avec succès",
+                "message" =>$message,
                 "data" => $role,
             ]);
         } catch (ValidationException $e) {

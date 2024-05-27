@@ -12,6 +12,7 @@ use App\Http\Controllers\DepartementController;
 use App\Http\Controllers\ChefDeServiceController;
 use App\Http\Controllers\ContratController;
 use App\Http\Controllers\DirectionController;
+use App\Http\Controllers\InterimController;
 use App\Http\Controllers\InterimsController;
 use App\Http\Controllers\PoleController;
 use App\Http\Controllers\PosteController;
@@ -29,51 +30,19 @@ use App\Http\Controllers\ServiceController;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
-// Route::post('/roles', [RoleController::class, 'store']);
-
-// Route::post('/users', [UserController::class, 'store']);
-// Route::controller(UserController::class)->prefix("Interim")->group(function(){
-//     Route::get('/users',"GuetResponsable");
-// });
-
-
-// Route::controller(PosteController::class)->prefix("Interim")->group(function(){
-//     Route::get('/Postes',"index");
-//     Route::Post('/Postes',"store");
-// });
-
-
-// Route::controller(ContratController::class)->prefix("Interim")->group(function(){
-//     Route::get('/Contrats',"index");
-//     Route::Post('/Contrats',"store");
-// });
-
-// Route::post('/departements', [DepartementController::class, 'store']);
-// Route::post('/locaux', [LocalController::class, 'store']);
-
-// Route::post('/agences', [AgenceController::class, 'store']);
-// Route::post('/categories', [CategorieController::class, 'store']);
-
-// Route::prefix('sonatel-dv')->group(function () {
-//     Route::get('/chef-de-service', [ChefDeServiceController::class, 'index']);
-//     Route::post('/chef-de-service', [ChefDeServiceController::class, 'store']);
-//     Route::get('/service', [ServiceController::class, 'index']);
-//     Route::post('/service', [ServiceController::class, 'store']);
-
-// });
 
 Route::controller(AgenceCommercialsController::class)->prefix("Interim")->group(function(){
-    Route::Post('/agence_commercials',"store");
+    Route::Post('/agence_commercial',"store");
 });
 
 
 Route::controller(AgenceController::class)->prefix("Interim")->group(function(){
-    Route::Post('/agences',"store");
+    Route::Post('/agence',"store");
 });
 
 
 Route::controller(CategorieController::class)->prefix("Interim")->group(function(){
-    Route::Post('/categories',"store");
+    Route::Post('/categorie',"store");
 });
 
 Route::controller(ContratController::class)->prefix("Interim")->group(function(){
@@ -82,30 +51,36 @@ Route::controller(ContratController::class)->prefix("Interim")->group(function()
 
 
 Route::controller(DepartementController::class)->prefix("Interim")->group(function(){
-    Route::Post('/departements',"store");
+    Route::Post('/departement',"store");
 });
 
 
 Route::controller(DirectionController::class)->prefix("Interim")->group(function(){
-    Route::Post('/directions',"store");
+    Route::Post('/direction',"store");
 });
 
 
 
 Route::controller(LocalController::class)->prefix("Interim")->group(function(){
-    Route::Post('/locals',"store");
+    Route::Post('/locau',"store");
+    Route::get('locaux/all',"index");
 });
 
 
 Route::controller(PoleController::class)->prefix("Interim")->group(function(){
-    Route::Post('/poles',"store");
+    Route::Post('/pole',"store");
 });
 
 
 Route::controller(PosteController::class)->prefix("Interim")->group(function(){
-    Route::Post('/postes',"store");
+    Route::Post('/poste',"store");
 });
-
+Route::controller(InterimController::class)->prefix('Interim')->group(function(){
+    Route::post('interimaire','store');
+    Route::get('interimaires','index');
+    Route::post('image','inserImage');
+    Route::get('indexImage','indexImage');
+});
 
 Route::controller(RemplacementsController::class)->prefix("Interim")->group(function(){
     Route::Post('/remplacements',"store");
@@ -113,19 +88,20 @@ Route::controller(RemplacementsController::class)->prefix("Interim")->group(func
 
 
 Route::controller(RoleController::class)->prefix("Interim")->group(function(){
-    Route::Post('/roles',"store");
+    Route::Post('/role',"store");
 });
 
 
 Route::controller(ServiceController::class)->prefix("Interim")->group(function(){
-    Route::Post('/services',"store");
+    Route::Post('/service',"store");
 });
 
 
 Route::controller(UserController::class)->prefix("Interim")->group(function(){
-    Route::Post('/users',"store");
-    Route::Post('/interims',"store");
-    Route::Post('/responsables',"store");
+    Route::post('/user',"store");
+    Route::post('/responsable',"store");
+    Route::get('/interims',"contratsTermines");
+    Route::get('/presence-time',"updatePresenceTime");
 });
 
 

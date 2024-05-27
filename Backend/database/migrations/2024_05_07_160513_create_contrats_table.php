@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Interim;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('contrats', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('interim_id');
+            $table->foreignIdFor(Interim::class)->constrained()->cascadeOnDelete();
             $table->date('date_debut_contrat');
             $table->date('date_fin_contrat')->nullable();
             $table->integer('temps_presence_structure_actuel')->nullable();
@@ -21,15 +22,15 @@ return new class extends Migration
             $table->integer('cumul_presence_sonatel')->nullable();
             $table->integer('duree_contrat')->nullable();
             $table->integer('duree_contrat_restant')->nullable();
-            $table->decimal('cout_mensuel', 10, 2)->nullable();
-            $table->decimal('cout_global', 10, 2)->nullable();
-            $table->decimal('DA', 10, 2)->nullable();
-            $table->decimal('DA_kangurou', 10, 2)->nullable();
-            $table->text('commentaire')->nullable();
+            $table->integer('cout_mensuel')->nullable();
+            $table->integer('cout_global')->nullable();
+            $table->integer('DA')->nullable();
+            $table->integer('DA_kangurou')->nullable();
+            $table->longText('commentaire')->nullable();
             $table->string('etat')->nullable();
             $table->timestamps();
 
-            $table->foreign('interim_id')->references('id')->on('interims')->onDelete('cascade');
+
         });
     }
 
