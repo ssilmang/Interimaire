@@ -17,6 +17,7 @@ class InterimController extends Controller
 {
     public function index(Request $request)
     {
+        
         try{
             $interim = Interim::all();
             return response()->json([

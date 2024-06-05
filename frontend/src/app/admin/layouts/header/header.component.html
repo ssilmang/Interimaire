@@ -1,9 +1,19 @@
 <header class="admin-navbar sticky top-0 bg-white px-8 py-3 shadow-[0_5px_5px_-5px] shadow-gray-600">
     <div class="flex items-center justify-between">
-        <div class="flex items-center justify-start gap-x-3"></div>
+        <div class="flex items-center justify-start gap-x-9">
+            <div class="relative inline-block hover:bg-slate-200  ">
+                <a  [routerLink]="'/admin/permanent'" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}" ariaCurrentWhenActive="page" class="text-sm font-semibold leading-6 text-gray-900 py-2 px-2 rounded-2xl  cursor-pointer hover:bg-slate-200">Permanent</a>
+            </div>
+            <div class="relative inline-block hover:bg-slate-200">
+                <a  [routerLink]="'/admin/prestataire'" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}" ariaCurrentWhenActive="page"class="text-sm font-semibold leading-6 text-gray-900  py-2 px-2  rounded-2xl cursor-pointer hover:bg-slate-200">Prestatiare</a>
+            </div>
+           <div class="relative inline-block hover:bg-slate-200 ">
+                <a   [routerLink]="'/admin/dashboard'" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}" ariaCurrentWhenActive="page" class="text-sm font-semibold leading-6 text-gray-900 cursor-pointer  rounded-2xl  py-2 px-2 hover:bg-slate-200">Interimaire</a>
+           </div>
+        </div>
         <div class="flex items-center justify-end gap-x-3">
             <div class="relative inline-block">
-                <button type="button" class="text-light h-10 w-10 rounded-full text-xl transition hover:bg-slate-200">
+                <button type="button" class="text-light h-10 w-10 rounded-full text-xl transition hover:bg-red-800 hover:text-white">
                     <i class="bi bi-moon-stars"></i>
                 </button>
             </div>

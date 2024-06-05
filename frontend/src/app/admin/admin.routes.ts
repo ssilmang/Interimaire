@@ -1,6 +1,8 @@
 export enum AdminRoutes {
   Dashboard = 'dashboard',
   Events = 'events',
+  Permanent = 'permanent',
+  Prestataire = 'prestataire',
   Settings = 'settings',
   Elements = 'elements',
 }

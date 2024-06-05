@@ -16,8 +16,7 @@ class AgenceResource extends JsonResource
     {
         return [
             'id'=>$this->id,
-            'libelle'=>$this->libelle
-            
+            'libelle'=>$this->libelle           
         ];
     }
 }

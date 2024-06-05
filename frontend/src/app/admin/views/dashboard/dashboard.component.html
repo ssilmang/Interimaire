@@ -1,6 +1,6 @@
 <div [@pageTransition]>
-    <section class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
-        <div class="card flex items-center gap-3">
+    <section class="grid grid-cols-1 gap-2 md:grid-cols-2 xl:grid-cols-4">
+        <div class="card flex items-center gap-1">
             <div class="rounded-lg bg-gradient-to-br from-emerald-500 to-emerald-700 px-3 py-2 text-white">
                 <span class="bi bi-clock-history text-3xl"></span>
             </div>
@@ -36,106 +36,149 @@
 
     <div class="my-5"></div>
     
-<section class="container mx-auto mt-10 w-12/12 rounded-lg bg-white p-4 shadow-lg">
-        <h2 class="mb-4 text-xl font-bold">Contrats en Cours</h2>
-        <div class="overflow-x-auto  shadow-md sm:rounded-lg">
-            <table class="min-w-full bg-white">
-                <thead>
-                    <tr>
-                        <th class="bg-gray-200 px-4 py-1">Photo</th>
-                        <th class="bg-gray-200 px-4 py-1">Prénom</th>
-                        <th class="bg-gray-200 px-4 py-1">Nom</th>
-                        <th class="bg-gray-200 px-4 py-1">Matricule</th>
-                        <th class="bg-gray-200 px-4 py-1">Poste</th>
-                        <th class="bg-gray-200 px-4 py-1">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @for(interim of dataInterims; track interim.id){
-                    <tr>
-                        <td class="border px-4 text-center py-1">
-                            <div
-                                class="w-9 h-9 rounded-full flex items-center justify-center overflow-hidden  border-2 border-gray-500">
-                                <img class="w-full object-cover" [src]="'http://127.0.0.1:8000/uploads/higlights/' +interim.avatar " alt="Profile">
-                            </div>
-                        </td>
-                        <td class="border px-4 text-center py-1">{{ interim.prenom }}</td>
-                        <td class="border px-4 text-center py-1">{{ interim.nom }}</td>
-                        <td class="border px-4 text-center py-1">{{ interim.matricule }}</td>
-                        <td class="border px-4 text-center py-1">{{ interim.poste.libelle }}</td>
-                        <td class="border px-4 py-1 text-center">
-                            <button (click)="openModal(interim)" class="mr-6 rounded  btn btn-outline-info bg-white-500    px-4 py-1 font-bold  hover:bg-indigo-500  hover:bg-blue-700 ">Détails</button>
-                            <button class=" rounded btn btn-outline-danger bg-white-500    px-4 py-1 font-bold  hover:bg-indigo-500   hover:bg-red-700">Rompre</button>
-                        </td>
-                     </tr>
-                    }
-                    <!--<tr>
-                        <td class="border px-4 py-2">Dupont</td>
-                        <td class="border px-4 py-2">Jean</td>
-                        <td class="border px-4 py-2">12345</td>
-                        <td class="border px-4 py-2">Développeur</td>
-                        <td class="border px-4 py-2 text-center">
-                            <button class="mr-6 rounded bg-blue-500 px-4 py-2 font-bold text-white transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-110 hover:bg-blue-700 hover:bg-indigo-500">Détails</button>
-                            <button class="duration-300ml-6 rounded bg-blue-500 bg-red-500 px-4 py-2 font-bold text-white transition delay-150 ease-in-out hover:-translate-y-1 hover:scale-110 hover:bg-indigo-500 hover:bg-red-700">Rompre</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="border px-4 py-2">Dupont</td>
-                        <td class="border px-4 py-2">Jean</td>
-                        <td class="border px-4 py-2">12345</td>
-                        <td class="border px-4 py-2">Développeur</td>
-                        <td class="border px-4 py-2 text-center">
-                            <button class="mr-6 rounded bg-blue-500 px-4 py-2 font-bold text-white transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-110 hover:bg-blue-700 hover:bg-indigo-500">Détails</button>
-                            <button class="duration-300ml-6 rounded bg-blue-500 bg-red-500 px-4 py-2 font-bold text-white transition delay-150 ease-in-out hover:-translate-y-1 hover:scale-110 hover:bg-indigo-500 hover:bg-red-700">Rompre</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="border px-4 py-2">Dupont</td>
-                        <td class="border px-4 py-2">Jean</td>
-                        <td class="border px-4 py-2">12345</td>
-                        <td class="border px-4 py-2">Développeur</td>
-                        <td class="border px-4 py-2 text-center">
-                            <button class="mr-6 rounded bg-blue-500 px-4 py-2 font-bold text-white transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-110 hover:bg-blue-700 hover:bg-indigo-500">Détails</button>
-                            <button class="duration-300ml-6 rounded bg-blue-500 bg-red-500 px-4 py-2 font-bold text-white transition delay-150 ease-in-out hover:-translate-y-1 hover:scale-110 hover:bg-indigo-500 hover:bg-red-700">Rompre</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="border px-4 py-2">Dupont</td>
-                        <td class="border px-4 py-2">Jean</td>
-                        <td class="border px-4 py-2">12345</td>
-                        <td class="border px-4 py-2">Développeur</td>
-                        <td class="border px-4 py-2 text-center">
-                            <button class="mr-6 rounded bg-blue-500 px-4 py-2 font-bold text-white transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-110 hover:bg-blue-700 hover:bg-indigo-500">Détails</button>
-                            <button class="duration-300ml-6 rounded bg-blue-500 bg-red-500 px-4 py-2 font-bold text-white transition delay-150 ease-in-out hover:-translate-y-1 hover:scale-110 hover:bg-indigo-500 hover:bg-red-700">Rompre</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="border px-4 py-2">Dupont</td>
-                        <td class="border px-4 py-2">Jean</td>
-                        <td class="border px-4 py-2">12345</td>
-                        <td class="border px-4 py-2">Développeur</td>
-                        <td class="border px-4 py-2 text-center">
-                            <button class="mr-6 rounded bg-blue-500 px-4 py-2 font-bold text-white transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-110 hover:bg-blue-700 hover:bg-indigo-500">Détails</button>
-                            <button class="duration-300ml-6 rounded bg-blue-500 bg-red-500 px-4 py-2 font-bold text-white transition delay-150 ease-in-out hover:-translate-y-1 hover:scale-110 hover:bg-indigo-500 hover:bg-red-700">Rompre</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="border px-4 py-2">Dupont</td>
-                        <td class="border px-4 py-2">Jean</td>
-                        <td class="border px-4 py-2">12345</td>
-                        <td class="border px-4 py-2">Développeur</td>
-                        <td class="border px-4 py-2 text-center">
-                            <button class="mr-6 rounded bg-blue-500 px-4 py-2 font-bold text-white transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-110 hover:bg-blue-700 hover:bg-indigo-500">Détails</button>
-                            <button class="duration-300ml-6 rounded bg-blue-500 bg-red-500 px-4 py-2 font-bold text-white transition delay-150 ease-in-out hover:-translate-y-1 hover:scale-110 hover:bg-indigo-500 hover:bg-red-700">Rompre</button>
-                        </td>
-                    </tr> -->
-                    <!-- Ajouter d'autres lignes de contrat en cours ici -->
-                </tbody>
-            </table>
-        </div>
+   <section class="container mx-auto mt-10 w-12/12 rounded-lg bg-white p-4 shadow-lg">
+        <div class="mt-1">
+            <div class="sm:rounded-lg">
+               <div class="data-table">
+                  <div class="table-container">
+                     <table class="ng-wind-table w-full relative">
+                        <thead class="ng-wind-table-header bg-gray-200 border rounded-b-md">
+                           <tr>
+                              <th scope="col" class="ng-wind-header-item">
+                                 Photo
+                                 <button (click)="sortingUp()" *ngIf="shorting === false" class="ml-2 text-lg">
+                                    <i class="bi bi-arrow-down-short"></i>
+                                 </button>
+                                 <button (click)="sortingDown()" *ngIf="shorting === true" class="ml-2 text-lg">
+                                    <i class="bi bi-arrow-up-short"></i>
+                                 </button>
+                              </th>
+                              <th scope="col" class="ng-wind-header-item">
+                                 Prenom
+                              </th>
+                              <th scope="col" class="ng-wind-header-item">
+                                 Nom
+                              </th>
+                              <th scope="col" class="ng-wind-header-item">
+                                 Poste
+                              </th>
+                              <th scope="col" class="ng-wind-header-item">
+                                Matricule
+                             </th>
+                             <th scope="col" class="ng-wind-header-item">
+                                Structure
+                             </th>
+                              <th scope="col" class="ng-wind-header-item text-center">
+                                 Action
+                              </th>
+                           </tr>
+                        </thead>
+      
+                        @if( dataInterims.length == 0 || dataInterims.length == undefined){
+                        <div class="absolute top-52 w-full text-center">
+                           <button disabled type="button"
+                              class="me-2 inline-flex items-center rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:text-blue-700 focus:ring-2 focus:ring-blue-700">
+                              <svg aria-hidden="true" role="status"
+                                 class="me-3 inline h-4 w-4 animate-spin text-gray-200 dark:text-gray-600"
+                                 viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                 <path
+                                    d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                                    fill="currentColor" />
+                                 <path
+                                    d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                                    fill="#1C64F2" />
+                              </svg>
+                              Loading...
+                           </button>
+                        </div>
+                        } @else {
+                        <tbody>
+                           @for (interim of dataInterims; track interim.id){
+                           <tr class="border-b bg-white hover:bg-gray-50">
+                              <td class="ng-wind-data-item whitespace-nowrap font-medium text-gray-800">
+                                <div
+                                    class="w-9 h-9 ml-5 rounded-full flex items-center justify-center overflow-hidden  border-2 border-gray-500">
+                                    <img class="w-full object-cover" [src]="apiImag +interim.avatar " alt="Profile">
+                                </div>
+                              </td>
+                              <td class="ng-wind-data-item text-center">
+                                 {{interim?.prenom}}
+                              </td>
+                              <td class="ng-wind-data-item text-center">
+                                 {{interim?.nom}}
+                              </td>
+                              <td class="ng-wind-data-item text-center">
+                                 {{interim?.poste?.libelle}}
+                              </td>
+                                <td class="ng-wind-data-item text-center">
+                                    {{interim?.matricule}}
+                                </td>
+                                <td class="ng-wind-data-item text-center">
+                                    @if(interim?.responsable?.service?.departement?.pole?.libelle == 'N/A'){
+                                        {{interim?.responsable?.service?.departement?.pole?.direction?.locau?.code}}/{{ interim?.responsable?.service?.departement?.pole?.direction?.libelle}}/{{ interim?.responsable?.service?.departement?.libelle }}/{{ interim?.responsable?.service?.libelle }}
+                                    }@else{
+                                        {{interim?.responsable?.service?.departement?.pole?.direction?.locau?.code}}/{{ interim?.responsable?.service?.departement?.pole?.direction?.libelle}}/{{ interim?.responsable?.service?.departement?.pole?.libelle }}/{{ interim?.responsable?.service?.departement?.libelle }}/{{ interim?.responsable?.service?.libelle }}
+                                    }
+                                </td>
+                              <td class="ng-wind-data-item  text-center">
+                                <button (click)="openModal(interim)" class="mr-6 rounded  btn btn-outline-info bg-white-500    px-4 py-1 font-bold  hover:bg-indigo-500  hover:bg-blue-700 ">Détails</button>
+                                <button class=" rounded btn btn-outline-danger bg-white-500    px-4 py-1 font-bold  hover:bg-indigo-500   hover:bg-red-700">Rompre</button>
+                              </td>
+                           </tr>
+                           }
+                        </tbody>
+                        }
+                     </table>
+                  </div>
+               </div>
+               <nav class="ng-wind-table-pagination flex justify-between" aria-label="Table navigation">
+                  <div class="ng-wind-table-page-view flex">
+                     Rows per page:
+                     <div class="mx-2 flex rounded-md">
+                        <select id="states" class="block w-full rounded-sm bg-gray-100 p-1 text-xs text-gray-900">
+                           <option value="10">10</option>
+                           <option value="20">20</option>
+                           <option value="50">50</option>
+                           <option value="100">100</option>
+                           <option value="200">200</option>
+                           <option value="300">300</option>
+                           <option value="400">400</option>
+                        </select>
+                     </div>
+                     <span class="me-1 ms-4 font-semibold text-gray-900">1-10</span> of
+                     <span class="ms-1 font-semibold text-gray-900">1000</span>
+                  </div>
+      
+                 <div>
+                    <ul class="inline-flex h-8 -space-x-px text-xs rtl:space-x-reverse">
+                        <li>
+                           <a href="#" class="ng-wind-page-prev">
+                              Prev
+                           </a>
+                        </li>
+                        <!-- @for (page of pageData; track page){ -->
+                        <li>
+                           <!-- <a href="#" aria-current="page" [ngClass]="page == 1 ? 'active-page' : 'bg-white hover:bg-gray-100' "
+                              class="page-number">
+                               {{page}} 
+                           </a> -->
+                           <a href="#" aria-current="1" [ngClass]=" 1 ? 'active-page' : 'bg-white hover:bg-gray-100' "
+                           class="page-number">
+                           <!-- {{page}} -->
+                        </a>
+                        </li>
+                        <!-- } -->
+                        <li>
+                           <a href="#" class="ng-wind-page-next">Next</a>
+                        </li>
+                     </ul>
+                 </div>
+               </nav>
+            </div>
+         </div>
+        
     </section>
-    <!-- <button type="button" class="btn btn-primary" (click)="openModal()">Launch Demo Modal</button> -->
-
+ 
     <!-- Example Modal -->
     <app-modal [show]="showModal" (closeModal)="onModalCloseHandler($event)">
          <div class="sm:flex sm:items-start">
@@ -160,7 +203,7 @@
                 <div class="flex items-center gap-3 sticky top-0 bg-white px-8 py-3 shadow-[0_5px_5px_-5px] shadow-gray-600">
                     <div
                         class="w-32 h-30 flex items-center justify-center overflow-hidden  border-2 border-emerald-600">
-                        <img class="w-full object-cover" src={{userOne}} alt="Profile">
+                        <img class="w-full object-cover" [src]="apiImag +interimaire?.avatar "  alt="Profile">
                     </div>
                 </div>
                 <div class="space-y-2 mt-3 justify-end">
@@ -183,10 +226,10 @@
                 </div>
             </div>
         </div> 
-        <!-- <div class="mt-1 flex ml-1">
+        <div class="mt-1 flex ml-1">
            <div> Poste: </div>
             <button type="button" class="btn btn-outline-secondary py-1  ">  {{interimaire?.poste?.libelle}}</button>
-        </div> -->
+        </div>
         <div class=" flex space-x-3 mt-5">
             <div>
                 <div  class="tooltip relative">Lieu :
@@ -255,10 +298,10 @@
                     </span>
                 </button>
            </div>
-           <div>
+           <!-- <div>
                 <div> Poste: </div>
                 <button type="button" class="btn btn-outline-secondary me-2  ">  {{interimaire?.poste?.libelle}}</button>
-           </div>
+           </div> -->
           
         </div>
         @for(contrat of interimaire?.contrats;track contrat.id){      
@@ -388,8 +431,5 @@
             </div>
         </div>
         }
-       
-       
-        
     </app-modal>
 </div>

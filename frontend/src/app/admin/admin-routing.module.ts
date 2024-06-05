@@ -13,6 +13,8 @@ import { EventsComponent } from './views/events/events.component';
 import { TestComponent } from './views/events/test/test.component';
 import { ProfileComponent } from './views/settings/profile/profile.component';
 import { UsersComponent } from './views/settings/users/users.component';
+import { PermanentComponent } from './views/permanent/permanent.component';
+import { PrestataireComponent } from './views/prestataire/prestataire.component';
 
 
 const routes: Routes = [
@@ -25,6 +27,16 @@ const routes: Routes = [
     title: 'Dashboard',
     path: AdminRoutes.Dashboard,
     component: DashboardComponent,
+  },
+  {
+    title: 'Permanent',
+    path: AdminRoutes.Permanent,
+    component: PermanentComponent,
+  },
+  {
+    title:'Prestataire',
+    path:AdminRoutes.Prestataire,
+    component:PrestataireComponent,
   },
   {
     title: 'Events',

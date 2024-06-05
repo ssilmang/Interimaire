@@ -24,6 +24,7 @@ use Illuminate\Support\Str;
 
 class UserController extends Controller
 {
+    
 public function store(Request $request)
 {
     try {

@@ -7,6 +7,7 @@ import { InterimService } from 'src/app/_core/services/interim.service';
 import { ModalComponent } from 'src/app/shared/components/modal/modal.component';
 import { ModalModule } from 'src/app/shared/components/modal/modal.module';
 import { pageTransition } from 'src/app/shared/utils/animations';
+import { environment } from 'src/environments/environment.development';
 Chart.register(...registerables);
 
 @Component({
@@ -27,6 +28,10 @@ export class DashboardComponent implements OnInit {
   interimaire?:Interim 
   modalCompnent: ModalComponent;
   public userOne: string = Images.users.userOne;
+  apiImag=environment.apiImg;
+  shorting: boolean = false;
+
+  
   constructor(private service:InterimService){
     this.modalCompnent = new ModalComponent();
   }
@@ -83,5 +88,11 @@ export class DashboardComponent implements OnInit {
 
   onModalCloseHandler(event: boolean) {
     this.showModal = event;
+  }
+  sortingUp() {
+    this.shorting = !this.shorting;
+  }
+  sortingDown() {
+    this.shorting = !this.shorting;
   }
 }

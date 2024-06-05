@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AgenceCommercialsController;
 use App\Http\Controllers\AgenceController;
+use App\Http\Controllers\CanalController;
 use App\Http\Controllers\CategorieController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -12,13 +13,15 @@ use App\Http\Controllers\DepartementController;
 use App\Http\Controllers\ChefDeServiceController;
 use App\Http\Controllers\ContratController;
 use App\Http\Controllers\DirectionController;
+use App\Http\Controllers\GroupeController;
 use App\Http\Controllers\InterimController;
 use App\Http\Controllers\InterimsController;
+use App\Http\Controllers\PermanentController;
 use App\Http\Controllers\PoleController;
 use App\Http\Controllers\PosteController;
 use App\Http\Controllers\RemplacementsController;
 use App\Http\Controllers\ServiceController;
-
+use App\Http\Controllers\StatutController;
 
 /*
 |--------------------------------------------------------------------------
@@ -48,7 +51,15 @@ Route::controller(CategorieController::class)->prefix("Interim")->group(function
 Route::controller(ContratController::class)->prefix("Interim")->group(function(){
     Route::Post('/contrats',"store");
 });
-
+Route::controller(GroupeController::class)->prefix("Interim")->group(function(){
+    Route::Post('/groupe',"store");
+    Route::post('/categoriegroupe','create');
+});
+Route::controller(PermanentController::class)->prefix('Interim')->group(function(){
+    Route::post('permanent','store');
+    Route::get('index/permanents','index');
+    Route::get('dv','getPermanent');
+});
 
 Route::controller(DepartementController::class)->prefix("Interim")->group(function(){
     Route::Post('/departement',"store");
@@ -83,8 +94,15 @@ Route::controller(InterimController::class)->prefix('Interim')->group(function()
 });
 
 Route::controller(RemplacementsController::class)->prefix("Interim")->group(function(){
-    Route::Post('/remplacements',"store");
+    Route::post('/remplacements',"store");
 });
+Route::controller(StatutController::class)->prefix('Interim')->group(function(){
+    Route::post('statut','store');
+});
+Route::controller(CanalController::class)->prefix('Interim')->group(function(){
+    Route::post('canal','store');
+});
+
 
 
 Route::controller(RoleController::class)->prefix("Interim")->group(function(){

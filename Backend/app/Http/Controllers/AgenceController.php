@@ -7,24 +7,14 @@ use App\Models\Agence;
 
 class AgenceController extends Controller
 {
+    public $controller;
+    public function __construct(HeriteController $controller)
+    {
+        $this->controller = $controller;
+    }
     public function store(Request $request)
     {
-        try{
-        $request->validate([
-            'libelle' => 'required|string|max:255',
-        ]);
-
-        $agence = Agence::firstOrCreate([
-            'libelle' => $request->libelle,
-        ]);
-        return response()->json(['message' => 'L\'Agence a été ajouté avec succès', 'agence' => $agence], 200);
+        return $this->controller->store($request->libelle ,"Agence","agence ajouter avec succès");
+       
     }
-     catch (\Exception $e) {
-            // Gérer les erreurs éventuelles
-            return response()->json([
-                'status' => 500,
-                'message' => 'Une erreur est survenue lors de la récupération des Agences.',
-            ], 500);
-        }
-}
 }
