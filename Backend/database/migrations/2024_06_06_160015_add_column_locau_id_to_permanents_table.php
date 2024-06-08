@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\Locau;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -12,12 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('directions', function (Blueprint $table) {
-            $table->id();
-            $table->string('libelle');
-            // $table->foreignIdFor(Locau::class)->constrained()->cascadeOnDelete();
-            $table->timestamps();
-
+        Schema::table('permanents', function (Blueprint $table) {
+            $table->foreignId('locau_id')->nullable()->default(1)->constrained('locaus');
         });
     }
 
@@ -26,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('directions');
+        Schema::table('permanents', function (Blueprint $table) {
+            //
+        });
     }
 };

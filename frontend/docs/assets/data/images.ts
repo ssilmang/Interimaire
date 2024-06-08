@@ -1,5 +1,6 @@
 export interface IUsers {
   userOne: string;
+ 
 }
 export interface IAuth {
   signup: string;
@@ -14,5 +15,6 @@ export class Images {
 
   public static readonly users: IUsers = {
     userOne: './assets/images/authpage/ba.jpg',
+    
   };
 }

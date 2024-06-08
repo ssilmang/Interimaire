@@ -91,6 +91,7 @@ Route::controller(InterimController::class)->prefix('Interim')->group(function()
     Route::get('interimaires','index');
     Route::post('image','inserImage');
     Route::get('indexImage','indexImage');
+    
 });
 
 Route::controller(RemplacementsController::class)->prefix("Interim")->group(function(){
@@ -98,6 +99,7 @@ Route::controller(RemplacementsController::class)->prefix("Interim")->group(func
 });
 Route::controller(StatutController::class)->prefix('Interim')->group(function(){
     Route::post('statut','store');
+    Route::get('index/statuts','index');
 });
 Route::controller(CanalController::class)->prefix('Interim')->group(function(){
     Route::post('canal','store');

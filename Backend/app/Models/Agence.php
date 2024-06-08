@@ -12,4 +12,8 @@ class Agence extends Model
     protected $fillable = [
         'libelle',
     ];
+    public function categories()
+    {
+        return $this->hasMany(Categorie::class);
+    }
 }

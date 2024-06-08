@@ -39,11 +39,12 @@ export interface Categorie{
     id:number
     libelle:string
     cout_unitaire_journalier:number
-    agence:Agence
+    agence:Role
 }
 export interface Agence{
     id:number
     libelle:string
+    categorie:Categorie[]
 }
 export interface Poste{
     id:number
@@ -91,4 +92,30 @@ export interface User{
     matricule:string
     telephone:string
     role:Agence
+}
+export interface Role{
+    id:number
+    libelle:string
+}
+
+export interface DataDirection{
+    id:number
+    libelle:string
+    poles:DataPole[]
+}
+export interface DataPole{
+    id:number
+    libelle:string
+    departements:DataDepartement[]
+}
+export interface DataDepartement{
+    id:number
+    libelle:string
+    services:DataService[]
+}
+export interface DataService{
+    id:number
+    libelle:string
+    adresse:string
+
 }

@@ -120,7 +120,8 @@ class InterimController extends Controller
             return $request;
             $interim->photo = '';
         }
-        $interim->save();
+         dd($request->photo);
+        // $interim->save();
     }
     public function indexImage(Request $request){
         $imgages = Image::all();

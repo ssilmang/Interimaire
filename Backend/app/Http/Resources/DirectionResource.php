@@ -17,7 +17,6 @@ class DirectionResource extends JsonResource
         return [
             'id' => $this->id,
             'libelle' => $this->libelle,
-            // 'locau'=>LocauResource::make($this->locaus),
             'poles'=>PoleResource::collection($this->poles)
         ];
     }

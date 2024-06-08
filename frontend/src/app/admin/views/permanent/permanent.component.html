@@ -169,7 +169,7 @@
                         <h2 class="text-xl font-bold "> {{ dataDV?.prenom }} {{ dataDV?.nom }}</h2>
                         <p class="">Matricule : {{ dataDV?.matricule }}</p>
                         <p class="">Telephone : {{ dataDV?.telephone }}</p>
-                        <p class="">Structure : {{ dataDV?.direction?.libelle }}</p>
+                        <p class="">Structure :{{ dataDV?.direction?.libelle}}</p>
                         <button type="button" (click)="afficherDetails(dataDV)" class="btn btn-success btn-icon ">
                             Détails
                             <svg class="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
@@ -200,7 +200,32 @@
                         <h2 class="text-xl font-bold "> {{ collab?.prenom }} {{ collab?.nom }}</h2>
                         <p class="">Matricule : {{ collab?.matricule }}</p>
                         <p class="">Telephone : {{ collab?.telephone }}</p>
-                        <p class="">Structure : {{ collab?.direction?.libelle+'/'+collab?.departement?.libelle }}</p>
+                        <p class="">Structure :
+                            @if(collab?.service!=null){
+                                @if(collab?.service?.departement?.pole?.libelle == 'N/A'){
+                                    {{ collab?.service?.departement?.pole?.direction?.libelle}}/{{ collab?.service?.departement?.libelle }}/{{ collab?.service?.libelle }}
+                                }@else{
+                                {{ collab?.service?.departement?.pole?.direction?.libelle}}/{{ collab?.service?.departement?.pole?.libelle }}/{{ collab?.service?.departement?.libelle }}/{{ collab?.service?.libelle }}
+                                }
+                            }
+                            @else if(collab?.departement!=null){
+                                @if(collab?.departement?.pole?.libelle == 'N/A'){
+                                    {{ collab?.departement?.pole?.direction?.libelle}}/{{ collab?.departement?.libelle }}
+                                }@else{
+                                 {{ collab?.departement?.pole?.direction?.libelle}}/{{ collab?.departement?.pole?.libelle }}/{{ collab?.departement?.libelle }}
+                                }
+                            }
+                            @else if(collab?.pole!= null){
+                                @if(collab?.pole?.libelle == 'N/A'){
+                                    {{ collab?.pole?.direction?.libelle}}
+                                }@else{
+                                 {{ collab?.pole?.direction?.libelle}}/{{ collab?.pole?.libelle }}
+                                } 
+                            }
+                            @else if(collab?.direction!=null){                     
+                                    {{ collab?.direction?.libelle}}     
+                            }  
+                        </p>
                         <button type="button" (click)="afficherDetails(collab)" class="btn btn-success btn-icon ">
                             Détails
                             <svg class="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
@@ -241,27 +266,27 @@
                     <div>Structure :</div>
                         @if(dataDetails?.service!=null){
                             @if(dataDetails?.service?.departement?.pole?.libelle == 'N/A'){
-                                <button  class="cursor-default">{{dataDetails?.service?.departement?.pole?.direction?.locau?.code}}/{{ dataDetails?.service?.departement?.pole?.direction?.libelle}}/{{ dataDetails?.service?.departement?.libelle }}/{{ dataDetails?.service?.libelle }}</button>
+                                <button  class="cursor-default">{{ dataDetails?.service?.departement?.pole?.direction?.libelle}}/{{ dataDetails?.service?.departement?.libelle }}/{{ dataDetails?.service?.libelle }}</button>
                             }@else{
-                            <button  class="cursor-default">{{dataDetails?.service?.departement?.pole?.direction?.locau?.code}}/{{ dataDetails?.service?.departement?.pole?.direction?.libelle}}/{{ dataDetails?.service?.departement?.pole?.libelle }}/{{ dataDetails?.service?.departement?.libelle }}/{{ dataDetails?.service?.libelle }}</button>
+                            <button  class="cursor-default">{{ dataDetails?.service?.departement?.pole?.direction?.libelle}}/{{ dataDetails?.service?.departement?.pole?.libelle }}/{{ dataDetails?.service?.departement?.libelle }}/{{ dataDetails?.service?.libelle }}</button>
                             }
                         }
                         @else if(dataDetails?.departement!=null){
                             @if(dataDetails?.departement?.pole?.libelle == 'N/A'){
-                                <button  class="cursor-default">{{dataDetails?.departement?.pole?.direction?.locau?.code}}/{{ dataDetails?.departement?.pole?.direction?.libelle}}/{{ dataDetails?.departement?.libelle }}</button>
+                                <button  class="cursor-default">{{ dataDetails?.departement?.pole?.direction?.libelle}}/{{ dataDetails?.departement?.libelle }}</button>
                             }@else{
-                            <button  class="cursor-default">{{dataDetails?.departement?.pole?.direction?.locau?.code}}/{{ dataDetails?.departement?.pole?.direction?.libelle}}/{{ dataDetails?.departement?.pole?.libelle }}/{{ dataDetails?.departement?.libelle }}</button>
+                            <button  class="cursor-default">{{ dataDetails?.departement?.pole?.direction?.libelle}}/{{ dataDetails?.departement?.pole?.libelle }}/{{ dataDetails?.departement?.libelle }}</button>
                             }
                         }
                         @else if(dataDetails?.pole!=null){
                             @if(dataDetails?.pole?.libelle == 'N/A'){
-                                <button  class="cursor-default">{{dataDetails?.pole?.direction?.locau?.code}}/{{ dataDetails?.pole?.direction?.libelle}}</button>
+                                <button  class="cursor-default">{{ dataDetails?.pole?.direction?.libelle}}</button>
                             }@else{
-                            <button  class="cursor-default">{{dataDetails?.pole?.direction?.locau?.code}}/{{ dataDetails?.pole?.direction?.libelle}}/{{ dataDetails?.pole?.libelle }}</button>
+                            <button  class="cursor-default">{{ dataDetails?.pole?.direction?.libelle}}/{{ dataDetails?.pole?.libelle }}</button>
                             } 
                         }
                         @else if(dataDetails?.direction!=null){                     
-                                <button  class="cursor-default" >{{dataDetails?.direction?.locau?.code}}/{{ dataDetails?.direction?.libelle}}</button>        
+                                <button  class="cursor-default" >{{ dataDetails?.direction?.libelle}}</button>        
                         }                
                     </div>
                    <div class=" space-y-1">

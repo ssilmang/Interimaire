@@ -1,4 +1,4 @@
-import { Agence, Departement, Direction, Pole, Poste, Service, User } from "./interim"
+import { Agence, DataDirection, Departement, Direction, Pole, Poste, Role, Service, User } from "./interim"
 
 export interface ResponsePermanent{
     dvs:Permanent
@@ -18,15 +18,49 @@ export interface Permanent{
     commentaire:string
     status:boolean
     poste:Poste
-    canal:Agence
-    statut:Agence
-    groupe:Agence
+    canal:Role
+    statut:Role
+    groupe:Role
     agence:Agence
-    categorie:Agence
+    categorie:Role
     direction:Direction
     pole:Pole
     departement:Departement
     service:Service
     responsable:User
     collaborateurs:Permanent[]
+}
+export interface DataALL{
+    canals:Role[]
+    statuts:Role[]
+    postes:Poste[]
+    groupes:Role[]
+    categories:Role[]
+    agences:Agence[]
+    directions:DataDirection[]
+    responsable:User[]
+}
+export interface RequestPermanent{
+    prenom:string
+    nom:string
+    email:string
+    matricule:string
+    contrat:string
+    telephone:string
+    telephone_pro:string
+    adresse:string
+    avatar:string
+    poste_id:number|string
+    statut_id:number|string
+    groupe_id:number|string
+    categorie_id:number|string
+    agence_id:number|string
+    locau_id:number|string
+    canal_id:number|string
+    direction_id:number|string
+    pole_id:number|string
+    departement_id:number|string
+    service_id:number|string
+    responsable_id:number|string
+
 }

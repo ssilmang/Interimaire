@@ -34,8 +34,7 @@ class PermanentController extends Controller
         $poste = Poste::where('libelle','Directeur des ventes')->first();
         $direction = Direction::where('libelle','DV')->first();
         $permanent = Permanent::where(['poste_id'=>$poste->id,'direction_id'=>$direction->id])->first();
-        $data =["dvs"=>PermanentResource::make($permanent)];
-       
+        $data =["dvs"=>PermanentResource::make($permanent)];    
         return $this->response->response(Response::HTTP_OK,'index permanent dv',$data);
     }
     public function store(Request $request)
@@ -62,21 +61,20 @@ class PermanentController extends Controller
                 $groupe = $this->controller->store($request->groupe_id,"Groupe","Groupe");
                 $categorie = $this->controller->store($request->categorie_id,"Categoriegroupe","Categorie de groupe");
                 $poste = $this->controller->store($request->poste_id,"Poste","Poste");
-                $service = 0; $locau = 0; $direction = 0; $pole = 0; $departement = 0;
-
-                if(isset($request->locau_id)){
-                    $locau = $this->controller->create($request->locau_id,'adresse',$request->adresse_locau,"Locau","locau");
+                $locau = $this->controller->store($request->locau_id,"Locau","locau");
+            
+                $service = 0; $direction = 0; $pole = 0; $departement = 0;
+               
+                if(isset($request->direction_id))
+                {
+                    $direction = $this->controller->store($request->direction_id,"Direction","direction");
                 }
-                if(isset($request->direction_id)){
-                   if(is_numeric($request->direction_id)){
-                    $direct = Direction::find($request->direction_id);
-                   }
-                    $direction = $this->controller->create($request->direction_id,'locau_id',$request->locau_id?$locau->id:$direct->id,"Direction","direction");
-                }
-                if(isset($request->pole_id)){
+                if(isset($request->pole_id))
+                {
                     $pole = $this->controller->create($request->pole_id,'direction_id',$direction->id,"Pole","pole");
                 }
-                if(isset($request->departement_id)){
+                if(isset($request->departement_id))
+                {
                     $departement = $this->controller->create($request->departement_id,'pole_id',$pole->id,"Departement","departement");
                 }
                 if(isset($request->service_id))
@@ -88,7 +86,8 @@ class PermanentController extends Controller
                     $service = $this->controller->create($request->agenceCommercial_id,'departement_id',$departement->id,"AgenceCommercial","agenceCommercial");
                 }
                 $avatar ="";
-                if($request->hasfile('avatar')){
+                if($request->hasfile('avatar'))
+                {
                     $file = $request->file('avatar');
                     $extension = $file->getClientOriginalExtension();
                     $filename = time().'.'. $extension;
@@ -110,6 +109,7 @@ class PermanentController extends Controller
                     'canal_id'=>$canal->id,
                     'statut_id'=>$statut->id,
                     'groupe_id'=>$groupe->id,
+                    'locau_id'=>$locau->id,
                     'categoriegroupe_id'=>$categorie->id,
                     'agence_id'=>$agence->id,
                     'direction_id'=>$direction->id,
@@ -121,7 +121,8 @@ class PermanentController extends Controller
                 return $this->response->response(Response::HTTP_OK,"permanents ajouter avec succès",$permanent);
             });
 
-        }catch(QueryException $e){
+        }catch(QueryException $e)
+        {
           return $this->response->response(Response::HTTP_BAD_REQUEST,"erreur",$e->getMessage());
         }
     }

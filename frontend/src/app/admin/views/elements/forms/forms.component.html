@@ -1,6 +1,18 @@
 <div [@pageTransition]>
-  <form action="">
-      <div class="card p-5">
+  
+  <form action="" [formGroup]="formPermanent" (ngSubmit)="enregistrer()">
+     <div class="card">
+         @if(message){
+            <app-alert [show]="true"  [dismissible]="true">
+               <h6 class="text-lg font-semibold">
+                   <i class="bi bi-check2-circle"></i>
+                   Success
+               </h6>
+               <p>
+                   {{ message }}
+               </p>
+           </app-alert>
+         }
          <div class="card-title text-center">
             <h3 class="text-xl font-bold leading-none">Infos User</h3>
          </div>
@@ -10,34 +22,34 @@
                   <div class="grid grid-cols-12 mt-[-25px]  gap-x-6 ">         
                      <div class="col-span-1 mt-4 md:col-span-6">
                         <div class="form-group ">
-                           <label for="base-input" class="form-label required"> Prénom</label>
-                           <input type="text" id="base-input" placeholder="Massar " class="form-control" />
+                           <label for="prenom" class="form-label required"> Prénom</label>
+                           <input type="text" formControlName="prenom" id="prenom" placeholder="Massar " class="form-control" />
                         </div>
                      </div>
                      <div class="col-span-1  md:col-span-6 mt-4">
                         <div class="form-group">
-                           <label for="base-input" class="form-label required"> Nom</label>
-                           <input type="text" id="base-input" placeholder="Ndime" class="form-control" />
+                           <label for="nom" class="form-label required"> Nom</label>
+                           <input type="text" formControlName="nom" id="nom" placeholder="Ndime" class="form-control" />
                         </div>
                      </div>
                      <div class="col-span-1 md:col-span-6">
                         <div class="form-group">
-                           <label for="base-input" class="form-label required"> Email</label>
-                           <input type="text" id="base-input" placeholder="massar@email.com" class="form-control" />
+                           <label for="email" class="form-label required"> Email</label>
+                           <input type="text" formControlName="email" id="email" placeholder="massar@email.com" class="form-control" />
                         </div>
                      </div>
                      <div class="col-span-1 md:col-span-6 ">
                         <div class="form-group">
-                           <label for="base-input" class="form-label required"> Matricule</label>
-                           <input type="text" id="base-input" placeholder="AZER234" class="form-control" />
+                           <label for="matricule" class="form-label required"> Matricule</label>
+                           <input type="text" formControlName="matricule" id="matricule" placeholder="AZER234" class="form-control" />
                         </div>
                      </div>
                      <div class="col-span-12 md:col-span-12">
                         <div class="form-group">
-                           <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="user_avatar">
+                           <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="user_contrat">
                            Téléverser Contrat
                            </label>
-                           <input class="file-upload file" aria-describedby="user_avatar_help" id="user_avatar" type="file">   
+                           <input class="file-upload file" formControlName="contrat" aria-describedby="user_avatar_help" id="user_contrat" type="file">   
                         </div> 
                      </div>
                      
@@ -47,23 +59,14 @@
                         <label for="cover-photo" class="block text-sm font-medium leading-6 text-gray-900">
                         
                         </label>
-                        <div class="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-8">
+                        <div class="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-4 py-5">
                            <div class="text-center">
-                              <svg class="mx-auto h-12 w-12 text-gray-300" viewBox="0 0 24 24" fill="currentColor"
-                                 aria-hidden="true">
-                                 <path fill-rule="evenodd"
-                                    d="M1.5 6a2.25 2.25 0 012.25-2.25h16.5A2.25 2.25 0 0122.5 6v12a2.25 2.25 0 01-2.25 2.25H3.75A2.25 2.25 0 011.5 18V6zM3 16.06V18c0 .414.336.75.75.75h16.5A.75.75 0 0021 18v-1.94l-2.69-2.689a1.5 1.5 0 00-2.12 0l-.88.879.97.97a.75.75 0 11-1.06 1.06l-5.16-5.159a1.5 1.5 0 00-2.12 0L3 16.061zm10.125-7.81a1.125 1.125 0 112.25 0 1.125 1.125 0 01-2.25 0z"
-                                    clip-rule="evenodd" />
-                              </svg>
-                              <div class="mt-4 flex text-sm leading-6 text-gray-600">
-                                 <label for="file-upload"
-                                    class="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none  hover:text-indigo-500">
-                                    <span>Choisir un fichier</span>
-                                    <input id="file-upload" name="file-upload" type="file" class="sr-only">
-                                 </label>
-                                 <p class="pl-1">ou Glisser et Déposer</p>
+                              <div class="  flex text-sm leading-6 text-gray-600">
+                                 <label for="img" class="image-frame">
+                                    <img [src]="avatars"  class="w-44 h-44 object-contain"  alt=""   >                              
+                                    <input type="file" id="img" formControlName="avatar"  (change)="selectedAvatar($event)" style="display: none;">
+                                </label>
                               </div>
-                              <p class="text-xs leading-5 text-gray-600">PNG, JPG, GIF up to 10MB</p>
                            </div>
                         </div>
                      
@@ -72,18 +75,17 @@
                </div>
                <div class="grid grid-cols-3 gap-x-5 col-span-1 mb-3">
                   <div class="form-group ">
-                     <label for="base-input" class="form-label required"> Téléphone </label>
-                     <input type="number" id="base-input" placeholder="772314567" class="form-control form-control-lg" />
+                     <label for="telephone" class="form-label required"> Téléphone </label>
+                     <input type="text" formControlName="telephone" id="telephone" placeholder="772314567" class="form-control form-control-lg" />
                   </div>
                   <div class="form-group">
-                     <label for="base-input" class="form-label "> Téléphone Pro </label>
-                     <input type="number" id="base-input" placeholder="339865432" class="form-control form-control-lg" />
+                     <label for="telephone_pro" class="form-label "> Téléphone Pro </label>
+                     <input type="text" formControlName="telephone_pro" id="telephone_pro" placeholder="339865432" class="form-control form-control-lg" />
                   </div>       
-                  <div class="form-group">
-                     <label for="base-input" class="form-label required"> Adresse</label>
-                     <input type="text" id="base-input" placeholder="Sacré-Coeur3 VDN" class="form-control" />
-                  </div> 
-               
+                  <div class="form-group ">
+                     <label for="adresse" class="form-label required"> Adresse </label>
+                     <input type="text" formControlName="adresse" id="adresse" placeholder="Sacré-Coeur" class="form-control form-control-lg" />
+                  </div>
                </div>  
             </div>
          </div>
@@ -91,93 +93,127 @@
       <div class="card p-3">
          <div class="flex  justify-around">
             <div class="card-title">
-               <h3 class="text-xl font-bold leading-none"> Statut</h3>
+               <label for="statut" class="form-label required"> Statut </label>
             </div>
             <div class="card-title">
-               <h3 class="text-xl font-bold leading-none">Rattaché a un responsable</h3>
-            </div>
+               <label for="base-input" class="form-label required">Poste</label>
+            </div> 
          </div>
-         <div class="mt-2 flex justify-start space-x-64">
-            <div class="max-w-sm w-full">
-               <label for="count" class="form-label">
+         <div class="mt-2 flex justify-around space-x-24">
+            <div class="max-w-screen-md w-96">
+               <label for="statut" class="form-label">
                </label>
-               <select id="count" class="form-select col-span-2">
-                  <option value="">Selectionner un statut</option>
-                  <option>Permanents</option>
-                  <option>Prestataire</option>
-                  <option>Interimaire</option>
-               </select>
+               @if(!autreStatut){
+                  <select id="statut"  (click)="selectedStatut($event)" formControlName="statut_id"  class="form-select col-span-2">
+                     <option value="" selected disabled>Selectionner un statut</option>
+                     @for(statut of dataAll?.statuts;track statut?.id){
+                        <option [ngValue]="statut">{{ statut?.libelle }}</option>   
+                     }
+                     <option value="Autre">autre</option>
+                  </select>
+               }@else{
+                  <input type="text"   formControlName="statut_id"  placeholder="Massar " class="form-control" />
+               }
             </div>
-            <div >
-            
-               <div  class="flex mt-2 ">
-                  <div class="" style="margin-top: -2px;">
-                     <span  class="">Non</span>
-                  </div>
-                  <div>
-                     <label class="ml-2 form-switch">         
-                        <input type="checkbox" value="" class="sr-only peer" />
-                        <div class="form-input-switch">
-                        </div>
-                        <span class="form-check-label">Oui</span>
-                     </label>
-                  </div>
-               </div>
+            <div class="max-w-screen-md  w-full">
+               <label for="poste" class="form-label">
+               </label>
+               @if(!autrePoste){
+                  <select id="poste" (click)="selectedPoste($event)" formControlName="poste_id" class="form-select">
+                     <option value="" selected disabled>Selectionner un poste</option>
+                     @for(poste of dataAll?.postes;track poste?.id){
+                        <option [ngValue]="poste">{{ poste?.libelle }}</option>   
+                     }
+                     <option value="Autre">autre</option>
+                  </select>
+               }@else{
+                  <input type="text"   formControlName="poste_id"  placeholder="Massar " class="form-control" />
+               }
             </div>
          </div>
-      </div>
-      <div class="card p-3">
-         <div class="flex justify-around">
+         <div class="flex justify-around mt-5">
             <div class="card-title">
-               <h3 class="text-xl font-bold leading-none"> Groupe</h3>
+               <label for="base-input" class="form-label required">Groupe</label>
             </div>
             <div class="card-title">
-               <h3 class="text-xl font-bold leading-none">Catégorie</h3>
+               <label for="categorie" class="form-label required"> Categorie </label>
+            </div>
+            <div class="card-title">
+               <label for="agence" class="form-label required"> Agence Interim </label>          
             </div>
          </div>
          <div class="mt-2 flex justify-around space-x-16">
-            <div class="max-w-sm w-full">
-               <label for="countries" class="form-label">      
+            <div class="max-w-screen-md w-full">
+               <label for="groupe" class="form-label">      
                </label>
-               <select id="countries" class="form-select">
-                  <option value="">Selectionner un groupe</option>
-                  <option>Maitrise</option>
-                  <option>Chef Sce</option>
-                  <option>Ouvriers</option>
-                  <option>Chef Centre2</option>
-                  <option>Cadre</option>
-                  <option>Chef Departement</option>
-                  <option>Haute Maitrise</option>
-                  <option>Directeur</option>
-               </select>
+               @if(!autreGroupe){
+                  <select id="groupe"(click)="selectedGroupe($event)" formControlName="groupe_id" class="form-select">
+                     <option value="" selected disabled>Selectionner un groupe</option>
+                     @for(groupe of dataAll?.groupes;track groupe?.id){
+                        <option [ngValue]="groupe">{{ groupe?.libelle }}</option>   
+                     }
+                     <option value="Autre">autre</option>
+                  </select>
+               }@else{
+                  <input type="text"   formControlName="groupe_id"  placeholder="Massar " class="form-control" />
+               }
             </div>
-            <div class=" w-full">
-               <label for="countries" class="form-label">    
+            <div class="max-w-screen-md w-full">
+               <label for="categorie" class="form-label">      
                </label>
-               <select id="countries" class="form-select">
-                  <option value="">Selectionner un Catégorie</option>
-                  <option>Maitrise</option>
-                  <option>Ordinaire</option>
-                  <option>Ouvriers</option>
-                  <option>Chef Centre2</option>
-                  <option>Cadre</option>
-                  <option>Haute Maitrise</option>
+               @if(!autreCategorie){
+                  <select  formControlName="categorie_id" (click)="selectedCategorie($event)" id="categorie" class="form-select">
+                     <option value="" disabled select>Selectionner un Catégorie</option>
+                     @for(categorie of dataAll?.categories;track categorie?.id){
+                        <option [ngValue]="categorie">{{ categorie?.libelle }}</option>                
+                     }
+                     <option value="Autre">autre</option>
+                  </select>
+               }@else{
+                  <input type="text"   formControlName="categorie_id"  placeholder="Massar " class="form-control" />
+               }
+            </div>
+            <div class="max-w-screen-md w-full">
+               <label for="agence" class="form-label">    
+               </label>
+              @if(!autreAgence){
+               <select id="agence" (click)="selectedAgence($event)" formControlName="agence_id" class="form-select">
+                  <option value="" selected disabled>Selectionner un agence d'interim</option>
+                  @for(agence of dataAll?.agences;track agence?.id){
+                     <option [ngValue]="agence">{{ agence?.libelle }}</option>   
+                  }
+                  <option value="Autre">autre</option>
                </select>
+              }@else{
+               <input type="text"   formControlName="agence_id"  placeholder="Massar " class="form-control" />
+              }
             </div>
          </div>
       </div>
-      <div class="card p-3">
+      <!-- <div class="card p-3">
          <div class="flex justify-around">
             <div class="card-title">
-               <h3 class="text-xl font-bold leading-none"> Lieu d'execution</h3>
+               <h3 class="text-xl font-bold leading-none"> Agence Interim</h3>
             </div>
             <div class="card-title">
-               <h3 class="text-xl font-bold leading-none">Direction</h3>
+               <h3 class="text-xl font-bold leading-none">Lieu d'execution</h3>
             </div>
          </div>
          <div class="mt-2 flex justify-between space-x-16">
-            <div class="max-w-sm  w-full">
+            <div class="max-w-screen-md  w-full">
                <label for="lieu" class="form-label">
+               </label>
+               <select id="lieu" class="form-select">
+                  <option value="">Selectionner une direction</option>
+                  @for(agence of dataAll?.agences;track agence?.id){
+                     <option>{{ agence?.libelle }}</option>   
+                  }
+                  <option>autre</option>
+               </select>
+              
+            </div>
+            <div class="max-w-screen-md w-full">
+               <label for="canal" class="form-label">
                </label>
                <select id="lieu" class="form-select">
                   <option value="">Selectionner un lieu</option>
@@ -188,102 +224,237 @@
                   <option>Autre</option>
                </select>
             </div>
-            <div class=" w-full">
+         </div>
+      </div> -->
+      <div class="card p-4">
+         <div class="flex justify-around">
+            <div class="card-title">
+               <label for="base-input" class="form-label required">Lieu d'execution</label>
+            </div>
+            <div class="card-title">
+               <label for="base-input" class="form-label required">Canal</label>
+            </div>
+            <div class="card-title">
+               <label for="base-input" class="form-label required">Direction</label>
+            </div>
+         </div>
+         <div class="mt-2 flex justify-between space-x-16">
+            <div class="max-w-screen-md w-full">
+               <label for="lieu" class="form-label">
+               </label>
+               @if(!autreLocau){
+                  <select id="lieu" (click)="selectedLocau($event)" formControlName="locau_id" class="form-select">
+                     <option value="">Selectionner un lieu</option>
+                     <option>Sonatel</option>
+                     <option>Sablux</option>
+                     <option>Acad</option>
+                     <option>République</option>
+                     <option value="Autre">autre</option>
+                  </select>
+               }@else{
+                  <input type="text"   formControlName="locau_id"  placeholder="Massar " class="form-control" />
+               }
+            </div>
+            <div class="max-w-screen-md  w-full">
                <label for="canal" class="form-label">
                </label>
-               <select id="lieu" class="form-select">
-                  <option value="">Selectionner une direction</option>
-                  <option>DV</option>
-                  <option>ARQ</option>
-                  <option>AMD</option>
-                  <option>AFRI</option>
-                  <option>GAGE</option>
-                  <option>SECUR</option>
-                  <option>AMIR</option>
-                  <option>Autre</option>
-               </select>
+               @if(!autreCanal){
+                  <select id="canal" (click)="selectedCanal($event)" formControlName="canal_id" class="form-select">
+                     <option value="" selected disabled>Selectionner un Canal</option>
+                     @for(canal of dataAll?.canals;track canal?.id){
+                        <option [ngValue]="canal">{{ canal?.libelle }}</option>   
+                     }
+                     <option value="Autre">autre</option>
+                  </select>
+               }@else{
+                  <input type="text"   formControlName="canal_id"  placeholder="Massar " class="form-control" />
+               }
+            </div>
+            <div class="max-w-screen-md  w-full">
+               <label for="direction" class="form-label">
+               </label>
+               @if(!autreDirection){
+                 <div class="flex space-x-1">
+                     <select id="direction" formControlName="direction_id"  (click)="selectedDirection($event)" class="form-select" >
+                        <option value="" selected disabled>Selectionner une direction</option>
+                        @for(direction of dataAll?.directions;track direction?.id){
+                           <option [ngValue]="direction">{{ direction?.libelle }}</option>   
+                        }
+                        <option value="Autre">autre</option>
+                     </select>
+                     @if(suitedirection){
+                        <button type="button" (click)="clickSuitedirection()" class="btn px-2  py-1/2 btn-primary btn-icon ">
+                           Suite
+                           <svg class="rtl:rotate-180 w-2.5 h-2.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                              fill="none" viewBox="0 0 14 10">
+                              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                 d="M1 5h12m0 0L9 1m4 4L9 9" />
+                           </svg>
+                        </button>
+                     }
+                 </div>
+               }@else{
+                  <input type="text"   formControlName="direction_id"  placeholder="Massar " class="form-control" />
+               }
             </div>
          </div>
-      </div>
-      <div class="card p-4">
-         <div class="flex justify-around">
+         @if(poles?.length){
+         <div class="flex mt-3 justify-around">
             <div class="card-title">
-               <h3 class="text-xl font-bold leading-none"> Pôle</h3>
+               <label for="base-input" class="form-label required">Pole</label>
             </div>
+            @if(departements?.length){
+               <div class="card-title">
+                  <label for="base-input" class="form-label required">Département</label>
+               </div>
+               @if(services?.length){
+                  <div class="card-title">
+                     <label for="base-input" class="form-label required">Service</label>
+                  </div>
+               }
+            }
+         </div>
+         }
+         <div class="mt-2 flex justify-between space-x-16">
+            @if(poles?.length){
+               <div class="max-w-screen-md  w-full">
+                  <label for="pole" class="form-label">
+                  </label>
+                  @if(!autrePole){
+                    <div class="flex space-x-1">
+                        <select id="pole" formControlName="pole_id" (click)="selectedPole($event)" class="form-select">
+                           <option value="" selected disabled>Selectionner une pôle</option>
+                        @for(pole of poles;track pole.id){
+                           <option [ngValue]="pole">{{ pole.libelle }}</option>
+                        }
+                           <option value="Autre">Autre</option>
+                        </select>
+                        @if(suitepole){
+                           <button type="button" (click)="clickSuitepole()" class="btn px-2  py-1/2 btn-primary btn-icon ">
+                              Suite
+                              <svg class="rtl:rotate-180 w-2.5 h-2.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                 fill="none" viewBox="0 0 14 10">
+                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M1 5h12m0 0L9 1m4 4L9 9" />
+                              </svg>
+                           </button>
+                        }
+                    </div>
+                  }@else{
+                     <input type="text"   formControlName="pole_id"  placeholder="Massar " class="form-control" />
+                  }
+               </div>
+            }
+            @if(!notExistPole){
+               <div class="card-title">
+                  <label for="base-input" class="form-label required">Pole</label>
+                  <input type="text"   formControlName="pole_id"  placeholder="entrez une pole " class="form-control" />
+               </div>
+            }
+            
+           @if(poles?.length && departements?.length){
+            <div class="max-w-screen-md w-full">
+               <label for="departement" class="form-label">
+               </label>
+               @if(!autreDepartement){
+                <div class="flex space-x-1">
+                  <select id="departement" formControlName="departement_id" (click)="selectedDepartement($event)" class="form-select">
+                     <option value="" selected disabled>Selectionner un département</option>
+                    @for(departement of departements;track departement.id){
+                     <option [ngValue]="departement">{{ departement?.libelle }}</option>
+                    }
+                     <option value="Autre">Autre</option>
+                  </select>
+                  @if(suiteservice){
+                     <button type="button" (click)="clickSuitedepartement()" class="btn px-2  py-1/2 btn-primary btn-icon ">
+                        Suite
+                        <svg class="rtl:rotate-180 w-2.5 h-2.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                           fill="none" viewBox="0 0 14 10">
+                           <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M1 5h12m0 0L9 1m4 4L9 9" />
+                        </svg>
+                     </button>
+                  }
+                </div>
+               }@else{
+                  <input type="text"   formControlName="departement_id"  placeholder="Massar " class="form-control" />
+               }
+            </div>
+            }
+            @if(!notExistDepartement){
+               <div class="card-title">
+                  <label for="base-input" class="form-label required">Département</label>
+                  <input type="text"   formControlName="departement_id"  placeholder="Entrez un departement " class="form-control" />
+               </div>
+            }
+            @if(poles?.length && departements?.length && services?.length){
+               <div class="max-w-screen-md w-full">
+                  <label for="service" class="form-label">
+                  </label>
+                  @if(!autreService){
+                     <select id="service" formControlName="service_id" (click)="selectedService($event)" class="form-select">
+                        <option value="" selected disabled>Selectionner un service</option>
+                       @for(service of services;track service.id){
+                        <option [ngValue]="service">{{ service?.libelle }}</option>
+                       }
+                        <option value="Autre">Autre</option>
+                     </select> 
+                  }@else{
+                     <input type="text"   formControlName="service_id"  placeholder="Massar " class="form-control" />
+                  }
+               </div>
+            }@if(!notExistService){
+               <div class="card-title">
+                  <label for="base-input" class="form-label required">Service</label>
+                  <input type="text"   formControlName="service_id"  placeholder="Entrz une service " class="form-control" />
+               </div>
+            }
+         </div>
+      
+         <div class="flex justify-between mt-3">
             <div class="card-title">
-               <h3 class="text-xl font-bold leading-none"> Canal</h3>
+               <label for="base-input" class="form-label  required">Rattaché a un responsable</label>
             </div>
+            @if(!responsable){
+               <div class="card-title flex justify-end mr-24">
+                  <label for="base-input" class="form-label required">Responsable</label>
+               </div>
+            }
          </div>
          <div class="mt-2 flex justify-between space-x-16">
-            <div class="max-w-sm  w-full">
-               <label for="lieu" class="form-label">
+            <div  class="max-w-screen-md w-full"> 
+               <div  class="flex mt-2 ">
+                  <div class="" style="margin-top: -2px;">
+                     <span  class="">Non</span>
+                  </div>
+                  <div>
+                     <label  class="ml-2 form-switch">         
+                        <input  (click)="choiceResponsable($event)" type="checkbox" value=""  class="sr-only peer" />
+                        <div class="form-input-switch">
+                        </div>
+                        <span class="form-check-label">Oui</span>
+                     </label>
+                  </div>
+               </div>
+            </div>
+            @if(!responsable){
+            <div class="max-w-screen-md w-full">         
+               <label for="responsable" class="form-label">
                </label>
-               <select id="lieu" class="form-select">
-                  <option value="">Selectionner une pôle</option>
-                  <option>N/A</option>
-                  <option>DOC</option>
+               <select id="responsable" formControlName="responsable_id"  class="form-select">
+                  <option value="" selected disabled>Selectionner un responsable</option>
+               @for(responsable of dataAll?.responsable;track responsable.id){
+                  <option [ngValue]="responsable">{{ responsable?.prenom }} {{ responsable?.nom }}</option>
+               }
                   <option>Autre</option>
-               </select>
+               </select>              
             </div>
-            <div class="  w-full">
-               <label for="lieu" class="form-label">
-               </label>
-               <select id="canal" class="form-select">
-                  <option value="">Selectionner une canal</option>
-                  <option>Terrain</option>
-                  <option>Support</option>
-                  <option>Vente en ligne</option>
-                  <option>Agence</option>
-                  <option>DRV</option>
-                  <option>Indirect</option>
-                  <option>haute valeur</option>
-                  <option>Pole DV</option>
-                  <option>Pole DOC</option>
-               </select>
-            </div>
-         </div>
-      </div>
-
-      <div class="card p-4">
-         <div class="flex justify-around">
-            <div class="card-title">
-               <h3 class="text-xl font-bold leading-none"> Département</h3>
-            </div>
-            <div class="card-title">
-               <h3 class="text-xl font-bold leading-none"> Agence Interim</h3>
-            </div>
-         </div>
-         <div class="mt-2 flex justify-between space-x-16">
-            <div class="max-w-sm  w-full">
-               <label for="lieu" class="form-label">
-               </label>
-               <select id="lieu" class="form-select">
-                  <option value="">Selectionner un département</option>
-                  <option>PPCO</option>
-                  <option>DRVI</option>
-                  <option>Autre</option>
-               </select>
-            </div>
-            <div class=" w-full">
-               <label for="lieu" class="form-label">
-               </label>
-               <select id="lieu" class="form-select">
-                  <option value="">Selectionner un agence d'interim</option>
-                  <option>ITR</option>
-                  <option>PERMANENTS</option>
-                  <option>XPERIENZ</option>
-                  <option>AFRIC SECURIM</option>
-                  <option>GBG</option>
-                  <option>2TS</option>
-                  <option>AMR</option>
-                  <option>Autre</option>
-               </select>
-            </div>
-         </div>
+            }
+         </div>    
          <div class="mt-10 flex  gap-x-6">
-            <button type="button" class="text-sm font-semibold leading-6 text-gray-900">Cancel</button>
-            <button type="submit" class="btn btn-primary btn-sm">Save</button>
-         </div>
+            <!-- <button type="button" class="text-sm font-semibold leading-6 text-gray-900">Cancel</button> -->
+            <button type="submit" class="btn btn-primary btn-sm">Enregistrer</button>
+         </div>      
       </div>
   </form>
 </div>

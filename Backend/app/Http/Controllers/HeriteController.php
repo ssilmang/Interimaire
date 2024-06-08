@@ -63,4 +63,9 @@ class HeriteController extends Controller
             
         }
     }
+    public function index($model){
+        $class = "\\App\\Models\\" . $model;
+        $statut =  $class::all();
+        return $statut;
+    }
 }
