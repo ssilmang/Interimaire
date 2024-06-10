@@ -37,6 +37,24 @@ class PermanentController extends Controller
         $data =["dvs"=>PermanentResource::make($permanent)];    
         return $this->response->response(Response::HTTP_OK,'index permanent dv',$data);
     }
+    private function guessMimeTypeFromBase64(string $base64String): ?string
+    {
+        $fileSignature = substr($base64String, 0, 10);
+
+        $mimeTypes = [
+            'data:image/jpeg;base64,' => 'image/jpeg',
+            'data:image/png;base64,' => 'image/png',
+            'data:image/gif;base64,' => 'image/gif',
+        ];
+
+        foreach ($mimeTypes as $signature => $mimeType) {
+            if (str_starts_with($fileSignature, $signature)) {
+                return $mimeType;
+            }
+        }
+
+        return null;
+    }
     public function store(Request $request)
     {
         try{
@@ -85,15 +103,22 @@ class PermanentController extends Controller
                 {
                     $service = $this->controller->create($request->agenceCommercial_id,'departement_id',$departement->id,"AgenceCommercial","agenceCommercial");
                 }
+                // return response()->json([
+                //     $request->avatar
+                // ]);
                 $avatar ="";
-                if($request->hasfile('avatar'))
+               
+                $photo = '';
+                if($request->hasfile('photo'))
                 {
-                    $file = $request->file('avatar');
+                    $file = $request->file('photo');
                     $extension = $file->getClientOriginalExtension();
                     $filename = time().'.'. $extension;
                     $file->move('uploads/higlights/',$filename);
-                    $avatar = $filename;
-                }
+                    $photo = $filename;
+                    }
+                  
+               
                 $permanent = Permanent::firstOrCreate([
                     'nom'=>$request->nom,
                     'prenom'=>$request->prenom,
@@ -101,7 +126,7 @@ class PermanentController extends Controller
                     'email'=>$request->email,
                     'telephone'=>$request->telephone,
                     'telephone_pro'=>$request->telephone_pro ? $request->telephone_pro : 0,
-                    'avatar'=>$avatar,
+                    'photo'=>$photo,
                     'contrat'=>$request->contrat,
                     'adresse'=>$request->adresse,
                     'commentaire'=>$request->commentaire,

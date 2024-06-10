@@ -21,7 +21,7 @@ export class PermanentService {
   {
     return this._http.get<Response<DataALL>>(`${environment.apiUrl}index/statuts`)
   }
-  store(data:RequestPermanent):Observable<Response<RequestPermanent>>
+  store(data:FormData):Observable<Response<RequestPermanent>>
   {
     return this._http.post<Response<RequestPermanent>>(`${environment.apiUrl}permanent`,data)
   }

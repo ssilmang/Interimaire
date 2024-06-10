@@ -14,7 +14,7 @@ export class Images {
   };
 
   public static readonly users: IUsers = {
-    userOne: './assets/images/authpage/ba.jpg',
+    userOne: './assets/authpage/massar.jpg',
     
   };
 }

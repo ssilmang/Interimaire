@@ -57,4 +57,7 @@ class Permanent extends Model
     {
         return $this->hasMany(Permanent::class,'responsable_id');
     }
+    public function locau(){
+        return $this->belongsTo(Locau::class);
+    }
 }

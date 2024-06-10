@@ -1,16 +1,17 @@
 import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { Images } from 'docs/assets/data/images';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Images } from 'src/assets/data/images';
 import { DataDepartement, DataPole, DataService, Pole } from 'src/app/_core/interface/interim';
 import { DataALL } from 'src/app/_core/interface/permanent';
 import { PermanentService } from 'src/app/_core/services/permanent.service';
 import { AlertComponent } from 'src/app/shared/components/alert/alert.component';
 import { AlertType } from 'src/app/shared/components/alert/alert.type';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-forms',
   standalone: true,
-  imports: [ReactiveFormsModule,FormsModule,AlertComponent],
+  imports: [ReactiveFormsModule,FormsModule,AlertComponent,CommonModule],
   templateUrl: './forms.component.html',
   styleUrl: './forms.component.css'
 })
@@ -18,7 +19,7 @@ export class FormsComponent implements AfterViewInit,OnInit
 {
   readonly alertType = AlertType;
   service=inject(PermanentService);
-  public userOne: string = Images.users.userOne;
+  public userOne: string = Images.photo.img;
   dataAll?:DataALL;
   poles:DataPole[]|undefined = [];
   departements:DataDepartement[]|undefined = [];
@@ -44,31 +45,31 @@ export class FormsComponent implements AfterViewInit,OnInit
   suitedirection :boolean =false;
   suitepole :boolean =false;
   suiteservice :boolean =false;
-  image?:File 
+  image:File|null=null; 
 
   constructor( ){
     this.formPermanent = this.fb.group({
-      prenom:[],
-      nom:[],
-      email:[],
-      matricule:[],
+      prenom:['',[Validators.required,Validators.minLength(2),Validators.maxLength(100),Validators.pattern("^[A-Za-z\\sé^']*$")]],
+      nom:['',[Validators.required,Validators.minLength(2),Validators.maxLength(50),Validators.pattern("^[A-Za-z\\sé^']*$")]],
+      email:['',[Validators.required,Validators.email]],
+      matricule:['',[Validators.required,Validators.minLength(2),Validators.maxLength(100),Validators.pattern("^[A-Za-z0-9]*$")]],
       contrat:[],
-      telephone:[],
+      telephone:['',[Validators.required,Validators.minLength(9),Validators.maxLength(12),Validators.pattern("^[0-9]*$")]],
       telephone_pro:[],
       adresse:[],
-      avatar:[this.userOne],
-      poste_id:[''],
-      statut_id:[''],
-      groupe_id:[''],
-      categorie_id:[''],
-      agence_id:[''],
-      locau_id:[''],
-      canal_id:[''],
-      direction_id:[''],
-      pole_id:[''],
-      departement_id:[''],
-      service_id:[''],
-      responsable_id:['']
+      photo:[this.userOne,[Validators.required]],
+      poste_id:['',[Validators.required]],
+      statut_id:['',[Validators.required]],
+      groupe_id:['',[Validators.required]],
+      categorie_id:['',[Validators.required]],
+      agence_id:['',[Validators.required]],
+      locau_id:['',[Validators.required]],
+      canal_id:['',[Validators.required]],
+      direction_id:['',[Validators.required]],
+      pole_id:['',[Validators.required]],
+      departement_id:['',[Validators.required]],
+      service_id:['',[Validators.required]],
+      responsable_id:['',[Validators.required]]
     })
   }
   ngAfterViewInit(): void {}
@@ -76,7 +77,7 @@ export class FormsComponent implements AfterViewInit,OnInit
     this.indexAll()
   }
   get avatars(){
-    return this.formPermanent.get('avatar')?.value
+    return this.formPermanent.get('photo')?.value
   }
   indexAll()
   {
@@ -209,7 +210,8 @@ export class FormsComponent implements AfterViewInit,OnInit
     }
     this.suiteservice = false;
   }
-  selectedPole(event:Event){
+  selectedPole(event:Event)
+  {
     let select = this.formPermanent.get('pole_id')?.value;
     if(select){
       if(select==="Autre"){
@@ -255,9 +257,14 @@ export class FormsComponent implements AfterViewInit,OnInit
     if(image.files && image.files.length>0){
       this.image =image.files[0];
       let reader=new FileReader();   
+      
+      
       reader.onload=()=>{
         const imageBase_64:string = reader.result as string
-         this.formPermanent.get('avatar')?.setValue(imageBase_64);
+         this.formPermanent.get('photo')?.setValue(imageBase_64);
+         console.log(imageBase_64);
+         
+         
       }
       reader.readAsDataURL(image.files[0]);
     }
@@ -265,6 +272,7 @@ export class FormsComponent implements AfterViewInit,OnInit
   enregistrer()
   {
     console.log(this.formPermanent.value);
+    const formData :FormData = new FormData();
     let poste = this.formPermanent.get('poste_id')?.value;
     let statut = this.formPermanent.get('statut_id')?.value;
     let groupe = this.formPermanent.get('groupe_id')?.value;
@@ -279,57 +287,86 @@ export class FormsComponent implements AfterViewInit,OnInit
     let responsable = this.formPermanent.get('responsable_id')?.value;
     if(poste && poste.id)
     {
-      this.formPermanent.get('poste_id')?.setValue(poste.id)
+     formData.append('poste_id',poste.id)
+    }else{
+      formData.append('poste_id',this.formPermanent.get('poste_id')?.value)
     }
     if(statut && statut.id)
     {
-      this.formPermanent.get('statut_id')?.setValue(statut.id)
+      formData.append('statut_id',statut.id)
+    }else{
+      formData.append('statut_id',this.formPermanent.get('statut_id')?.value)
     }
     if(groupe && groupe.id)
     {
-      this.formPermanent.get('groupe_id')?.setValue(groupe.id)
+      formData.append('groupe_id',groupe.id)
+    }else{
+      formData.append('groupe_id',this.formPermanent.get('groupe_id')?.value)
     }
     if(categorie && categorie.id)
     {
-      this.formPermanent.get('categorie_id')?.setValue(categorie.id)
+     formData.append('categorie_id',categorie.id)
+    }else{
+      formData.append('categorie_id',this.formPermanent.get('categorie')?.value)
     }
     if(agence && agence.id)
     {
-      this.formPermanent.get('agence_id')?.setValue(agence.id)
+      formData.append('agence_id',agence.id)
+    }else{
+      formData.append('agence_id',this.formPermanent.get('agence_id')?.value)
     }
     if(lieu && lieu.id)
     {
-      this.formPermanent.get('locau_id')?.setValue(lieu.id)
+      formData.append('locau_id',lieu.id)
+    }else{
+      formData.append('locau_id',this.formPermanent.get('locau_id')?.value)
     }
     if(canal && canal.id)
     {
-      this.formPermanent.get('canal_id')?.setValue(canal.id)
+      formData.append('canal_id',canal.id)
+    }else{
+      formData.append('canal_id',this.formPermanent.get('canal_id')?.value)
     }
     if(direction && direction.id)
     {
-      this.formPermanent.get('direction_id')?.setValue(direction.id)
+      formData.append('direction_id',direction.id)
+    }else{
+      formData.append('direction_id',this.formPermanent.get('direction_id')?.value)
     }
     if(pole && pole.id)
     {
-      this.formPermanent.get('pole_id')?.setValue(pole.id)
+      formData.append('pole_id',pole.id)
+    }else{
+      formData.append('pole_id',this.formPermanent.get('pole_id')?.value)
     }
     if(departement && departement.id)
     {
-      this.formPermanent.get('departement_id')?.setValue(departement.id)
+      formData.append('departement_id',departement.id)
+    }else{
+      formData.append('departement_id',this.formPermanent.get('departement_id')?.value)
     }
     if(service && service.id)
     {
-      this.formPermanent.get('service_id')?.setValue(service.id)
+      formData.append('service_id',service.id)
+    }else{
+      formData.append('service_id',this.formPermanent.get('service_id')?.value)
     }
     if(responsable && responsable.id)
     {
-      this.formPermanent.get('responsable_id')?.setValue(responsable.id)
+      formData.append('responsable_id',responsable.id)
     }
-  
-    
-    console.log(this.formPermanent.value);
-    this.formPermanent.get('avatar')?.setValue(this.image);
-    this.service.store(this.formPermanent.value).subscribe({
+    if(this.image){
+      formData.append('photo',this.image,this.image?.name);
+      formData.append('nom',this.formPermanent.get('nom')?.value);
+      formData.append('prenom',this.formPermanent.get('prenom')?.value);
+      formData.append('matricule',this.formPermanent.get('matricule')?.value);
+      formData.append('email',this.formPermanent.get('email')?.value);
+      formData.append('contrat',this.formPermanent.get('contrat')?.value);
+      formData.append('adresse',this.formPermanent.get('adresse')?.value);
+      formData.append('telephone',this.formPermanent.get('telephone')?.value);
+      formData.append('telephone_pro',this.formPermanent.get('telephone_pro')?.value);
+  }
+    this.service.store(formData).subscribe({
       next:(response=>{
         console.log(response);
         if(response.statut===200)
@@ -337,10 +374,12 @@ export class FormsComponent implements AfterViewInit,OnInit
             this.message = response.message;
           setTimeout(()=>{
             this.message =""
-          },500)
+          },5000)
+          this.formPermanent.reset();
+          this.formPermanent.get('photo')?.setValue(this.userOne);
+          this.responsable =false;
         }
       })
     })
   }
-
 }

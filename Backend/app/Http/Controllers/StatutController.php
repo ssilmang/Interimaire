@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\AgenceResource;
 use App\Http\Resources\DirectionResource;
+use App\Http\Resources\LocauResource;
 use App\Http\Resources\PermanentResource;
 use App\Http\Resources\PosteResource;
 use App\Http\Resources\RoleResource;
@@ -35,6 +36,7 @@ class StatutController extends Controller
         $agence = $this->heriteController->index("Agence");
         $direction = $this->heriteController->index("Direction");
         $responsable = $this->heriteController->index('Permanent');
+        $locaux = $this->heriteController->index('Locau');
         $poste = $this->heriteController->index("Poste");
         $data = [
             'canals'=>RoleResource::collection($canal),
@@ -44,7 +46,8 @@ class StatutController extends Controller
             'categories'=>RoleResource::collection($categorie),
             'agences'=>AgenceResource::collection($agence),
             'directions'=>DirectionResource::collection($direction),
-            'responsable'=>UserResource::collection($responsable)
+            'responsable'=>UserResource::collection($responsable),
+            'locaux'=>LocauResource::collection($locaux)
         ];
         return $this->response->response(Response::HTTP_OK,"All",$data);   
     }

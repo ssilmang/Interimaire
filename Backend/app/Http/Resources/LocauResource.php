@@ -18,7 +18,7 @@ class LocauResource extends JsonResource
             'id'=>$this->id,
             'libelle'=>$this->libelle,
             'adresse'=>$this->adresse,
-            'directions'=>DirectionResource::collection($this->directions)
+           
         ];
     }
 }

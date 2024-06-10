@@ -1,4 +1,4 @@
-import { Agence, DataDirection, Departement, Direction, Pole, Poste, Role, Service, User } from "./interim"
+import { Agence, DataDirection, Departement, Direction, Locau, Pole, Poste, Role, Service, User } from "./interim"
 
 export interface ResponsePermanent{
     dvs:Permanent
@@ -12,7 +12,7 @@ export interface Permanent{
     email:string
     telephone:string
     telephone_pro:string
-    avatar:string
+    photo:string
     contrat:string
     adresse:string
     commentaire:string
@@ -25,6 +25,7 @@ export interface Permanent{
     categorie:Role
     direction:Direction
     pole:Pole
+    locau:Locau
     departement:Departement
     service:Service
     responsable:User
@@ -39,6 +40,7 @@ export interface DataALL{
     agences:Agence[]
     directions:DataDirection[]
     responsable:User[]
+    locaux:Locau[]
 }
 export interface RequestPermanent{
     prenom:string
@@ -49,7 +51,7 @@ export interface RequestPermanent{
     telephone:string
     telephone_pro:string
     adresse:string
-    avatar:string
+    photo:string
     poste_id:number|string
     statut_id:number|string
     groupe_id:number|string

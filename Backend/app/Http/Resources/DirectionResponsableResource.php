@@ -17,7 +17,7 @@ class DirectionResponsableResource extends JsonResource
         return[
             'id'=>$this->id,
             'libelle'=>$this->libelle,
-            'locau'=>LocauResponsableResource::make($this->locau)
+           
         ];
     }
 }

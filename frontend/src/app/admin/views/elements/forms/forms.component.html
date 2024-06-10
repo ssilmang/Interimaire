@@ -23,25 +23,110 @@
                      <div class="col-span-1 mt-4 md:col-span-6">
                         <div class="form-group ">
                            <label for="prenom" class="form-label required"> Prénom</label>
-                           <input type="text" formControlName="prenom" id="prenom" placeholder="Massar " class="form-control" />
+                           <input type="text" formControlName="prenom" id="prenom" placeholder="Massar " class="form-control"
+                           [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('prenom')?.invalid &&(formPermanent.get('prenom')?.touched || formPermanent.get('prenom')?.dirty),
+                           'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('prenom')?.valid &&(formPermanent.get('prenom')?.touched || formPermanent.get('prenom')?.dirty)}"
+              
+                           />
+                           @if(formPermanent.get('prenom')?.invalid && formPermanent.get('prenom')?.touched){
+                              @if(formPermanent.get('prenom')?.hasError('required')){
+                                
+                                    <div class="text-red-500 text-xs">Le prenom est obligatoire</div>
+                            }
+                          }
+                          @if(formPermanent.get('prenom')?.hasError('maxLength')){
+                              <div  class="text-red-600 text-xs">
+                                 Taille maximum 100
+                              </div>
+                          }
+                          @if(formPermanent.get('prenom')?.hasError('pattern')){
+                              <div  class="text-red-600 text-xs">
+                                Doit contenir que des caractères
+                              </div>
+                          }
+                          @if(formPermanent.get('prenom')?.hasError('minLength')){
+                              <div  class="text-red-600 text-xs">
+                                Taille minimum 2
+                              </div>
+                          }
                         </div>
                      </div>
                      <div class="col-span-1  md:col-span-6 mt-4">
                         <div class="form-group">
                            <label for="nom" class="form-label required"> Nom</label>
-                           <input type="text" formControlName="nom" id="nom" placeholder="Ndime" class="form-control" />
+                           <input type="text" formControlName="nom" id="nom" placeholder="Ndime" class="form-control"
+                           [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('nom')?.invalid &&(formPermanent.get('nom')?.touched || formPermanent.get('nom')?.dirty),
+                           'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('nom')?.valid &&(formPermanent.get('nom')?.touched || formPermanent.get('nom')?.dirty)}"
+              
+                           />
+                           @if(formPermanent.get('nom')?.invalid && formPermanent.get('nom')?.touched){
+                              @if(formPermanent.get('nom')?.hasError('required')){
+                                
+                                    <div class="text-red-500 text-xs">Le nom est obligatoire</div>
+                            }
+                          }
+                          @if(formPermanent.get('nom')?.hasError('maxLength')){
+                              <div  class="text-red-600 text-xs">
+                                 Taille maximum 50
+                              </div>
+                          }
+                          @if(formPermanent.get('nom')?.hasError('pattern')){
+                              <div  class="text-red-600 text-xs">
+                                Doit contenir que des caractères
+                              </div>
+                          }
+                          @if(formPermanent.get('nom')?.hasError('minLength')){
+                              <div  class="text-red-600 text-xs">
+                                Taille minimum 2
+                              </div>
+                          }
                         </div>
                      </div>
                      <div class="col-span-1 md:col-span-6">
                         <div class="form-group">
                            <label for="email" class="form-label required"> Email</label>
-                           <input type="text" formControlName="email" id="email" placeholder="massar@email.com" class="form-control" />
+                           <input type="text" formControlName="email" id="email" placeholder="massar@email.com" class="form-control"
+                           [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('email')?.invalid &&(formPermanent.get('email')?.touched || formPermanent.get('email')?.dirty),
+                           'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('email')?.valid &&(formPermanent.get('email')?.touched || formPermanent.get('email')?.dirty)}"
+              
+                           />
+                           @if(formPermanent.get('email')?.invalid && formPermanent.get('email')?.touched){
+                              @if(formPermanent.get('email')?.hasError('required')){
+                                
+                                    <div class="text-red-500 text-xs">L'adresse email est obligatoire</div>
+                            }
+                          }
+                          @if(formPermanent.get('email')?.errors){
+                            @if(formPermanent.get('email')?.hasError('pattern')){
+                                <div  class="text-red-600 text-xs">
+                                  Doit contenir que des caractere
+                                </div>
+                            }
+                            @if (formPermanent.get('email')?.hasError('email')) {
+                                <div class="text-red-500 text-xs">Email invalide</div>
+                            }
+                          }
                         </div>
                      </div>
                      <div class="col-span-1 md:col-span-6 ">
                         <div class="form-group">
                            <label for="matricule" class="form-label required"> Matricule</label>
-                           <input type="text" formControlName="matricule" id="matricule" placeholder="AZER234" class="form-control" />
+                           <input type="text" formControlName="matricule" id="matricule" placeholder="AZER234" class="form-control"
+                           [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('matricule')?.invalid &&(formPermanent.get('matricule')?.touched || formPermanent.get('matricule')?.dirty),
+                           'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('matricule')?.valid &&(formPermanent.get('matricule')?.touched || formPermanent.get('matricule')?.dirty)}"
+              
+                           />
+                           @if(formPermanent.get('matricule')?.invalid && formPermanent.get('matricule')?.touched){
+                              @if(formPermanent.get('matricule')?.hasError('required')){
+                                
+                                    <div class="text-red-500 text-xs">Le matricule est obligatoire</div>
+                             }
+                           }
+                            @if(formPermanent.get('matricule')?.hasError('pattern')){
+                              <div  class="text-red-600 text-xs">
+                                Doit contenir que des lettres et des chiffres
+                              </div>
+                           }
                         </div>
                      </div>
                      <div class="col-span-12 md:col-span-12">
@@ -64,7 +149,11 @@
                               <div class="  flex text-sm leading-6 text-gray-600">
                                  <label for="img" class="image-frame">
                                     <img [src]="avatars"  class="w-44 h-44 object-contain"  alt=""   >                              
-                                    <input type="file" id="img" formControlName="avatar"  (change)="selectedAvatar($event)" style="display: none;">
+                                    <input type="file" id="img" formControlName="photo"  (change)="selectedAvatar($event)" style="display: none;" 
+                                    [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('photo')?.invalid &&(formPermanent.get('photo')?.touched || formPermanent.get('photo')?.dirty),
+                                    'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('photo')?.valid &&(formPermanent.get('photo')?.touched || formPermanent.get('photo')?.dirty)}"
+                       
+                                    />
                                 </label>
                               </div>
                            </div>
@@ -76,7 +165,22 @@
                <div class="grid grid-cols-3 gap-x-5 col-span-1 mb-3">
                   <div class="form-group ">
                      <label for="telephone" class="form-label required"> Téléphone </label>
-                     <input type="text" formControlName="telephone" id="telephone" placeholder="772314567" class="form-control form-control-lg" />
+                     <input type="text" formControlName="telephone" id="telephone" placeholder="772314567" class="form-control form-control-lg"
+                     [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('telephone')?.invalid &&(formPermanent.get('telephone')?.touched || formPermanent.get('telephone')?.dirty),
+                     'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('telephone')?.valid &&(formPermanent.get('telephone')?.touched || formPermanent.get('telephone')?.dirty)}"
+        
+                     />
+                     @if(formPermanent.get('telephone')?.invalid && formPermanent.get('telephone')?.touched){
+                        @if(formPermanent.get('telephone')?.hasError('required')){
+                          
+                              <div class="text-red-500 text-xs">Le téléphone est obligatoire</div>
+                       }
+                     }
+                      @if(formPermanent.get('telephone')?.hasError('pattern')){
+                        <div  class="text-red-600 text-xs">
+                          Doit contenir que des chiffres
+                        </div>
+                     }
                   </div>
                   <div class="form-group">
                      <label for="telephone_pro" class="form-label "> Téléphone Pro </label>
@@ -85,6 +189,17 @@
                   <div class="form-group ">
                      <label for="adresse" class="form-label required"> Adresse </label>
                      <input type="text" formControlName="adresse" id="adresse" placeholder="Sacré-Coeur" class="form-control form-control-lg" />
+                     @if(formPermanent.get('adresse')?.invalid && formPermanent.get('adresse')?.touched){
+                        @if(formPermanent.get('adresse')?.hasError('required')){
+                          
+                              <div class="text-red-500 text-xs">Le adresse est obligatoire</div>
+                       }
+                     }
+                      @if(formPermanent.get('adresse')?.hasError('pattern')){
+                        <div  class="text-red-600 text-xs">
+                          Doit contenir que des lettres et des chiffres
+                        </div>
+                     }
                   </div>
                </div>  
             </div>
@@ -104,30 +219,58 @@
                <label for="statut" class="form-label">
                </label>
                @if(!autreStatut){
-                  <select id="statut"  (click)="selectedStatut($event)" formControlName="statut_id"  class="form-select col-span-2">
+                  <select id="statut"  (click)="selectedStatut($event)" formControlName="statut_id"  class="form-select col-span-2"
+                  [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('statut_id')?.invalid &&(formPermanent.get('statut_id')?.touched || formPermanent.get('statut_id')?.dirty),
+                  'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('statut_id')?.valid &&(formPermanent.get('statut_id')?.touched || formPermanent.get('statut_id')?.dirty)}"
+     
+                  >
                      <option value="" selected disabled>Selectionner un statut</option>
                      @for(statut of dataAll?.statuts;track statut?.id){
                         <option [ngValue]="statut">{{ statut?.libelle }}</option>   
                      }
                      <option value="Autre">autre</option>
                   </select>
+                  @if(formPermanent.get('statut_id')?.invalid && formPermanent.get('statut_id')?.touched){
+                     @if(formPermanent.get('statut_id')?.hasError('required')){
+                       
+                           <div class="text-red-500 text-xs">Le statut est obligatoire</div>
+                   }
+                 }
                }@else{
-                  <input type="text"   formControlName="statut_id"  placeholder="Massar " class="form-control" />
+                  <input type="text"   formControlName="statut_id"  placeholder="Massar " class="form-control"
+                  [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('statut_id')?.invalid &&(formPermanent.get('statut_id')?.touched || formPermanent.get('statut_id')?.dirty),
+                  'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('statut_id')?.valid &&(formPermanent.get('statut_id')?.touched || formPermanent.get('statut_id')?.dirty)}"
+     
+                  />
                }
             </div>
             <div class="max-w-screen-md  w-full">
                <label for="poste" class="form-label">
                </label>
                @if(!autrePoste){
-                  <select id="poste" (click)="selectedPoste($event)" formControlName="poste_id" class="form-select">
+                  <select id="poste" (click)="selectedPoste($event)" formControlName="poste_id" class="form-select"
+                  [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('poste_id')?.invalid &&(formPermanent.get('poste_id')?.touched || formPermanent.get('poste_id')?.dirty),
+                  'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('poste_id')?.valid &&(formPermanent.get('poste_id')?.touched || formPermanent.get('poste_id')?.dirty)}"
+     
+                  >
                      <option value="" selected disabled>Selectionner un poste</option>
                      @for(poste of dataAll?.postes;track poste?.id){
                         <option [ngValue]="poste">{{ poste?.libelle }}</option>   
                      }
                      <option value="Autre">autre</option>
                   </select>
+                  @if(formPermanent.get('poste_id')?.invalid && formPermanent.get('poste_id')?.touched){
+                     @if(formPermanent.get('poste_id')?.hasError('required')){
+                       
+                           <div class="text-red-500 text-xs">Le poste est obligatoire</div>
+                   }
+                 }
                }@else{
-                  <input type="text"   formControlName="poste_id"  placeholder="Massar " class="form-control" />
+                  <input type="text"   formControlName="poste_id"  placeholder="Massar " class="form-control"
+                  [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('poste_id')?.invalid &&(formPermanent.get('poste_id')?.touched || formPermanent.get('poste_id')?.dirty),
+                  'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('poste_id')?.valid &&(formPermanent.get('poste_id')?.touched || formPermanent.get('poste_id')?.dirty)}"
+     
+                  />
                }
             </div>
          </div>
@@ -147,45 +290,84 @@
                <label for="groupe" class="form-label">      
                </label>
                @if(!autreGroupe){
-                  <select id="groupe"(click)="selectedGroupe($event)" formControlName="groupe_id" class="form-select">
+                  <select id="groupe"(click)="selectedGroupe($event)" formControlName="groupe_id" class="form-select"
+                  [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('groupe_id')?.invalid &&(formPermanent.get('groupe_id')?.touched || formPermanent.get('groupe_id')?.dirty),
+                  'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('groupe_id')?.valid &&(formPermanent.get('groupe_id')?.touched || formPermanent.get('groupe_id')?.dirty)}"
+     
+                  >
                      <option value="" selected disabled>Selectionner un groupe</option>
                      @for(groupe of dataAll?.groupes;track groupe?.id){
                         <option [ngValue]="groupe">{{ groupe?.libelle }}</option>   
                      }
                      <option value="Autre">autre</option>
                   </select>
+                  @if(formPermanent.get('groupe_id')?.invalid && formPermanent.get('groupe_id')?.touched){
+                     @if(formPermanent.get('groupe_id')?.hasError('required')){
+                       
+                           <div class="text-red-500 text-xs">Le statut est obligatoire</div>
+                   }
+                 }
                }@else{
-                  <input type="text"   formControlName="groupe_id"  placeholder="Massar " class="form-control" />
+                  <input type="text"   formControlName="groupe_id"  placeholder="Massar " class="form-control"
+                  [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('groupe_id')?.invalid &&(formPermanent.get('groupe_id')?.touched || formPermanent.get('groupe_id')?.dirty),
+                  'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('groupe_id')?.valid &&(formPermanent.get('groupe_id')?.touched || formPermanent.get('groupe_id')?.dirty)}"
+     
+                  />
                }
             </div>
             <div class="max-w-screen-md w-full">
                <label for="categorie" class="form-label">      
                </label>
                @if(!autreCategorie){
-                  <select  formControlName="categorie_id" (click)="selectedCategorie($event)" id="categorie" class="form-select">
+                  <select  formControlName="categorie_id" (click)="selectedCategorie($event)" id="categorie" class="form-select"
+                  [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('categorie_id')?.invalid &&(formPermanent.get('categorie_id')?.touched || formPermanent.get('categorie_id')?.dirty),
+                  'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('categorie_id')?.valid &&(formPermanent.get('categorie_id')?.touched || formPermanent.get('categorie_id')?.dirty)}"
+     
+                  >
                      <option value="" disabled select>Selectionner un Catégorie</option>
                      @for(categorie of dataAll?.categories;track categorie?.id){
                         <option [ngValue]="categorie">{{ categorie?.libelle }}</option>                
                      }
                      <option value="Autre">autre</option>
                   </select>
+                  @if(formPermanent.get('categorie_id')?.invalid && formPermanent.get('categorie_id')?.touched){
+                     @if(formPermanent.get('categorie_id')?.hasError('required')){
+                       
+                           <div class="text-red-500 text-xs">Le categorie est obligatoire</div>
+                   }
+                 }
                }@else{
-                  <input type="text"   formControlName="categorie_id"  placeholder="Massar " class="form-control" />
+                  <input type="text"   formControlName="categorie_id"  placeholder="Massar " class="form-control"
+                  [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('categorie_id')?.invalid &&(formPermanent.get('categorie_id')?.touched || formPermanent.get('categorie_id')?.dirty),
+                  'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('categorie_id')?.valid &&(formPermanent.get('categorie_id')?.touched || formPermanent.get('categorie_id')?.dirty)}"
+                  />
                }
             </div>
             <div class="max-w-screen-md w-full">
                <label for="agence" class="form-label">    
                </label>
               @if(!autreAgence){
-               <select id="agence" (click)="selectedAgence($event)" formControlName="agence_id" class="form-select">
+               <select id="agence" (click)="selectedAgence($event)" formControlName="agence_id" class="form-select"
+               [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('agence_id')?.invalid &&(formPermanent.get('agence_id')?.touched || formPermanent.get('agence_id')?.dirty),
+               'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('agence_id')?.valid &&(formPermanent.get('agence_id')?.touched || formPermanent.get('agence_id')?.dirty)}"
+               >
                   <option value="" selected disabled>Selectionner un agence d'interim</option>
                   @for(agence of dataAll?.agences;track agence?.id){
                      <option [ngValue]="agence">{{ agence?.libelle }}</option>   
                   }
                   <option value="Autre">autre</option>
                </select>
+               @if(formPermanent.get('agence_id')?.invalid && formPermanent.get('agence_id')?.touched){
+                  @if(formPermanent.get('agence_id')?.hasError('required')){
+                    
+                        <div class="text-red-500 text-xs">L'agence est obligatoire</div>
+                }
+              }
               }@else{
-               <input type="text"   formControlName="agence_id"  placeholder="Massar " class="form-control" />
+               <input type="text"   formControlName="agence_id"  placeholder="Permanent" class="form-control"
+               [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('agence_id')?.invalid &&(formPermanent.get('agence_id')?.touched || formPermanent.get('agence_id')?.dirty),
+               'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('agence_id')?.valid &&(formPermanent.get('agence_id')?.touched || formPermanent.get('agence_id')?.dirty)}"
+               />
               }
             </div>
          </div>
@@ -243,31 +425,54 @@
                <label for="lieu" class="form-label">
                </label>
                @if(!autreLocau){
-                  <select id="lieu" (click)="selectedLocau($event)" formControlName="locau_id" class="form-select">
+                  <select id="lieu" (click)="selectedLocau($event)" formControlName="locau_id" class="form-select"
+                  [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('locau_id')?.invalid &&(formPermanent.get('locau_id')?.touched || formPermanent.get('locau_id')?.dirty),
+                  'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('locau_id')?.valid &&(formPermanent.get('locau_id')?.touched || formPermanent.get('locau_id')?.dirty)}"
+                  >
                      <option value="">Selectionner un lieu</option>
-                     <option>Sonatel</option>
-                     <option>Sablux</option>
-                     <option>Acad</option>
-                     <option>République</option>
+                    @for(locau of dataAll?.locaux;track locau?.id){
+                     <option [ngValue]="locau">{{ locau?.libelle }}</option>
+                    }
                      <option value="Autre">autre</option>
                   </select>
+                  @if(formPermanent.get('locau_id')?.invalid && formPermanent.get('locau_id')?.touched){
+                     @if(formPermanent.get('locau_id')?.hasError('required')){
+                       
+                           <div class="text-red-500 text-xs">Le statut est obligatoire</div>
+                   }
+                 }
                }@else{
-                  <input type="text"   formControlName="locau_id"  placeholder="Massar " class="form-control" />
+                  <input type="text"   formControlName="locau_id"  placeholder="Massar " class="form-control"
+                  [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('locau_id')?.invalid &&(formPermanent.get('locau_id')?.touched || formPermanent.get('locau_id')?.dirty),
+                  'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('locau_id')?.valid &&(formPermanent.get('locau_id')?.touched || formPermanent.get('locau_id')?.dirty)}"
+                  />
                }
             </div>
             <div class="max-w-screen-md  w-full">
                <label for="canal" class="form-label">
                </label>
                @if(!autreCanal){
-                  <select id="canal" (click)="selectedCanal($event)" formControlName="canal_id" class="form-select">
+                  <select id="canal" (click)="selectedCanal($event)" formControlName="canal_id" class="form-select"
+                  [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('canal_id')?.invalid &&(formPermanent.get('canal_id')?.touched || formPermanent.get('canal_id')?.dirty),
+                  'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('canal_id')?.valid &&(formPermanent.get('canal_id')?.touched || formPermanent.get('canal_id')?.dirty)}"
+                  >
                      <option value="" selected disabled>Selectionner un Canal</option>
                      @for(canal of dataAll?.canals;track canal?.id){
                         <option [ngValue]="canal">{{ canal?.libelle }}</option>   
                      }
                      <option value="Autre">autre</option>
                   </select>
+                  @if(formPermanent.get('canal_id')?.invalid && formPermanent.get('canal_id')?.touched){
+                     @if(formPermanent.get('canal_id')?.hasError('required')){
+                       
+                           <div class="text-red-500 text-xs">Le canal est obligatoire</div>
+                   }
+                 }
                }@else{
-                  <input type="text"   formControlName="canal_id"  placeholder="Massar " class="form-control" />
+                  <input type="text"   formControlName="canal_id"  placeholder="entrez une canal " class="form-control" 
+                  [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('canal_id')?.invalid &&(formPermanent.get('canal_id')?.touched || formPermanent.get('canal_id')?.dirty),
+                  'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('canal_id')?.valid &&(formPermanent.get('canal_id')?.touched || formPermanent.get('canal_id')?.dirty)}"
+                  />
                }
             </div>
             <div class="max-w-screen-md  w-full">
@@ -275,13 +480,24 @@
                </label>
                @if(!autreDirection){
                  <div class="flex space-x-1">
-                     <select id="direction" formControlName="direction_id"  (click)="selectedDirection($event)" class="form-select" >
+                    <div class="w-full">
+                     <select id="direction" formControlName="direction_id"  (click)="selectedDirection($event)" class="form-select" 
+                     [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('direction_id')?.invalid &&(formPermanent.get('direction_id')?.touched || formPermanent.get('direction_id')?.dirty),
+                     'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('direction_id')?.valid &&(formPermanent.get('direction_id')?.touched || formPermanent.get('direction_id')?.dirty)}"
+                     >
                         <option value="" selected disabled>Selectionner une direction</option>
                         @for(direction of dataAll?.directions;track direction?.id){
                            <option [ngValue]="direction">{{ direction?.libelle }}</option>   
                         }
                         <option value="Autre">autre</option>
                      </select>
+                     @if(formPermanent.get('direction_id')?.invalid && formPermanent.get('direction_id')?.touched){
+                        @if(formPermanent.get('direction_id')?.hasError('required')){
+                          
+                              <div class="text-red-500 text-xs">La direction est obligatoire</div>
+                      }
+                    }
+                    </div>
                      @if(suitedirection){
                         <button type="button" (click)="clickSuitedirection()" class="btn px-2  py-1/2 btn-primary btn-icon ">
                            Suite
@@ -294,7 +510,10 @@
                      }
                  </div>
                }@else{
-                  <input type="text"   formControlName="direction_id"  placeholder="Massar " class="form-control" />
+                  <input type="text"   formControlName="direction_id"  placeholder="Massar " class="form-control"
+                  [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('direction_id')?.invalid &&(formPermanent.get('direction_id')?.touched || formPermanent.get('direction_id')?.dirty),
+                  'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('direction_id')?.valid &&(formPermanent.get('direction_id')?.touched || formPermanent.get('direction_id')?.dirty)}"
+      />
                }
             </div>
          </div>
@@ -322,13 +541,24 @@
                   </label>
                   @if(!autrePole){
                     <div class="flex space-x-1">
-                        <select id="pole" formControlName="pole_id" (click)="selectedPole($event)" class="form-select">
+                       <div class="w-full">
+                        <select id="pole" formControlName="pole_id" (click)="selectedPole($event)" class="form-select"
+                        [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('pole_id')?.invalid &&(formPermanent.get('pole_id')?.touched || formPermanent.get('pole_id')?.dirty),
+                        'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('pole_id')?.valid &&(formPermanent.get('pole_id')?.touched || formPermanent.get('pole_id')?.dirty)}"
+                        >
                            <option value="" selected disabled>Selectionner une pôle</option>
                         @for(pole of poles;track pole.id){
                            <option [ngValue]="pole">{{ pole.libelle }}</option>
                         }
                            <option value="Autre">Autre</option>
                         </select>
+                        @if(formPermanent.get('pole_id')?.invalid && formPermanent.get('pole_id')?.touched){
+                           @if(formPermanent.get('pole_id')?.hasError('required')){
+                             
+                                 <div class="text-red-500 text-xs">Le pole est obligatoire</div>
+                         }
+                       }
+                       </div>
                         @if(suitepole){
                            <button type="button" (click)="clickSuitepole()" class="btn px-2  py-1/2 btn-primary btn-icon ">
                               Suite
@@ -341,14 +571,20 @@
                         }
                     </div>
                   }@else{
-                     <input type="text"   formControlName="pole_id"  placeholder="Massar " class="form-control" />
+                     <input type="text"   formControlName="pole_id"  placeholder="Massar " class="form-control"
+                     [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('pole_id')?.invalid &&(formPermanent.get('pole_id')?.touched || formPermanent.get('pole_id')?.dirty),
+                     'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('pole_id')?.valid &&(formPermanent.get('pole_id')?.touched || formPermanent.get('pole_id')?.dirty)}"
+                      />
                   }
                </div>
             }
             @if(!notExistPole){
                <div class="card-title">
                   <label for="base-input" class="form-label required">Pole</label>
-                  <input type="text"   formControlName="pole_id"  placeholder="entrez une pole " class="form-control" />
+                  <input type="text"   formControlName="pole_id"  placeholder="entrez une pole " class="form-control"
+                  [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('pole_id')?.invalid &&(formPermanent.get('pole_id')?.touched || formPermanent.get('pole_id')?.dirty),
+                  'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('pole_id')?.valid &&(formPermanent.get('pole_id')?.touched || formPermanent.get('pole_id')?.dirty)}"
+                  />
                </div>
             }
             
@@ -358,13 +594,24 @@
                </label>
                @if(!autreDepartement){
                 <div class="flex space-x-1">
-                  <select id="departement" formControlName="departement_id" (click)="selectedDepartement($event)" class="form-select">
-                     <option value="" selected disabled>Selectionner un département</option>
-                    @for(departement of departements;track departement.id){
-                     <option [ngValue]="departement">{{ departement?.libelle }}</option>
-                    }
-                     <option value="Autre">Autre</option>
-                  </select>
+                 <div class="w-full">
+                     <select id="departement" formControlName="departement_id" (click)="selectedDepartement($event)" class="form-select"
+                     [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('department_id')?.invalid &&(formPermanent.get('department_id')?.touched || formPermanent.get('department_id')?.dirty),
+                     'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('department_id')?.valid &&(formPermanent.get('department_id')?.touched || formPermanent.get('department_id')?.dirty)}"
+                     >
+                        <option value="" selected disabled>Selectionner un département</option>
+                     @for(departement of departements;track departement.id){
+                        <option [ngValue]="departement">{{ departement?.libelle }}</option>
+                     }
+                        <option value="Autre">Autre</option>
+                     </select>
+                     @if(formPermanent.get('departement_id')?.invalid && formPermanent.get('departement_id')?.touched){
+                        @if(formPermanent.get('departement_id')?.hasError('required')){
+                        
+                              <div class="text-red-500 text-xs">Le departement est obligatoire</div>
+                     }
+                  }
+                 </div>
                   @if(suiteservice){
                      <button type="button" (click)="clickSuitedepartement()" class="btn px-2  py-1/2 btn-primary btn-icon ">
                         Suite
@@ -377,14 +624,20 @@
                   }
                 </div>
                }@else{
-                  <input type="text"   formControlName="departement_id"  placeholder="Massar " class="form-control" />
+                  <input type="text"   formControlName="departement_id"  placeholder="Massar " class="form-control"
+                  [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('departement_id')?.invalid &&(formPermanent.get('departement_id')?.touched || formPermanent.get('departement_id')?.dirty),
+                  'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('departement_id')?.valid &&(formPermanent.get('departement_id')?.touched || formPermanent.get('departement_id')?.dirty)}"
+                  />
                }
             </div>
             }
             @if(!notExistDepartement){
                <div class="card-title">
                   <label for="base-input" class="form-label required">Département</label>
-                  <input type="text"   formControlName="departement_id"  placeholder="Entrez un departement " class="form-control" />
+                  <input type="text"   formControlName="departement_id"  placeholder="Entrez un departement " class="form-control"
+                  [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('departement_id')?.invalid &&(formPermanent.get('departement_id')?.touched || formPermanent.get('departement_id')?.dirty),
+                  'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('departement_id')?.valid &&(formPermanent.get('departement_id')?.touched || formPermanent.get('departement_id')?.dirty)}"
+                  />
                </div>
             }
             @if(poles?.length && departements?.length && services?.length){
@@ -392,21 +645,36 @@
                   <label for="service" class="form-label">
                   </label>
                   @if(!autreService){
-                     <select id="service" formControlName="service_id" (click)="selectedService($event)" class="form-select">
+                     <select id="service" formControlName="service_id" (click)="selectedService($event)" class="form-select"
+                     [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('service_id')?.invalid &&(formPermanent.get('service_id')?.touched || formPermanent.get('service_id')?.dirty),
+                     'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('service_id')?.valid &&(formPermanent.get('service_id')?.touched || formPermanent.get('service_id')?.dirty)}"
+                     >
                         <option value="" selected disabled>Selectionner un service</option>
                        @for(service of services;track service.id){
                         <option [ngValue]="service">{{ service?.libelle }}</option>
                        }
                         <option value="Autre">Autre</option>
                      </select> 
+                     @if(formPermanent.get('service_id')?.invalid && formPermanent.get('service_id')?.touched){
+                        @if(formPermanent.get('service_id')?.hasError('required')){
+                          
+                              <div class="text-red-500 text-xs">Le service est obligatoire</div>
+                      }
+                    }
                   }@else{
-                     <input type="text"   formControlName="service_id"  placeholder="Massar " class="form-control" />
+                     <input type="text"   formControlName="service_id"  placeholder="Massar " class="form-control" 
+                     [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('service_id')?.invalid &&(formPermanent.get('service_id')?.touched || formPermanent.get('service_id')?.dirty),
+                     'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('service_id')?.valid &&(formPermanent.get('service_id')?.touched || formPermanent.get('service_id')?.dirty)}"
+                     />
                   }
                </div>
             }@if(!notExistService){
                <div class="card-title">
                   <label for="base-input" class="form-label required">Service</label>
-                  <input type="text"   formControlName="service_id"  placeholder="Entrz une service " class="form-control" />
+                  <input type="text"   formControlName="service_id"  placeholder="Entrz une service " class="form-control" 
+                  [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('service_id')?.invalid &&(formPermanent.get('service_id')?.touched || formPermanent.get('service_id')?.dirty),
+                  'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('service_id')?.valid &&(formPermanent.get('service_id')?.touched || formPermanent.get('service_id')?.dirty)}"
+                  />
                </div>
             }
          </div>
@@ -441,19 +709,28 @@
             <div class="max-w-screen-md w-full">         
                <label for="responsable" class="form-label">
                </label>
-               <select id="responsable" formControlName="responsable_id"  class="form-select">
+               <select id="responsable" formControlName="responsable_id"  class="form-select"
+               [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('responsable_id')?.invalid &&(formPermanent.get('responsable_id')?.touched || formPermanent.get('responsable_id')?.dirty),
+               'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('responsable_id')?.valid &&(formPermanent.get('responsable_id')?.touched || formPermanent.get('responsable_id')?.dirty)}"
+               >
                   <option value="" selected disabled>Selectionner un responsable</option>
                @for(responsable of dataAll?.responsable;track responsable.id){
                   <option [ngValue]="responsable">{{ responsable?.prenom }} {{ responsable?.nom }}</option>
                }
                   <option>Autre</option>
-               </select>              
+               </select>       
+               @if(formPermanent.get('responsable_id')?.invalid && formPermanent.get('responsable_id')?.touched){
+                  @if(formPermanent.get('responsable_id')?.hasError('required')){
+                    
+                        <div class="text-red-500 text-xs">Le responsable est obligatoire</div>
+                }
+              }       
             </div>
             }
          </div>    
          <div class="mt-10 flex  gap-x-6">
             <!-- <button type="button" class="text-sm font-semibold leading-6 text-gray-900">Cancel</button> -->
-            <button type="submit" class="btn btn-primary btn-sm">Enregistrer</button>
+            <button type="submit" class="btn btn-primary btn-sm" [disabled]="!formPermanent.valid">Enregistrer</button>
          </div>      
       </div>
   </form>
