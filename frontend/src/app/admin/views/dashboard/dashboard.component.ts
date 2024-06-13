@@ -1,5 +1,6 @@
 import { CommonModule, formatDate } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { Chart, registerables } from 'chart.js';
 import { Images } from 'docs/assets/data/images';
 import { Interim } from 'src/app/_core/interface/interim';
@@ -15,7 +16,8 @@ Chart.register(...registerables);
   standalone: true,
   imports: [
     CommonModule,
-    ModalModule
+    ModalModule,
+    FormsModule
   ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
@@ -28,10 +30,11 @@ export class DashboardComponent implements OnInit {
   interimaire?:Interim 
   modalCompnent: ModalComponent;
   public userOne: string = Images.users.userOne;
-  apiImag=environment.apiImg;
+  public dataInterim?:Interim
+  apiImag=environment.apiInterim;
   shorting: boolean = false;
-
-  
+  faireCommentaire:boolean = true;
+  commentaire:string = "";
   constructor(private service:InterimService){
     this.modalCompnent = new ModalComponent();
   }
@@ -76,23 +79,62 @@ export class DashboardComponent implements OnInit {
       next:(response=>{
         console.log(response);
         this.dataInterims = response.data.interimaires
-        
       })
     })
   }
-  openModal(interim :Interim) {
+  openModal(interim :Interim)
+  {
     this.showModal = !this.showModal;
-    this.interimaire = interim
+    this.interimaire = interim;
+    console.log(this.interimaire);
     
   }
-
-  onModalCloseHandler(event: boolean) {
+  onModalCloseHandler(event: boolean)
+  {
     this.showModal = event;
+    this.faireCommentaire = true
   }
-  sortingUp() {
+  sortingUp()
+  {
     this.shorting = !this.shorting;
   }
-  sortingDown() {
+  sortingDown()
+  {
     this.shorting = !this.shorting;
+  }
+  rompre(interim:Interim)
+  {
+  }
+  clickCommentaire(event:string)
+  {
+    this.faireCommentaire = false;
+    let string = "Enregistrer";   
+    console.log(event.toLowerCase() === string.toLowerCase());  
+    if(event.toLowerCase() === string.toLowerCase())
+      {
+        console.log( this.commentaire); 
+        console.log(this.interimaire  );
+        let idUser = this.interimaire?.profile.id;
+        const data = {
+          commentaire:this.commentaire
+          };
+        this.service.isCommentaire(data,idUser!).subscribe({
+          next:(response=>{
+            console.log(response);
+            
+            if(response.statut==200)
+            {
+              if (this.interimaire) {
+                this.interimaire.profile = response.data;
+              }
+              this.showModal =false
+              this.faireCommentaire = true
+            }
+
+          })
+        })
+      }else{
+        this.commentaire = this.interimaire?.profile.commentaire!
+      }
   }
 }

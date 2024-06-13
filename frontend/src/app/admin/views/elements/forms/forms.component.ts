@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Images } from 'src/assets/data/images';
-import { DataDepartement, DataPole, DataService, Pole } from 'src/app/_core/interface/interim';
+import { Agence, DataDepartement, DataPole, DataService, Pole } from 'src/app/_core/interface/interim';
 import { DataALL } from 'src/app/_core/interface/permanent';
 import { PermanentService } from 'src/app/_core/services/permanent.service';
 import { AlertComponent } from 'src/app/shared/components/alert/alert.component';
@@ -24,6 +24,7 @@ export class FormsComponent implements AfterViewInit,OnInit
   poles:DataPole[]|undefined = [];
   departements:DataDepartement[]|undefined = [];
   services:DataService[]|undefined = [];
+  dataAgence?:Agence;
   responsable:boolean = true;
   formPermanent:FormGroup;
   fb = inject(FormBuilder);
@@ -46,6 +47,7 @@ export class FormsComponent implements AfterViewInit,OnInit
   suitepole :boolean =false;
   suiteservice :boolean =false;
   image:File|null=null; 
+  interimaire:boolean = false;
 
   constructor( ){
     this.formPermanent = this.fb.group({
@@ -69,7 +71,13 @@ export class FormsComponent implements AfterViewInit,OnInit
       pole_id:['',[Validators.required]],
       departement_id:['',[Validators.required]],
       service_id:['',[Validators.required]],
-      responsable_id:['',[Validators.required]]
+      responsable_id:['',[Validators.required]],
+      categorieInterim_id:['',[Validators.required]],
+      date_debut_contrat:[''],
+      date_fin_contrat:[''],
+      temps_presence_autre_structure_sonatel:[''],
+      DA:[],
+      DA_kangourou:[''],
     })
   }
   ngAfterViewInit(): void {}
@@ -104,10 +112,20 @@ export class FormsComponent implements AfterViewInit,OnInit
   }
   selectedStatut(event:Event)
   {
+    let option = this.formPermanent.get('statut_id')?.value;
      let autre =  this.Autre(event,'statut_id');
      if(autre===true){
       this.autreStatut = true
-     } 
+     }
+     if(option && option.id){
+       console.log(option);
+       let val ="interimaire";
+      if(option.libelle.toLowerCase()===val.toLowerCase()){
+        this.interimaire = true
+      }else{
+        this.interimaire = false;
+      }
+     }
   }
   selectedPoste(event:Event)
   {
@@ -132,9 +150,18 @@ export class FormsComponent implements AfterViewInit,OnInit
   }
   selectedAgence(event:Event)
   {
+    let select =this.formPermanent.get('agence_id')?.value;
    let autre = this.Autre(event,'agence_id');
    if(autre===true){
     this.autreAgence = true;
+   }else{
+    console.log(select);
+   if(select){
+     
+    this.dataAgence=this.dataAll?.agences.find(element=>element.libelle.toLowerCase() === select.libelle.toLowerCase())
+    console.log(this.dataAgence);
+   }
+    
    }
   }
   selectedLocau(event:Event)
@@ -154,8 +181,8 @@ export class FormsComponent implements AfterViewInit,OnInit
   selectedDirection(event:Event)
   {
     console.log((event.target as HTMLSelectElement).value);
-    this.poles = []
     let select =this.formPermanent.get('direction_id')?.value;
+    
     if(select )
     {
       this.notExistPole = true
@@ -177,11 +204,10 @@ export class FormsComponent implements AfterViewInit,OnInit
     let data = this.dataAll?.directions.find(element=>element.libelle.toLowerCase() === select.libelle.toLowerCase())
       this.poles = data?.poles;
       if(this.poles?.length == 0){
-        this.notExistPole = false
-        console.log(this.poles);     
+        this.notExistPole = false    
       }else{
-        this.notExistPole = true;
-        console.log(this.poles);        
+        this.notExistPole = true;     
+        this.autrePole = false  
       }
       this.suitedirection = false;
   }
@@ -194,9 +220,9 @@ export class FormsComponent implements AfterViewInit,OnInit
       this.notExistDepartement = false;
     }else{
       this.notExistDepartement = true;
+      this.autreDepartement = false;
     }
     this.suitepole = false;
-
   }
   clickSuitedepartement()
   {
@@ -207,6 +233,7 @@ export class FormsComponent implements AfterViewInit,OnInit
       this.notExistService = false;
     }else{
       this.notExistService = true
+      this.autreService = false;
     }
     this.suiteservice = false;
   }
@@ -216,12 +243,14 @@ export class FormsComponent implements AfterViewInit,OnInit
     if(select){
       if(select==="Autre"){
         let autre = this.Autre(event,'pole_id');
-        if(autre===true){
+        if(autre === true){
           this.autrePole = true;
           this.departements =[]
         }else{
+          this.autrePole = false;
         }
       }else{
+
        this.suitepole = true;
       }
     }
@@ -355,7 +384,8 @@ export class FormsComponent implements AfterViewInit,OnInit
     {
       formData.append('responsable_id',responsable.id)
     }
-    if(this.image){
+    if(this.image)
+    {
       formData.append('photo',this.image,this.image?.name);
       formData.append('nom',this.formPermanent.get('nom')?.value);
       formData.append('prenom',this.formPermanent.get('prenom')?.value);
@@ -365,7 +395,13 @@ export class FormsComponent implements AfterViewInit,OnInit
       formData.append('adresse',this.formPermanent.get('adresse')?.value);
       formData.append('telephone',this.formPermanent.get('telephone')?.value);
       formData.append('telephone_pro',this.formPermanent.get('telephone_pro')?.value);
-  }
+      formData.append('date_debut_contrat',this.formPermanent.get('date_debut_contrat')?.value)
+      formData.append('date_fin_contrat',this.formPermanent.get('date_fin_contrat')?.value)
+      formData.append('DA',this.formPermanent.get('DA')?.value)
+      formData.append('DA_kangourou',this.formPermanent.get('DA_kangourou')?.value)
+      formData.append('temps_presence_autre_structure_sonatel',this.formPermanent.get('temps_presence_autre_structure_sonatel')?.value)
+      formData.append('categorieInterim_id',this.formPermanent.get('categorieInterim_id')?.value.id)
+    }
     this.service.store(formData).subscribe({
       next:(response=>{
         console.log(response);

@@ -16,10 +16,19 @@ class ResponsableResponsableResource extends JsonResource
     {
         return [
             'id'=>$this->id,
-            'user'=>UserResource::make($this->user),
-            'service'=>$this->service ? serviceResponsableResource::make($this->service) : AgenceCommercialResponsableResource::make($this->agencecommercial),
-            // 'agence'=>AgenceCommercialeResource::make($this->agencecommercial),
-            // 'service'=>$this->service ? ServiceResource::make($this->service):AgenceCommercialeResource::make($this->agenceCommercial),
+            'profile'=>ProfileResource::make($this->profile),
+            'poste'=>PosteResource::make($this->poste),
+            'canal'=>RoleResource::make($this->canal),
+            'statut'=>RoleResource::make($this->statut),
+            'groupe'=>RoleResource::make($this->groupe),
+            'categorie'=>RoleResource::make($this->categoriegroupe),
+            'agence'=>AgenceResource::make($this->agence),
+            'direction'=>DirectionResponsableResource::make($this->direction),
+            'locau'=>LocauResource::make($this->locau),
+            'pole'=>PoleResponsableResource::make($this->pole),
+            'departement'=>DepartementResponsableResource::make($this->departement),
+            'service'=>ServiceResponsableResource::make($this->service),
+            // 'responsable'=>ResponsableResource::make($this->responsable),
         ];
     }
 }

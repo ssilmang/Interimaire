@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Profile;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\Response;
 
 use function PHPUnit\Framework\isNan;
@@ -67,5 +69,27 @@ class HeriteController extends Controller
         $class = "\\App\\Models\\" . $model;
         $statut =  $class::all();
         return $statut;
+    }
+    public function UserProfile(Request $request,$photo){
+        Validator::validate($request->all(),[
+                    'prenom'=>'required',
+                    'nom'=>'required',
+                    'matricule'=>'required|string|unique:profiles,matricule',
+                    'email'=>'required|unique:profiles,email',
+                    'telephone'=>['required','string','regex:/^(77|76|78|70|75)\d{7}$/','unique:profiles,telephone'],
+        ]);
+        $profile = Profile::firstOrCreate([
+            'nom'=>$request->nom,
+            'prenom'=>$request->prenom,
+            'matricule'=>$request->matricule,
+            'email'=>$request->email,
+            'telephone'=>$request->telephone,
+            'telephone_pro'=>$request->telephone_pro ? $request->telephone_pro : 0,
+            'photo'=>$photo,
+            'contrat'=>$request->contrat,
+            'adresse'=>$request->adresse,
+            'commentaire'=>$request->commentaire,
+       ]);
+       return $profile;
     }
 }

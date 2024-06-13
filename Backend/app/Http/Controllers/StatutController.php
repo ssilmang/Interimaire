@@ -7,6 +7,7 @@ use App\Http\Resources\DirectionResource;
 use App\Http\Resources\LocauResource;
 use App\Http\Resources\PermanentResource;
 use App\Http\Resources\PosteResource;
+use App\Http\Resources\ResponsableResource;
 use App\Http\Resources\RoleResource;
 use App\Http\Resources\UserResource;
 use App\Models\Canal;
@@ -46,7 +47,7 @@ class StatutController extends Controller
             'categories'=>RoleResource::collection($categorie),
             'agences'=>AgenceResource::collection($agence),
             'directions'=>DirectionResource::collection($direction),
-            'responsable'=>UserResource::collection($responsable),
+            'responsable'=>ResponsableResource::collection($responsable),
             'locaux'=>LocauResource::collection($locaux)
         ];
         return $this->response->response(Response::HTTP_OK,"All",$data);   

@@ -91,7 +91,7 @@ Route::controller(InterimController::class)->prefix('Interim')->group(function()
     Route::get('interimaires','index');
     Route::post('image','inserImage');
     Route::get('indexImage','indexImage');
-    
+    Route::put('profile/commentaire/{id}','editeCommentaire');
 });
 
 Route::controller(RemplacementsController::class)->prefix("Interim")->group(function(){

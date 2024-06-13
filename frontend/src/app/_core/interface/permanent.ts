@@ -6,16 +6,7 @@ export interface ResponsePermanent{
 
 export interface Permanent{
     id:number
-    nom:string
-    prenom:string
-    matricule:string
-    email:string
-    telephone:string
-    telephone_pro:string
-    photo:string
-    contrat:string
-    adresse:string
-    commentaire:string
+    profile:Profile
     status:boolean
     poste:Poste
     canal:Role
@@ -28,8 +19,25 @@ export interface Permanent{
     locau:Locau
     departement:Departement
     service:Service
-    responsable:User
+    responsable:Responsable
     collaborateurs:Permanent[]
+}
+export interface Responsable{
+    id:number
+    profile:Profile
+}
+export interface Profile{
+    id:number
+    nom:string
+    prenom:string
+    matricule:string
+    email:string
+    telephone:string
+    telephone_pro:string
+    photo:string
+    contrat:string
+    adresse:string
+    commentaire:string
 }
 export interface DataALL{
     canals:Role[]
@@ -39,7 +47,7 @@ export interface DataALL{
     categories:Role[]
     agences:Agence[]
     directions:DataDirection[]
-    responsable:User[]
+    responsable:Responsable[]
     locaux:Locau[]
 }
 export interface RequestPermanent{

@@ -36,7 +36,7 @@
 
     <div class="my-5"></div>
     
-   <section class="container mx-auto mt-10 w-full rounded-lg bg-white p-4 shadow-lg">
+   <section class=" mx-auto mt-5 w-full rounded-lg bg-white p-4 shadow-lg">
         <div class="mt-1">
             <div class="sm:rounded-lg">
                <div class="data-table">
@@ -98,31 +98,70 @@
                               <td class="ng-wind-data-item whitespace-nowrap font-medium text-gray-800">
                                 <div
                                     class="w-9 h-9 ml-5 rounded-full flex items-center justify-center overflow-hidden  border-2 border-gray-500">
-                                    <img class="w-full object-cover" [src]="apiImag +interim.avatar " alt="Profile">
+                                    <img class="w-full object-cover" [src]="apiImag +interim?.profile?.photo " alt="Profile">
                                 </div>
                               </td>
                               <td class="ng-wind-data-item text-center">
-                                 {{interim?.prenom}}
+                                 {{interim?.profile?.prenom}}
                               </td>
                               <td class="ng-wind-data-item text-center">
-                                 {{interim?.nom}}
+                                 {{interim?.profile?.nom}}
                               </td>
                               <td class="ng-wind-data-item text-center">
                                  {{interim?.poste?.libelle}}
                               </td>
                                 <td class="ng-wind-data-item text-center">
-                                    {{interim?.matricule}}
+                                    {{interim?.profile?.matricule}}
                                 </td>
                                 <td class="ng-wind-data-item text-center">
-                                    @if(interim?.responsable?.service?.departement?.pole?.libelle == 'N/A'){
-                                        {{interim?.responsable?.service?.departement?.pole?.direction?.locau?.code}}/{{ interim?.responsable?.service?.departement?.pole?.direction?.libelle}}/{{ interim?.responsable?.service?.departement?.libelle }}/{{ interim?.responsable?.service?.libelle }}
-                                    }@else{
-                                        {{interim?.responsable?.service?.departement?.pole?.direction?.locau?.code}}/{{ interim?.responsable?.service?.departement?.pole?.direction?.libelle}}/{{ interim?.responsable?.service?.departement?.pole?.libelle }}/{{ interim?.responsable?.service?.departement?.libelle }}/{{ interim?.responsable?.service?.libelle }}
+                                    @if(interim?.responsable?.service!=null){
+                                        @if(interim?.responsable?.service?.departement?.pole?.libelle == 'N/A'){
+                                            <button  class="cursor-default">{{ interim?.responsable?.service?.departement?.pole?.direction?.libelle}}/{{ interim?.responsable?.service?.departement?.libelle }}/{{ interim?.responsable?.service?.libelle }}</button>
+                                        }@else{
+                                        <button  class="cursor-default">{{ interim?.responsable?.service?.departement?.pole?.direction?.libelle}}/{{ interim?.responsable?.service?.departement?.pole?.libelle }}/{{ interim?.responsable?.service?.departement?.libelle }}/{{ interim?.responsable?.service?.libelle }}</button>
+                                        }
                                     }
+                                    @else if(interim?.responsable?.departement!=null){
+                                        @if(interim?.responsable?.departement?.pole?.libelle == 'N/A'){
+                                            <button  class="cursor-default">{{ interim?.responsable?.departement?.pole?.direction?.libelle}}/{{ interim?.responsable?.departement?.libelle }}</button>
+                                        }@else{
+                                        <button  class="cursor-default">{{ interim?.responsable?.departement?.pole?.direction?.libelle}}/{{ interim?.responsable?.departement?.pole?.libelle }}/{{ interim?.responsable?.departement?.libelle }}</button>
+                                        }
+                                    }
+                                    @else if(interim?.responsable?.pole!=null){
+                                        @if(interim?.responsable?.pole?.libelle == 'N/A'){
+                                            <button  class="cursor-default">{{ interim?.responsable?.pole?.direction?.libelle}}</button>
+                                        }@else{
+                                        <button  class="cursor-default">{{ interim?.responsable?.pole?.direction?.libelle}}/{{ interim?.responsable?.pole?.libelle }}</button>
+                                        } 
+                                    }
+                                    @else if(interim?.responsable?.direction!=null){                     
+                                            <button  class="cursor-default" >{{ interim?.responsable?.direction?.libelle}}</button>        
+                                    }  
                                 </td>
-                              <td class="ng-wind-data-item  text-center">
-                                <button (click)="openModal(interim)" class="mr-6 rounded  btn btn-outline-info bg-white-500    px-4 py-1 font-bold  hover:bg-indigo-500  hover:bg-blue-700 ">Détails</button>
-                                <button class=" rounded btn btn-outline-danger bg-white-500    px-4 py-1 font-bold  hover:bg-indigo-500   hover:bg-red-700">Rompre</button>
+                              <td class="ng-wind-data-item  text-center space-x-7">
+                                <button class="tooltip relative w-5 h-5 " >
+                                    <!-- <span class="tooltip-text absolute bg-green-600 py-1 px-5 text-white text-xs rounded  whitespace-nowrap  bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                                        Détails
+                                    </span> -->
+                                    <svg xmlns="http://www.w3.org/2000/svg"  (click)="openModal(interim)" class=" text-green-700 hover:text-green-800" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="currentColor" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM216 336h24V272H216c-13.3 0-24-10.7-24-24s10.7-24 24-24h48c13.3 0 24 10.7 24 24v88h8c13.3 0 24 10.7 24 24s-10.7 24-24 24H216c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-208a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"/>
+                                    </svg>
+                                </button>
+                                  <!-- <button (click)="openModal(interim)" class="mr-6 rounded ng-wind-data-item  btn btn-outline-info bg-white-500    px- py-1 font-bold  hover:bg-indigo-500  hover:bg-blue-700 ">Détails</button> -->
+                                <button class="tooltip relative w-3 h-3 ">
+                                    <!-- <span class="tooltip-text absolute bg-red-600 py-1 px-5 text-white text-xs rounded  whitespace-nowrap  bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                                        Rompre
+                                    </span> -->
+                                    <svg xmlns="http://www.w3.org/2000/svg" (click)="rompre(interim)" class=" text-red-600 hover:text-red-900 mt-2" viewBox="0 0 384 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="currentColor" d="M376.6 84.5c11.3-13.6 9.5-33.8-4.1-45.1s-33.8-9.5-45.1 4.1L192 206 56.6 43.5C45.3 29.9 25.1 28.1 11.5 39.4S-3.9 70.9 7.4 84.5L150.3 256 7.4 427.5c-11.3 13.6-9.5 33.8 4.1 45.1s33.8 9.5 45.1-4.1L192 306 327.4 468.5c11.3 13.6 31.5 15.4 45.1 4.1s15.4-31.5 4.1-45.1L233.7 256 376.6 84.5z"/></svg>
+
+                                </button>
+                                <button  class="tooltip relative w-5 h-5 ">
+                                    <!-- <span class="tooltip-text absolute bg-blue-600 py-1 px-5 text-white text-xs rounded  whitespace-nowrap  bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                                        Editer
+                                    </span> -->
+                                    <svg xmlns="http://www.w3.org/2000/svg" class=" text-blue-700 hover:text-blue-800" viewBox="0 0 640 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="currentColor" d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512H322.8c-3.1-8.8-3.7-18.4-1.4-27.8l15-60.1c2.8-11.3 8.6-21.5 16.8-29.7l40.3-40.3c-32.1-31-75.7-50.1-123.9-50.1H178.3zm435.5-68.3c-15.6-15.6-40.9-15.6-56.6 0l-29.4 29.4 71 71 29.4-29.4c15.6-15.6 15.6-40.9 0-56.6l-14.4-14.4zM375.9 417c-4.1 4.1-7 9.2-8.4 14.9l-15 60.1c-1.4 5.5 .2 11.2 4.2 15.2s9.7 5.6 15.2 4.2l60.1-15c5.6-1.4 10.8-4.3 14.9-8.4L576.1 358.7l-71-71L375.9 417z"/></svg>
+                                </button>
+                                  <!-- <button class=" rounded btn btn-outline-danger bg-white-500 ng-wind-data-item   px-4 py-1 font-bold  hover:bg-indigo-500   hover:bg-red-700">Rompre</button> -->
                               </td>
                            </tr>
                            }
@@ -180,48 +219,32 @@
     </section>
  
     <!-- Example Modal -->
-    <app-modal [show]="showModal" (closeModal)="onModalCloseHandler($event)">
+    <app-modal  [show]="showModal" (clickCommentaire)="clickCommentaire($event)" (closeModal)="onModalCloseHandler($event)" >
          <div class="sm:flex sm:items-start">
-           <!-- <div
-                class="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
-                <svg class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                    stroke="currentColor" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
-                </svg>
-            </div>
-            <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
-                <h3 class="text-base font-semibold leading-6 text-gray-900" id="modal-title">
-                    Deactivate account
-                </h3>
-                <div class="mt-2">
-                    <p class="text-sm text-gray-500">Are you sure you want to deactivate your account? All
-                        of your data will be permanently removed. This action cannot be undone.</p>
-                </div>
-            </div>-->
+
             <div class="flex justify-between space-x-24">
                 <div class="flex items-center gap-3 sticky top-0 bg-white px-8 py-3 shadow-[0_5px_5px_-5px] shadow-gray-600">
                     <div
                         class="w-32 h-30 flex items-center justify-center overflow-hidden  border-2 border-emerald-600">
-                        <img class="w-full object-cover" [src]="apiImag +interimaire?.avatar "  alt="Profile">
+                        <img class="w-full object-cover" [src]="apiImag +interimaire?.profile?.photo "  alt="Profile">
                     </div>
                 </div>
                 <div class="space-y-2 mt-3 justify-end">
                     <div class="font-mono flex">
                         <div ><strong>Prénom :</strong></div>
-                        <div>{{interimaire?.prenom}}</div>
+                        <div>{{interimaire?.profile?.prenom}}</div>
                     </div>
                     <div class="flex">
                         <div><strong>Nom :</strong></div>
-                        <div>{{interimaire?.nom}}</div>
+                        <div>{{interimaire?.profile?.nom}}</div>
                     </div>
                     <div class="flex">
                         <div><strong>Matricule :</strong></div>
-                        <div>{{interimaire?.matricule}}</div>
+                        <div>{{interimaire?.profile?.matricule}}</div>
                     </div>
                     <div class="flex">
                         <div><strong>Telephone :</strong></div>
-                        <div>{{interimaire?.telephone}}</div>
+                        <div>{{interimaire?.profile?.telephone}}</div>
                     </div>
                 </div>
             </div>
@@ -230,206 +253,236 @@
            <div> Poste: </div>
             <button type="button" class="btn btn-outline-secondary py-1  ">  {{interimaire?.poste?.libelle}}</button>
         </div>
-        <div class=" flex space-x-3 mt-5">
-            <div>
-                <div  class="tooltip relative">Lieu :
-                    <span class="tooltip-text absolute bg-green-600 py-1 px-5 text-white text-xs rounded  whitespace-nowrap  bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
-                        lieu d'execution
-                    </span>
+        @if(faireCommentaire){
+            <div class=" flex space-x-3 mt-5">
+                <div>
+                    <div  class="tooltip relative">Lieu :
+                        <span class="tooltip-text absolute bg-green-600 py-1 px-5 text-white text-xs rounded  whitespace-nowrap  bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                            lieu d'execution
+                        </span>
+                    </div>
+                    <button type="button" class="btn btn-outline-secondary me-2">{{interimaire?.responsable?.locau?.libelle}}
+                    </button>
                 </div>
-                <button type="button" class="btn btn-outline-secondary me-2">{{interimaire?.responsable?.service?.departement?.pole?.direction?.locau?.libelle}}
-                </button>
+                <div>
+                    <div >Responsable :</div>
+                    <button type="button" class="btn btn-outline-secondary me-2">{{interimaire?.responsable?.profile?.prenom }} {{interimaire?.responsable?.profile?.nom}}</button>
+                </div>
+                <div>
+                    <div>Structure :</div>
+                    @if(interimaire?.responsable?.service!=null){
+                        @if(interimaire?.responsable?.service?.departement?.pole?.libelle == 'N/A'){
+                            <button  class="btn btn-outline-secondary me-2">{{ interimaire?.responsable?.service?.departement?.pole?.direction?.libelle}}/{{ interimaire?.responsable?.service?.departement?.libelle }}/{{ interimaire?.responsable?.service?.libelle }}</button>
+                        }@else{
+                        <button  class="btn btn-outline-secondary me-2">{{ interimaire?.responsable?.service?.departement?.pole?.direction?.libelle}}/{{ interimaire?.responsable?.service?.departement?.pole?.libelle }}/{{ interimaire?.responsable?.service?.departement?.libelle }}/{{ interimaire?.responsable?.service?.libelle }}</button>
+                        }
+                    }
+                    @else if(interimaire?.responsable?.departement!=null){
+                        @if(interimaire?.responsable?.departement?.pole?.libelle == 'N/A'){
+                            <button  class="btn btn-outline-secondary me-2">{{ interimaire?.responsable?.departement?.pole?.direction?.libelle}}/{{ interimaire?.responsable?.departement?.libelle }}</button>
+                        }@else{
+                        <button  class="btn btn-outline-secondary me-2">{{ interimaire?.responsable?.departement?.pole?.direction?.libelle}}/{{ interimaire?.responsable?.departement?.pole?.libelle }}/{{ interimaire?.responsable?.departement?.libelle }}</button>
+                        }
+                    }
+                    @else if(interimaire?.responsable?.pole!=null){
+                        @if(interimaire?.responsable?.pole?.libelle == 'N/A'){
+                            <button  class="btn btn-outline-secondary me-2">{{ interimaire?.responsable?.pole?.direction?.libelle}}</button>
+                        }@else{
+                        <button  class="btn btn-outline-secondary me-2">{{ interimaire?.responsable?.pole?.direction?.libelle}}/{{ interimaire?.responsable?.pole?.libelle }}</button>
+                        } 
+                    }
+                    @else if(interimaire?.responsable?.direction!=null){                     
+                            <button  class="btn btn-outline-secondary me-2" >{{ interimaire?.responsable?.direction?.libelle}}</button>        
+                    }  
+                </div>
+                <div>
+                    <div>Agence :</div>
+                    <button type="button" class="btn btn-outline-secondary me-2">{{interimaire?.categorie?.agence?.libelle }}</button>
+                </div>
             </div>
-            <div>
-                <div >Responsable :</div>
-                <button type="button" class="btn btn-outline-secondary me-2">{{interimaire?.responsable?.user?.prenom }} {{interimaire?.responsable?.user?.nom}}</button>
+            <div class="flex space-x-3 mt-5">
+               <div>
+                    <div>Categorie :</div>
+                    <button type="button" class="btn btn-outline-secondary me-2">{{interimaire?.categorie?.libelle }}</button>
+               </div>
+               <div  class="flex flex-col">
+                    <button class="tooltip relative">Unitaire :
+                        <span class="tooltip-text absolute bg-green-600 py-1 px-5 text-white text-xs rounded  whitespace-nowrap  bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                            Coût Unitaire
+                        </span>
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary me-2 tooltip relative">{{interimaire?.categorie?.cout_unitaire_journalier }}
+                        <span class="tooltip-text absolute bg-black text-white text-xs rounded py-1 px-2 bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                            FCFA
+                        </span>
+                    </button>
+                </div>
+                <div  class="flex flex-col">
+                    <button class=" tooltip relative">Durée:
+                        <span class="tooltip-text absolute bg-green-600 py-1 px-5 text-white text-xs rounded  whitespace-nowrap  bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                            Durée Kangourou
+                        </span>
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary me-2">{{interimaire?.poste?.duree_kangurou }}
+                        <span class="tooltip-text absolute bg-black text-white text-xs rounded py-1 px-2 bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                            Jour
+                        </span>
+                    </button>
+                </div>
+               <div  class="flex flex-col">
+                    <button class=" tooltip relative">Montant :
+                        <span class="tooltip-text absolute bg-green-600 py-1 px-5 text-white text-xs rounded  whitespace-nowrap  bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                            Montant Kangourou
+                        </span>
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary me-2 tooltip relative">{{interimaire?.poste?.montant_kangurou }}
+                        <span class="tooltip-text absolute bg-black text-white text-xs rounded py-1 px-2 bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                            FCFA
+                        </span>
+                    </button>
+               </div>
+               <!-- <div>
+                    <div> Poste: </div>
+                    <button type="button" class="btn btn-outline-secondary me-2  ">  {{interimaire?.poste?.libelle}}</button>
+               </div> -->
+              
             </div>
-            <div>
-                <div>Structure :</div>
-               @if(interimaire?.responsable?.service?.departement?.pole?.libelle == 'N/A'){
-                   <button type="button" class="btn btn-outline-secondary me-2">{{interimaire?.responsable?.service?.departement?.pole?.direction?.locau?.code}}/{{ interimaire?.responsable?.service?.departement?.pole?.direction?.libelle}}/{{ interimaire?.responsable?.service?.departement?.libelle }}/{{ interimaire?.responsable?.service?.libelle }}</button>
-               }@else{
-                <button type="button" class="btn btn-outline-secondary me-2">{{interimaire?.responsable?.service?.departement?.pole?.direction?.locau?.code}}/{{ interimaire?.responsable?.service?.departement?.pole?.direction?.libelle}}/{{ interimaire?.responsable?.service?.departement?.pole?.libelle }}/{{ interimaire?.responsable?.service?.departement?.libelle }}/{{ interimaire?.responsable?.service?.libelle }}</button>
-               }
+            @for(contrat of interimaire?.contrats;track contrat.id){      
+            <div class=" flex space-x-3 mt-5">
+                <div  class="flex flex-col">
+                    <button class=" tooltip relative">Début :
+                        <span class="tooltip-text absolute bg-green-600 py-1 px-5 text-white text-xs rounded  whitespace-nowrap  bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                            Début Contrat
+                        </span>
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary me-2 tooltip relative">
+                        {{contrat?.date_debut_contrat}}
+                     </button>
+                </div>
+                <div  class="flex flex-col">
+                    <button class=" tooltip relative" >Fin :
+                        <span class="tooltip-text absolute bg-green-600 py-1 px-5 text-white text-xs rounded  whitespace-nowrap  bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                            Fin Contrat
+                        </span>
+                    </button> 
+                    <button type="button" class="btn btn-outline-secondary me-2 tooltip relative">{{contrat?.date_fin_contrat}}</button>
+                </div>
+                <div  class="flex flex-col">
+                    <button class="tooltip relative">Presence :
+                        <span class="tooltip-text absolute bg-green-600 py-1 px-5 text-white text-xs rounded  whitespace-nowrap  bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                            Temps Presence Structure
+                        </span>
+                    </button>
+                    <button type="button"  class="btn btn-outline-secondary me-2 tooltip relative">{{contrat?.temps_presence_structure_actuel}}
+                        <span class="tooltip-text absolute bg-black  text-white text-xs rounded py-1 px-2 bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                            JOUR
+                        </span>
+                    </button>
+                </div>
+                <div  class="flex flex-col">
+                    <button class="tooltip relative"> Autre  :
+                        <span class="tooltip-text absolute bg-green-600 py-1 px-5 text-white text-xs rounded  whitespace-nowrap  bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                            Presence Autre Structure
+                        </span>
+                    </button>
+                    <button type="button"  class="btn btn-outline-secondary me-2 tooltip relative">
+                        {{contrat?.temps_presence_autre_structure_sonatel}}
+                        <span class="tooltip-text absolute bg-black text-white text-xs rounded py-1 px-2 bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                            MOIS
+                        </span>
+                     </button>
+                </div>
+                <div  class="flex flex-col">
+                    <button class="tooltip relative"> Cumule  :
+                        <span class="tooltip-text absolute bg-green-600 py-1 px-5 text-white text-xs rounded  whitespace-nowrap  bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                            Cumule Presence structure:
+                        </span>
+                    </button> 
+                    <button type="button"  class="btn btn-outline-secondary me-2 tooltip relative">{{contrat?.cumul_presence_sonatel}}
+                        <span class="tooltip-text absolute bg-black text-white text-xs rounded py-1 px-2 bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                            MOIS
+                        </span>
+                    </button>
+                </div>
             </div>
-            <div>
-                <div>Agence :</div>
-                <button type="button" class="btn btn-outline-secondary me-2">{{interimaire?.categorie?.agence?.libelle }}</button>
+            <div class=" flex space-x-3 space-y-2 mt-5">
+                <div  class="flex flex-col">
+                    <button class="tooltip relative mt-1"> Contrat :
+                        <span class="tooltip-text absolute bg-green-600 py-1 px-5 text-white text-xs rounded  whitespace-nowrap  bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                            Durée Contrat
+                        </span>
+                    </button>
+                    <button type="button"  class="btn btn-outline-secondary me-2 tooltip relative">{{contrat?.duree_contrat}}
+                        <span class="tooltip-text absolute bg-black text-white text-xs rounded py-1 px-2 bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                            MOIS
+                        </span>
+                    </button>
+                </div>
+                <div  class="flex flex-col">
+                    <button class="tooltip relative"> Reste  :
+                        <span class="tooltip-text absolute bg-green-600 py-1 px-5 text-white text-xs rounded  whitespace-nowrap  bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                            Durée Restant
+                        </span>
+                    </button>
+                    <button type="button"  class="btn btn-outline-secondary me-2 tooltip relative">
+                        {{contrat?.duree_contrat_restant}}
+                        <span class="tooltip-text absolute bg-black text-white text-xs rounded py-1 px-2 bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                            MOIS
+                        </span>
+                     </button>
+                </div>
+                <div  class="flex flex-col">
+                    <button 
+                    class="tooltip relative"> Mensuel  :
+                        <span class="tooltip-text absolute bg-green-600 py-1 px-5 text-white text-xs rounded  whitespace-nowrap  bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                            Coût Mensuel
+                        </span>
+                    </button> 
+                    <button type="button"  class="btn btn-outline-secondary me-2 tooltip relative">{{contrat?.cout_mensuel}}
+                        <span class="tooltip-text absolute bg-black text-white text-xs rounded py-1 px-2 bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                            FCFA
+                        </span>
+                    </button>
+                </div>
+                <div  class="flex flex-col">
+                    <button class="tooltip relative">Global  :
+                        <span class="tooltip-text absolute bg-green-600 py-1 px-5 text-white text-xs rounded  whitespace-nowrap  bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                            Coût Global 
+                        </span>
+                    </button>
+                    <button type="button"  class="btn btn-outline-secondary me-2 tooltip relative">{{contrat?.cout_global}}
+                        <span class="tooltip-text absolute bg-black text-white text-xs rounded py-1 px-2 bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                            FCFA
+                        </span>
+                    </button>
+                </div>
+                <div>
+                    <div>DA :</div>
+                    <button type="button" class="btn btn-outline-secondary me-2">
+                        {{contrat?.DA}}
+                     </button>
+                </div>
             </div>
-        </div>
-        <div class="flex space-x-3 mt-5">
-           <div>
-                <div>Categorie :</div>
-                <button type="button" class="btn btn-outline-secondary me-2">{{interimaire?.categorie?.libelle }}</button>
-           </div>
-           <div  class="flex flex-col">
-                <button class="tooltip relative">Unitaire :
-                    <span class="tooltip-text absolute bg-green-600 py-1 px-5 text-white text-xs rounded  whitespace-nowrap  bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
-                        Coût Unitaire
-                    </span>
-                </button>
-                <button type="button" class="btn btn-outline-secondary me-2 tooltip relative">{{interimaire?.categorie?.cout_unitaire_journalier }}
-                    <span class="tooltip-text absolute bg-black text-white text-xs rounded py-1 px-2 bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
-                        FCFA
-                    </span>
-                </button>
+            <div class=" flex space-x-3 mt-5">
+                <div class="flex flex-col">
+                    <button class="tooltip relative"> Kangourou  :
+                        <span class="tooltip-text absolute bg-green-600 py-1 px-5 text-white text-xs rounded  whitespace-nowrap  bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                            DA kangourou
+                        </span>
+                    </button> 
+                    <button type="button" class="btn btn-outline-secondary me-2">{{contrat?.DA_kangurou}}</button>
+                </div>
+                @if(interimaire?.profile?.commentaire !== null){
+                    <div class="flex w-full flex-col">
+                        <button class="" > Commentaire</button> 
+                        <textarea name="" readonly  class="border w-full border-gray-600 bg-gray-100">{{ interimaire?.profile?.commentaire }}</textarea>
+                    </div>
+                }
             </div>
-            <div  class="flex flex-col">
-                <button class=" tooltip relative">Durée:
-                    <span class="tooltip-text absolute bg-green-600 py-1 px-5 text-white text-xs rounded  whitespace-nowrap  bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
-                        Durée Kangourou
-                    </span>
-                </button>
-                <button type="button" class="btn btn-outline-secondary me-2">{{interimaire?.poste?.duree_kangurou }}
-                    <span class="tooltip-text absolute bg-black text-white text-xs rounded py-1 px-2 bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
-                        Jour
-                    </span>
-                </button>
-            </div>
-           <div  class="flex flex-col">
-                <button class=" tooltip relative">Montant :
-                    <span class="tooltip-text absolute bg-green-600 py-1 px-5 text-white text-xs rounded  whitespace-nowrap  bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
-                        Montant Kangourou
-                    </span>
-                </button>
-                <button type="button" class="btn btn-outline-secondary me-2 tooltip relative">{{interimaire?.poste?.montant_kangurou }}
-                    <span class="tooltip-text absolute bg-black text-white text-xs rounded py-1 px-2 bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
-                        FCFA
-                    </span>
-                </button>
-           </div>
-           <!-- <div>
-                <div> Poste: </div>
-                <button type="button" class="btn btn-outline-secondary me-2  ">  {{interimaire?.poste?.libelle}}</button>
-           </div> -->
-          
-        </div>
-        @for(contrat of interimaire?.contrats;track contrat.id){      
-        <div class=" flex space-x-3 mt-5">
-            <div  class="flex flex-col">
-                <button class=" tooltip relative">Début :
-                    <span class="tooltip-text absolute bg-green-600 py-1 px-5 text-white text-xs rounded  whitespace-nowrap  bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
-                        Début Contrat
-                    </span>
-                </button>
-                <button type="button" class="btn btn-outline-secondary me-2 tooltip relative">
-                    {{contrat?.date_debut_contrat}}
-                 </button>
-            </div>
-            <div  class="flex flex-col">
-                <button class=" tooltip relative" >Fin :
-                    <span class="tooltip-text absolute bg-green-600 py-1 px-5 text-white text-xs rounded  whitespace-nowrap  bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
-                        Fin Contrat
-                    </span>
-                </button> 
-                <button type="button" class="btn btn-outline-secondary me-2 tooltip relative">{{contrat?.date_fin_contrat}}</button>
-            </div>
-            <div  class="flex flex-col">
-                <button class="tooltip relative">Presence :
-                    <span class="tooltip-text absolute bg-green-600 py-1 px-5 text-white text-xs rounded  whitespace-nowrap  bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
-                        Temps Presence Structure
-                    </span>
-                </button>
-                <button type="button"  class="btn btn-outline-secondary me-2 tooltip relative">{{contrat?.temps_presence_structure_actuel}}
-                    <span class="tooltip-text absolute bg-black  text-white text-xs rounded py-1 px-2 bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
-                        JOUR
-                    </span>
-                </button>
-            </div>
-            <div  class="flex flex-col">
-                <button class="tooltip relative"> Autre  :
-                    <span class="tooltip-text absolute bg-green-600 py-1 px-5 text-white text-xs rounded  whitespace-nowrap  bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
-                        Presence Autre Structure
-                    </span>
-                </button>
-                <button type="button"  class="btn btn-outline-secondary me-2 tooltip relative">
-                    {{contrat?.temps_presence_autre_structure_sonatel}}
-                    <span class="tooltip-text absolute bg-black text-white text-xs rounded py-1 px-2 bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
-                        MOIS
-                    </span>
-                 </button>
-            </div>
-            <div  class="flex flex-col">
-                <button class="tooltip relative"> Cumule  :
-                    <span class="tooltip-text absolute bg-green-600 py-1 px-5 text-white text-xs rounded  whitespace-nowrap  bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
-                        Cumule Presence structure:
-                    </span>
-                </button> 
-                <button type="button"  class="btn btn-outline-secondary me-2 tooltip relative">{{contrat?.cumul_presence_sonatel}}
-                    <span class="tooltip-text absolute bg-black text-white text-xs rounded py-1 px-2 bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
-                        MOIS
-                    </span>
-                </button>
-            </div>
-        </div>
-        <div class=" flex space-x-3 space-y-2 mt-5">
-            <div  class="flex flex-col">
-                <button class="tooltip relative mt-1"> Contrat :
-                    <span class="tooltip-text absolute bg-green-600 py-1 px-5 text-white text-xs rounded  whitespace-nowrap  bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
-                        Durée Contrat
-                    </span>
-                </button>
-                <button type="button"  class="btn btn-outline-secondary me-2 tooltip relative">{{contrat?.duree_contrat}}
-                    <span class="tooltip-text absolute bg-black text-white text-xs rounded py-1 px-2 bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
-                        MOIS
-                    </span>
-                </button>
-            </div>
-            <div  class="flex flex-col">
-                <button class="tooltip relative"> Reste  :
-                    <span class="tooltip-text absolute bg-green-600 py-1 px-5 text-white text-xs rounded  whitespace-nowrap  bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
-                        Durée Restant
-                    </span>
-                </button>
-                <button type="button"  class="btn btn-outline-secondary me-2 tooltip relative">
-                    {{contrat?.duree_contrat_restant}}
-                    <span class="tooltip-text absolute bg-black text-white text-xs rounded py-1 px-2 bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
-                        MOIS
-                    </span>
-                 </button>
-            </div>
-            <div  class="flex flex-col">
-                <button 
-                class="tooltip relative"> Mensuel  :
-                    <span class="tooltip-text absolute bg-green-600 py-1 px-5 text-white text-xs rounded  whitespace-nowrap  bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
-                        Coût Mensuel
-                    </span>
-                </button> 
-                <button type="button"  class="btn btn-outline-secondary me-2 tooltip relative">{{contrat?.cout_mensuel}}
-                    <span class="tooltip-text absolute bg-black text-white text-xs rounded py-1 px-2 bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
-                        FCFA
-                    </span>
-                </button>
-            </div>
-            <div  class="flex flex-col">
-                <button class="tooltip relative">Global  :
-                    <span class="tooltip-text absolute bg-green-600 py-1 px-5 text-white text-xs rounded  whitespace-nowrap  bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
-                        Coût Global 
-                    </span>
-                </button>
-                <button type="button"  class="btn btn-outline-secondary me-2 tooltip relative">{{contrat?.cout_global}}
-                    <span class="tooltip-text absolute bg-black text-white text-xs rounded py-1 px-2 bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
-                        FCFA
-                    </span>
-                </button>
-            </div>
-            <div>
-                <div>DA :</div>
-                <button type="button" class="btn btn-outline-secondary me-2">
-                    {{contrat?.DA}}
-                 </button>
-            </div>
-        </div>
-        <div class=" flex space-x-3 mt-5">
-            <div class="flex flex-col">
-                <button class="tooltip relative"> Kangourou  :
-                    <span class="tooltip-text absolute bg-green-600 py-1 px-5 text-white text-xs rounded  whitespace-nowrap  bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
-                        DA kangourou
-                    </span>
-                </button> 
-                <button type="button" class="btn btn-outline-secondary me-2">{{contrat?.DA_kangurou}}</button>
-            </div>
-        </div>
+            }
+        }@else{
+            <textarea [(ngModel)]="commentaire"  class="m-3 w-full h-32 border border-gray-600" name="" id=""></textarea>
         }
     </app-modal>
+
 </div>

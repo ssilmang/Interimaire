@@ -18,7 +18,6 @@ return new class extends Migration
         Schema::create('interims', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Categorie::class)->constrained()->cascadeOnDelete();
-            $table->foreignIdFor(Responsable::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(Poste::class)->constrained()->cascadeOnDelete();
             $table->timestamps();
         });

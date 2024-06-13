@@ -162,13 +162,13 @@
                 <div class="border border-gray-600 rounded-lg p-4  w-full space-x-12 flex items-center">
                     <div class="bg-gray-800 rounded-lg p-1">
                         <div class="flex h-32 w-24  overflow-hidden border-2 border-gray-500">
-                        <img class="w-full h-full object-contain" [src]="apiImg + dataDV?.photo" alt="Profile">
+                        <img class="w-full h-full object-contain" [src]="apiImg + dataDV?.profile?.photo" alt="Profile">
                         </div>
                     </div>
                     <div class="ml-4">
-                        <h2 class="text-xl font-bold "> {{ dataDV?.prenom }} {{ dataDV?.nom }}</h2>
-                        <p class="">Matricule : {{ dataDV?.matricule }}</p>
-                        <p class="">Telephone : {{ dataDV?.telephone }}</p>
+                        <h2 class="text-xl font-bold "> {{ dataDV?.profile?.prenom }} {{ dataDV?.profile?.nom }}</h2>
+                        <p class="">Matricule : {{ dataDV?.profile?.matricule }}</p>
+                        <p class="">Telephone : {{ dataDV?.profile?.telephone }}</p>
                         <p class="">Structure :{{ dataDV?.direction?.libelle}}</p>
                         <button type="button" (click)="afficherDetails(dataDV)" class="btn btn-success btn-icon ">
                             Détails
@@ -193,13 +193,13 @@
                 <div  class="border border-gray-600 rounded-lg p-4   w-full flex items-center">
                     <div class="bg-gray-800 rounded-lg p-1 cursor-pointer" (click)="afficheChefService(collab)">
                         <div class="flex h-32 w-20  overflow-hidden border-2 border-gray-500">
-                            <img class="w-full h-full object-contain" [src]="apiImg + collab?.photo" alt="Profile">
+                            <img class="w-full h-full object-contain" [src]="apiImg + collab?.profile?.photo" alt="Profile">
                         </div>
                     </div>
                     <div class="ml-4">
-                        <h2 class="text-xl font-bold "> {{ collab?.prenom }} {{ collab?.nom }}</h2>
-                        <p class="">Matricule : {{ collab?.matricule }}</p>
-                        <p class="">Telephone : {{ collab?.telephone }}</p>
+                        <h2 class="text-xl font-bold "> {{ collab?.profile?.prenom }} {{ collab?.profile?.nom }}</h2>
+                        <p class="">Matricule : {{ collab?.profile?.matricule }}</p>
+                        <p class="">Telephone : {{ collab?.profile?.telephone }}</p>
                         <p class="">Structure :
                             @if(collab?.service!=null){
                                 @if(collab?.service?.departement?.pole?.libelle == 'N/A'){
@@ -250,17 +250,17 @@
                <div class="flex items-center gap-3 sticky top-0 bg-white px-8 py-3 shadow-[0_5px_5px_-5px] shadow-gray-600">
                 <div class="bg-gray-800 rounded-lg p-1">
                     <div  class="flex  w-34 h-32 overflow-hidden border-2 border-gray-500">
-                        <img class="w-full h-full object-contain" [src]="apiImg + dataDetails?.photo" alt="Profile">
+                        <img class="w-full h-full object-contain" [src]="apiImg + dataDetails?.profile?.photo" alt="Profile">
                     </div>
                 </div>
                </div>
                <div class="space-y-2 mt-3 justify-end">
                    <div class="font-mono text-xl font-bold flex">
-                       <div>{{dataDetails?.prenom}} {{dataDetails?.nom}}</div>
+                       <div>{{dataDetails?.profile?.prenom}} {{dataDetails?.profile?.nom}}</div>
                    </div>
                    <div class="flex">
                        <div><strong>Matricule :</strong></div>
-                       <div>{{dataDetails?.matricule}}</div>
+                       <div>{{dataDetails?.profile?.matricule}}</div>
                    </div>
                    <div class="flex ">
                     <div>Structure :</div>
@@ -296,13 +296,13 @@
                        <div [hidden]="isDropdownOpen"  class="z-9 absolute  my-4 border border-gray-800  text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600" id="user-dropdown">
                         <ul class="py-2 mt-2" aria-labelledby="user-menu-button">
                           <li>
-                            <a title="Numéro Téléphone" class="block tooltip relative px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">{{ dataDetails?.telephone }} </a>
+                            <a title="Numéro Téléphone" class="block tooltip relative px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">{{ dataDetails?.profile?.telephone }} </a>
                           </li>
                           <li>
-                            <a  title="Numéro Téléphone Pro" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">{{ dataDetails?.telephone_pro }}</a>
+                            <a  title="Numéro Téléphone Pro" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">{{ dataDetails?.profile?.telephone_pro }}</a>
                           </li>
                           <li>
-                            <a title="Mail Professionnel" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">{{ dataDetails?.email }}</a>
+                            <a title="Mail Professionnel" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">{{ dataDetails?.profile?.email }}</a>
                           </li>
                         </ul>
                       </div>
@@ -350,7 +350,7 @@
            @if(dataDetails?.responsable !=null){
                <div>
                   <div >Responsable :</div>
-                  <button type="button" class="btn btn-outline-secondary me-2">{{dataDetails?.responsable?.prenom }} {{dataDetails?.responsable?.nom}}</button>
+                  <button type="button" class="btn btn-outline-secondary me-2">{{dataDetails?.responsable?.profile?.prenom }} {{dataDetails?.responsable?.profile?.nom}}</button>
               </div>
            }
            <div>

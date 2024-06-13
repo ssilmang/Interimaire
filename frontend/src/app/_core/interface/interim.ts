@@ -1,3 +1,5 @@
+import { Permanent, Profile } from "./permanent"
+
 export interface Response<T> {
     statut:number
     message:string
@@ -8,15 +10,11 @@ export interface DataInterim{
 }
 export interface Interim{
     id:number
-    nom:string
-    prenom:string
-    telephone:number
-    matricule:string
-    avatar:string
+   profile:Profile
     contrats:Contrat[]
     categorie:Categorie
     poste:Poste
-    responsable:Responsable
+    responsable:Permanent
 }
 export interface Contrat{
     id:number
@@ -44,7 +42,7 @@ export interface Categorie{
 export interface Agence{
     id:number
     libelle:string
-    categorie:Categorie[]
+    categories:Categorie[]
 }
 export interface Poste{
     id:number

@@ -60,4 +60,8 @@ class Permanent extends Model
     public function locau(){
         return $this->belongsTo(Locau::class);
     }
+    public function profile()
+    {
+        return $this->belongsTo(Profile::class);
+    }
 }

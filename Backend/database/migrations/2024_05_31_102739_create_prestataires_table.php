@@ -18,16 +18,6 @@ return new class extends Migration
     {
         Schema::create('prestataires', function (Blueprint $table) {
             $table->id();
-            $table->string('prenom');
-            $table->string('nom');
-            $table->string('telephone');
-            $table->string('matricule');
-            $table->string('email')->nullable();
-            $table->string('contrat')->nullable();
-            $table->string('adresse')->nullable();
-            $table->string('telephone_pro')->nullable()->default(0);
-            $table->string('avatar')->nullable();
-            $table->longText('commentaire')->nullable();
             $table->foreignIdFor(Canal::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(Groupe::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(Categoriegroupe::class)->constrained()->cascadeOnDelete();

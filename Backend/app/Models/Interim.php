@@ -24,10 +24,14 @@ class Interim extends Model
     }
     public function responsable()
     {
-        return $this->belongsTo(Responsable::class);
+        return $this->belongsTo(Permanent::class);
     }
     public function contrats()
     {
         return $this->hasMany(Contrat::class);
+    }
+    public function profile()
+    {
+        return $this->belongsTo(Profile::class);
     }
 }
