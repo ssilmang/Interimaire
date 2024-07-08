@@ -11,4 +11,11 @@ export class CommonService {
     let rootRoute = '/';
     return rootRoute.concat(paths.filter(Boolean).join('/'));
   }
+  public prepareRouteId( Id: number,...paths: string[]): string {
+    let route = `/${paths.filter(Boolean).join('/')}`;
+  if (Id !== undefined) {
+    route =route.replace(/\/:id/,`/${Id}`);
+  }
+  return route;
+  }
 }

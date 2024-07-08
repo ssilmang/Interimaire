@@ -2,7 +2,7 @@
    <div class="card-title">
       <!-- <h3 class="mb-8 text-xl font-bold leading-none">Table</h3> -->
    </div>
-   <div class="mt-3">
+   <div class="">
       <div class="sm:rounded-lg">
          <div class="data-table">
     
@@ -24,7 +24,7 @@
                   <td class="ng-wind-data-item">
                      {{rowData?.poste?.libelle}}
                   </td>
-                  <td class="ng-wind-data-item text-center">
+                  <td class="ng-wind-data-item text-center space-x-2">
                      <button type="button" (click)="afficherDetails(rowData)" class="btn btn-success py-1 btn-icon ">
                         Détails
                         <svg class="rtl:rotate-180 w-2.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
@@ -33,23 +33,23 @@
                               d="M1 5h12m0 0L9 1m4 4L9 9" />
                         </svg>
                      </button>
+                     <button  class="tooltip relative w-7 h-7 " >
+                        <svg xmlns="http://www.w3.org/2000/svg" (click)="editer(rowData)" class="mt-3 text-blue-700 hover:text-blue-800" viewBox="0 0 640 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="currentColor" d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512H322.8c-3.1-8.8-3.7-18.4-1.4-27.8l15-60.1c2.8-11.3 8.6-21.5 16.8-29.7l40.3-40.3c-32.1-31-75.7-50.1-123.9-50.1H178.3zm435.5-68.3c-15.6-15.6-40.9-15.6-56.6 0l-29.4 29.4 71 71 29.4-29.4c15.6-15.6 15.6-40.9 0-56.6l-14.4-14.4zM375.9 417c-4.1 4.1-7 9.2-8.4 14.9l-15 60.1c-1.4 5.5 .2 11.2 4.2 15.2s9.7 5.6 15.2 4.2l60.1-15c5.6-1.4 10.8-4.3 14.9-8.4L576.1 358.7l-71-71L375.9 417z"/></svg>
+                        <span class="tooltip-text">Editer</span>
+                    </button>
                   </td>
                </tr>
             </tbody>
            </table>
        </div>
            <div class="table-container">
+            @if( rowData?.collaborateurs?.length != 0 && rowData?.collaborateurs?.length != undefined){
                <table class="ng-wind-table relative">
                   <thead class="ng-wind-table-header">
                      <tr>
                         <th scope="col" class="ng-wind-header-item">
-                           photo
-                           <button (click)="sortingUp()" *ngIf="shorting === false" class="ml-2 text-lg">
-                              <i class="bi bi-arrow-down-short"></i>
-                           </button>
-                           <button (click)="sortingDown()" *ngIf="shorting === true" class="ml-2 text-lg">
-                              <i class="bi bi-arrow-up-short"></i>
-                           </button>
+                           
+                           
                         </th>
                         <th scope="col" class="ng-wind-header-item">
                            prenom
@@ -66,8 +66,8 @@
                      </tr>
                   </thead>
 
-                  @if( rowData?.collaborateurs?.length == 0 || rowData?.collaborateurs?.length == undefined){
-                  <div class="absolute top-52 w-full text-center">
+                
+                  <!-- <div class="absolute top-52 w-full text-center">
                      <button disabled type="button"
                         class="me-2 inline-flex items-center rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:text-blue-700 focus:ring-2 focus:ring-blue-700">
                         <svg aria-hidden="true" role="status"
@@ -82,15 +82,15 @@
                         </svg>
                         Loading...
                      </button>
-                  </div>
-                  } @else {
+                  </div> -->
+                  
                   <tbody>
                      @for (collob of rowData?.collaborateurs; track collob?.id){
                      <tr class="border-b bg-white hover:bg-gray-50">
                         <td class="ng-wind-data-item whitespace-nowrap font-medium text-gray-800">
-                           <div (click)="afficheChefService(collob)" class="flex cursor-pointer rounded-full h-8 w-8 overflow-hidden border-2 border-gray-500">
+                           <a   [routerLink]="commonService.prepareRouteId(collob.id,appRoutes.Admin, adminRoutes.Elements, elementRoutes.DataTable)"  class="flex cursor-pointer rounded-full h-8 w-8 overflow-hidden border-2 border-gray-500">
                               <img class="w-full h-full object-contain" [src]="apiImg + collob?.profile?.photo" alt="Profile">
-                          </div>
+                           </a>
                         </td>
                         <td class="ng-wind-data-item">
                            {{collob?.profile?.prenom}}
@@ -101,7 +101,7 @@
                         <td class="ng-wind-data-item">
                            {{collob?.poste?.libelle}}
                         </td>
-                        <td class="ng-wind-data-item text-center">
+                        <td class="ng-wind-data-item text-center space-x-2">
                            <button type="button" (click)="afficherDetails(collob)" class="btn btn-success py-1 btn-icon ">
                               Détails
                               <svg class="rtl:rotate-180 w-2.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
@@ -110,12 +110,16 @@
                                     d="M1 5h12m0 0L9 1m4 4L9 9" />
                               </svg>
                            </button>
+                           <button  class="tooltip relative w-7 h-7 " >
+                              <svg xmlns="http://www.w3.org/2000/svg" (click)="editer(collob)" class="mt-3 text-blue-700 hover:text-blue-800" viewBox="0 0 640 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="currentColor" d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512H322.8c-3.1-8.8-3.7-18.4-1.4-27.8l15-60.1c2.8-11.3 8.6-21.5 16.8-29.7l40.3-40.3c-32.1-31-75.7-50.1-123.9-50.1H178.3zm435.5-68.3c-15.6-15.6-40.9-15.6-56.6 0l-29.4 29.4 71 71 29.4-29.4c15.6-15.6 15.6-40.9 0-56.6l-14.4-14.4zM375.9 417c-4.1 4.1-7 9.2-8.4 14.9l-15 60.1c-1.4 5.5 .2 11.2 4.2 15.2s9.7 5.6 15.2 4.2l60.1-15c5.6-1.4 10.8-4.3 14.9-8.4L576.1 358.7l-71-71L375.9 417z"/></svg>
+                              <span class="tooltip-text">Editer</span>
+                          </button>
                         </td>
                      </tr>
                      }
                   </tbody>
-                  }
                </table>
+            }
             </div>
          </div>
          <nav class="ng-wind-table-pagination" aria-label="Table navigation">
@@ -158,7 +162,14 @@
       </div>
    </div>
 </div>
-<app-modal [show]="showModal" (closeModal)="onModalCloseHandler($event)" (clickCommentaire)="clickCommentaire($event)">
+<app-modal
+ [show]="showModal"
+  (closeModal)="onModalCloseHandler($event)" 
+  (clickCommentaire)="clickCommentaire($event)"
+  [premierButtonText]="isCommentaire ? 'Enregistrer':'Commentaire'"
+  [deuxiemeButtonText]="annuler ? 'Fermer' : 'Annuler'"
+  [couleur]="couleur"
+  >
    <div class="sm:flex sm:items-start">
       <div class="flex justify-between space-x-12">
           <div class="flex items-center gap-3 sticky top-0 bg-white px-8 py-3 shadow-[0_5px_5px_-5px] shadow-gray-600">
@@ -173,11 +184,11 @@
                   <div>{{dataDetails?.profile?.prenom}} {{dataDetails?.profile?.nom}}</div>
               </div>
               <div class="flex">
-                  <div><strong>Matricule :</strong></div>
-                  <div>{{dataDetails?.profile?.matricule}}</div>
+                  <div><strong>Matricule &nbsp;:</strong> </div>
+                  <div>&nbsp;{{dataDetails?.profile?.matricule}}</div>
               </div>
               <div class="flex ">
-               <div>Structure :</div>
+               <div>Structure &nbsp;: &nbsp;</div>
                    @if(dataDetails?.service!=null){
                        @if(dataDetails?.service?.departement?.pole?.libelle == 'N/A'){
                            <button  class="cursor-default">{{ dataDetails?.service?.departement?.pole?.direction?.libelle}}/{{ dataDetails?.service?.departement?.libelle }}/{{ dataDetails?.service?.libelle }}</button>
@@ -228,13 +239,13 @@
       </div>
   </div> 
   <div class="mt-1 flex ml-1">
-     <div> Poste: </div>
+     <div> Poste &nbsp;:&nbsp; </div>
       <button type="button" class="btn btn-outline-secondary py-1  ">  {{dataDetails?.poste?.libelle}}</button>
   </div>
  @if(faireCommentaire){
    <div class="flex space-x-3 mt-5">
       <div>
-           <div>Statut :</div>
+           <div>Statut : </div>
            <button type="button" class="btn btn-outline-secondary me-2">{{dataDetails?.statut?.libelle }}</button>
       </div>
       <div  class="flex flex-col">
@@ -244,12 +255,12 @@
            </button>
        </div>
        <div  class="flex flex-col">
-           <div class=" tooltip relative">Categorie: </div>
+           <div class=" tooltip relative">Categorie : </div>
            <button type="button" class="btn btn-outline-secondary me-2">{{dataDetails?.categorie?.libelle }}
            </button>
        </div>
        <div  class="flex flex-col">
-            <div class=" tooltip relative">Agence: </div>
+            <div class=" tooltip relative">Agence : </div>
             <button type="button" class="btn btn-outline-secondary me-2">{{dataDetails?.agence?.libelle }}</button>
         </div>
    
@@ -277,8 +288,8 @@
          </div>
      </div>
      @if(dataDetails?.profile?.commentaire !== null){
-      <div class="flex w-full flex-col">
-          <button class="" > Commentaire</button> 
+      <div class="flex w-full mt-3 flex-col">
+          <button class="" > Commentaire :</button> 
           <textarea name="" readonly  class="border w-full border-gray-600 bg-gray-100">{{ dataDetails?.profile?.commentaire }}</textarea>
       </div>
   }

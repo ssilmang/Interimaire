@@ -12,7 +12,9 @@ import { NavigationEnd, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { CommonService } from 'src/app/_core/services/common.service';
 import { AppRoutes } from 'src/app/app.routes';
-import { AdminRoutes, ElementRoutes, SettingRoutes } from '../../admin.routes';
+import { AdminRoutes, ElementData, ElementRoutes, SettingRoutes } from '../../admin.routes';
+import { LocalStorageService } from 'src/app/shared/services/localStorage.service';
+import { PublicRoutes } from 'src/app/public/public.routes';
 
 @Component({
   selector: 'app-sidebar',
@@ -27,6 +29,7 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnDestroy {
   readonly adminRoutes = AdminRoutes;
   readonly settingRoutes = SettingRoutes;
   readonly elementRoutes = ElementRoutes;
+  readonly element = ElementData;
   private routerSubscription: Subscription = new Subscription();
 
   @Output() sidebarCollapsed = new EventEmitter<boolean>();
@@ -34,6 +37,7 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(
     public readonly commonServices: CommonService,
     private readonly elementRef: ElementRef,
+    private shared:LocalStorageService,
     private router: Router) { }
 
   ngOnInit(): void {
@@ -82,4 +86,15 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     })
   }
+  deconnecter=()=>{
+    console.log("oui");
+    
+    this.shared.chargeLogout("oui")
+    this.router.navigate([this.commonServices.prepareRoute(PublicRoutes.Signin)]);
+  }
+  // get encodedRoute() {
+    
+  //   const encodedId = btoa(this.id.toString()); // Encode en base64
+  //   return this.commonService.prepareRouteId(encodedId, appRoutes.Admin, adminRoutes.Elements, elementRoutes.DataTable);
+  // }
 }

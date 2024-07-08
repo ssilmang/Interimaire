@@ -21,11 +21,10 @@ import {UtilsProviders} from "./shared/utils/utils.providers";
     AppRoutingModule,
     AdminModule,
     PublicModule,
-    BrowserAnimationsModule,
     HttpClientModule
   ],
   providers: [
-    // httpInterceptorProviders,
+    httpInterceptorProviders,
     // StrategyProviders,
     // UtilsProviders
   ],

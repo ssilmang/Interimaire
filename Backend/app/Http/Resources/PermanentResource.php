@@ -28,6 +28,7 @@ class PermanentResource extends JsonResource
             'pole'=>PoleResponsableResource::make($this->pole),
             'departement'=>DepartementResponsableResource::make($this->departement),
             'service'=>ServiceResponsableResource::make($this->service),
+            'agence_commercial'=>ServiceResponsableResource::make($this->agence_commercial),
             'responsable'=>ResponsableResource::make($this->responsable),
             'collaborateurs'=>PermanentResource::collection($this->collaborateurs),
         ];

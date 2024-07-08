@@ -1,16 +1,19 @@
 <div class="modal" role="dialog" [attr.aria-labelledby]="title" [attr.aria-modal]="show">
-    <div class="modal-backdrop"></div>
+    <div class="modal-backdrop bg-green-800">x</div>
     <div class="modal-wrapper">
         <div class="modal-container">
             <div class="modal-box" [ngClass]="size">
                 <div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+                    <div *ngIf="close" class="modal-header flex justify-end  ">
+                        <button class="close-button py-1 px-2 btn-danger" (click)="onModalClose()">X</button>
+                      </div>
                     <ng-content></ng-content>
                 </div>
-                <div class="bg-slate-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6" *ngIf="footer">
-                    <button type="button" (click)="openModal($event)" 
-                        class="inline-flex w-full  justify-center rounded-md {{ couleur }} px-3 py-2 text-sm font-semibold text-white shadow-sm sm:ml-3 sm:w-auto">{{ enregistrer?'Commentaire':'Enregistrer' }} </button>
+                <div class="bg-slate-50 px-12 py-3 space-x-6 sm:flex sm:flex-row-reverse sm:px-6 " *ngIf="footer">
+                    <button type="button" (click)="openModal($event)" [ngClass]="couleur"
+                        class="inline-flex w-full  justify-center rounded-md  px-3 py-2 text-sm font-semibold text-white shadow-sm sm:ml-3 sm:w-auto">{{ premierButtonText}} </button>
                     <button type="button" (click)="onModalClose()"
-                        class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto">{{ annuler? 'Fermer':'Annuler' }}</button>
+                        class="mt-3 inline-flex w-full  justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto">{{ deuxiemeButtonText }}</button>
                 </div>
             </div>
         </div>

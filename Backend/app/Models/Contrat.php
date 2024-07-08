@@ -25,6 +25,20 @@ class Contrat extends Model
         'commentaire',
         'etat',
     ];
+    public static function createOrUpdate($attributes)
+    {
+        $contrat = static::where('interim_id', $attributes['interim_id'])
+                         ->where('date_debut_contrat', $attributes['date_debut_contrat'])
+                         ->first();
+
+        if ($contrat) {
+            $contrat->update($attributes);
+        } else {
+            $contrat = static::create($attributes);
+        }
+
+        return $contrat;
+    }
 
     public function interim()
     {

@@ -14,7 +14,7 @@ import { TestComponent } from './views/events/test/test.component';
 import { ProfileComponent } from './views/settings/profile/profile.component';
 import { UsersComponent } from './views/settings/users/users.component';
 import { PermanentComponent } from './views/permanent/permanent.component';
-import { PrestataireComponent } from './views/prestataire/prestataire.component';
+import { AdminDataPrestataireComponent } from './views/elements/data-prestataire/data-prestataire.component';
 
 
 const routes: Routes = [
@@ -32,11 +32,6 @@ const routes: Routes = [
     title: 'Permanent',
     path: AdminRoutes.Permanent,
     component: PermanentComponent,
-  },
-  {
-    title:'Prestataire',
-    path:AdminRoutes.Prestataire,
-    component:PrestataireComponent,
   },
   {
     title: 'Events',
@@ -77,6 +72,11 @@ const routes: Routes = [
         title: 'Data Table',
         path: ElementRoutes.DataTable,
         component: AdminDataTableComponent,
+      },
+      {
+        title: 'Data Prestataire',
+        path: ElementRoutes.DataPrestataire,
+        component: AdminDataPrestataireComponent,
       },
       {
         title: 'Forms',

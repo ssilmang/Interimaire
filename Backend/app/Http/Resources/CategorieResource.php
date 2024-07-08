@@ -18,7 +18,7 @@ class CategorieResource extends JsonResource
             'id'=>$this->id,
             'libelle'=>$this->libelle,
             'cout_unitaire_journalier'=>$this->cout_unitaire_journalier,
-            'agence'=>$this->agence
+            'agence'=>RoleResource::make($this->agence)
         ];
     }
 }

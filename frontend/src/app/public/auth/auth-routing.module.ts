@@ -3,17 +3,23 @@ import {RouterModule, Routes} from '@angular/router';
 import {PublicRoutes} from "../public.routes";
 import {SignupComponent} from "./signup/signup.component";
 import {SigninComponent} from "./signin/signin.component";
+import { ForgetPasswordComponent } from './forget-password/forget-password.component';
 
 const routes: Routes = [
   {
-    title: "Signin",
+    title: "signup",
     path: PublicRoutes.Signup,
     component: SignupComponent
   },
   {
-    title: "Signup",
+    title: "Signin",
     path: PublicRoutes.Signin,
     component: SigninComponent
+  },
+  {
+    title: "forget",
+    path: PublicRoutes.Forget,
+    component: ForgetPasswordComponent
   },
 ];
 

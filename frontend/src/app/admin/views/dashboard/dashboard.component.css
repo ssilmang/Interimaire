@@ -1,4 +1,46 @@
-.tooltip:hover .tooltip-text {
+.tooltip .tooltip-text {
+    visibility: hidden;
+    width: 200px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 5px;
+    padding: 5px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%; 
+    left: 50%;
+    margin-left: -40px; 
+    opacity: 0;
+    transition: opacity 0.3s;
+  } 
+  .tooltip .tooltip-text::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: black transparent transparent transparent;
+  } 
+  .tooltip:hover .tooltip-text {
     visibility: visible;
     opacity: 1;
+  }
+.text-info {
+    --tw-text-opacity: 1;
+    color: rgba(59, 130, 246, var(--tw-text-opacity));
+  }
+  .text-info-800 {
+    --tw-text-opacity: 1;
+    color: rgba(37, 99, 235, var(--tw-text-opacity)); 
+  }
+  .active{
+    border-bottom: 4px solid rgb(120, 25, 187);
+    color: #f97316;
+    
+}
+.activeKangourou{
+  border-bottom: 4px solid rgb(9, 179, 179);
 }

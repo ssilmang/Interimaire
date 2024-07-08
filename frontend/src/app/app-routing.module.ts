@@ -5,17 +5,20 @@ import {AppComponent} from './app.component';
 import {AppRoutes} from './app.routes';
 import {PageNotFoundComponent} from './public/page-not-found/page-not-found.component';
 import { PublicComponent } from './public/public.component';
+import { authGuard } from './auth.guard';
 
 const routes: Routes = [
   {
     path: '',
     component: PublicComponent,
-    loadChildren: () => import('./public/public.module').then((m) => m.PublicModule)
+    loadChildren: () => import('./public/public.module').then((m) => m.PublicModule),
+
   },
   {
     path: AppRoutes.Admin,
     component: AdminComponent,
     loadChildren: () => import('./admin/admin.module').then((m) => m.AdminModule),
+    canActivate:[authGuard]
   },
   {
     path: '**',

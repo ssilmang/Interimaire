@@ -1,19 +1,17 @@
-<div [@pageTransition] class="min-h-screen bg-slate-50 flex justify-center items-center ">
-    <div class="card p-5 w-10/12 xl:w-1/2 grid grid-cols-1 md:grid-cols-2">
-        <div class="relative flex flex-col p-1 md:p-8">
-            <h2 class="text-lg  pb-2">
-                Get Started Now
-            </h2>
 
-            <p class="text-xs">Enter your credentials to access your account</p>
+<div [@pageTransition] class="flex h-screen items-center mt-[-65px]  justify-center bg-slate-50 bg-cover bg-center bg-no-repeat">
+<img src="{{sonatelBannerImage}}" alt="background" class="inset-0 h-screen w-full rounded-lg object-cover" />
+    <div class="card absolute grid  w-full grid-cols-1 p-1 md:grid-cols-2 xl:w-3/5">
 
-            <div class="py-8">
-                <button type="button" class="text-sm border border-gray-100 px-5 py-3 rounded-lg w-full hover:bg-emerald-100 hover:border-emerald-100
-                    transition-all ease-in-out duration-300">
-                    <i class="bi bi-google mr-1"></i>
-                    Log in with Google
-                </button>
+      <div class="hidden rounded-lg p-2 text-white md:block xl:p-1.5">
+
+            <div class="h-full py-0">
+                <img src={{signinBannerImage}} alt="login page image" class="h-full rounded-lg border border-emerald-600 shadow">
             </div>
+        </div>
+        <div class="relative flex flex-col p-1 md:p-8">
+            <img src="{{loginnlogoBannerImage}}" alt="login page image" class="mx-auto h-16 w-56 shadow">
+           
             <div class="grid grid-cols-5 items-center">
                 <div class="col-span-2">
                     <hr>
@@ -23,61 +21,85 @@
                     <hr>
                 </div>
             </div>
-
-            <app-alert (hideAlert)="onAlertCloseHandler($event)" [dismissible]="true" [messages]="serverErrors"
-                [show]="serverErrors.length > 0" [type]="AlertType.Danger"></app-alert>
-
-            <form class="my-5" [formGroup]="signInForm" (ngSubmit)="onFormSubmitHandler($event)">
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <div class="relative">
-                        <input type="email" id="email" class="form-control w-full ps-10" formControlName="username"
-                            placeholder="please enter your username or email">
-                        <span class="absolute top-2 left-0 ps-3 text-gray-400">
-                            <i class="bi bi-envelope-at"></i>
+            <!-- <app-alert (hideAlert)="onAlertCloseHandler($event)" [dismissible]="true" [messages]="serverErrors"
+                [show]="serverErrors.length > 0" [type]="AlertType.Danger"></app-alert> -->
+                <div class="text-red-500 text-center text-xs">
+                   {{message}}
+                </div>
+            <div class="forms">
+                <form class="my-5 " [formGroup]="signInForm" (ngSubmit)="FormSubmit($event)">
+                    <div class="form-group border-gray-100">
+                        <label for="email" class="form-label required">Email ou nom d'utilisateur</label>
+                        <div class="relative">
+                            <input type="email" id="email" class="form-control w-full ps-10" formControlName="username"
+                                placeholder="Veuillez entrer votre email ou nom d'utilisateur"
+                                [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':signInForm.get('username')?.invalid &&(signInForm.get('username')?.touched || signInForm.get('username')?.dirty),
+                                'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':signInForm.get('username')?.valid &&(signInForm.get('username')?.touched || signInForm.get('username')?.dirty)}"
+    
+                                >
+                                @if(signInForm.get('username')?.invalid && signInForm.get('username')?.touched){
+                                    @if(signInForm.get('username')?.hasError('required')){
+                                        <div class="text-red-500 text-xs">Ce champ est obligatoire</div>
+                                }
+                                }
+                            <span class="absolute left-0 top-2 ps-3 text-gray-400">
+                                <i class="bi bi-envelope-at"></i>
+                            </span>
+                        </div>
+                        <!-- <validation-error [fieldControl]="signInForm.controls['username']"></validation-error> -->
+                    </div>
+                    <div class="form-group">
+                        <label for="password" class="form-label required">Mot de passe</label>
+                        <div class="relative">
+                            <input type="password" id="hs-toggle-password" class="form-control w-full ps-10"
+                                formControlName="password" placeholder="Veuillez entrer votre mot de passe"
+                                [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':signInForm.get('password')?.invalid &&(signInForm.get('password')?.touched || signInForm.get('password')?.dirty),
+                                'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':signInForm.get('password')?.valid &&(signInForm.get('password')?.touched || signInForm.get('password')?.dirty)}"
+                            >
+                            <button (click)="toggle()"  type="button"   class="absolute top-0 end-0 p-3.5 rounded-e-md">
+                              <svg class="flex-shrink-0 size-3.5 text-gray-400 dark:text-neutral-600" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path class="{{ hiddenn }}" d="M9.88 9.88a3 3 0 1 0 4.24 4.24"></path>
+                                <path class="{{ hiddenn }}" d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"></path>
+                                <path class="{{ hiddenn }}" d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"></path>
+                                <line class="{{ hiddenn }}" x1="2" x2="22" y1="2" y2="22"></line>
+                                <path class=" {{ blockk }}" d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
+                                <circle class=" {{ blockk }}" cx="12" cy="12" r="3"></circle>
+                              </svg>
+                            </button>
+                            @if(signInForm.get('password')?.invalid && signInForm.get('password')?.touched){
+                                @if(signInForm.get('password')?.hasError('required')){                         
+                                      <div class="text-red-500 text-xs">Ce champ est obligatoire</div>
+                              }
+                            }
+                            <span class="absolute left-0 top-2 ps-3 text-gray-400">
+                                <i class="bi bi-shield-lock"></i>
+                            </span>
+                        </div>
+                        <!-- <validation-error [fieldControl]="signInForm.controls['password']"></validation-error> -->
+                    </div>
+    
+                    <div class="my-4 text-sm">
+                        <div class="inline-flex items-center gap-x-1">
+                            <input type="checkbox" id="rememberme" class="h-auto cursor-pointer">
+                            <label for="rememberme" class="cursor-pointer">Souviens-toi de moi</label>
+                        </div>
+                        <a href="javascript:void(0)" [routerLink]="commonService.prepareRoute(publicRoutes.Forget)" class="float-right text-emerald-600">Mot de passe oublier?</a>
+                    </div>
+    
+                    <button type="submit" class="btn btn-theme w-full" [disabled]="isLoading">
+                        <btn-spinner *ngIf="isLoading" [show]="isLoading"></btn-spinner>
+                        <span class="btn-text" [ngClass]="{'translate-x-0.5': isLoading}">
+                            Se connecter
                         </span>
-                    </div>
-                    <validation-error [fieldControl]="signInForm.controls['username']"></validation-error>
+                    </button>
+                </form>
+    
+                <div class="text-sm text-gray-400">
+                    <p>Je n'ai aucun compte? <a [routerLink]="commonService.prepareRoute(publicRoutes.Signup)"
+                            class="text-emerald-600">'Créer un compte'</a></p>
                 </div>
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <div class="relative">
-                        <input type="password" id="password" class="form-control w-full ps-10"
-                            formControlName="password" placeholder="please enter your password">
-                        <span class="absolute top-2 left-0 ps-3 text-gray-400">
-                            <i class="bi bi-shield-lock"></i>
-                        </span>
-                    </div>
-                    <validation-error [fieldControl]="signInForm.controls['password']"></validation-error>
-                </div>
-
-                <div class="text-sm my-4">
-                    <div class="inline-flex items-center gap-x-1">
-                        <input type="checkbox" id="rememberme" class="h-auto cursor-pointer">
-                        <label for="rememberme" class="cursor-pointer">Remember me</label>
-                    </div>
-                    <a href="javascript:void(0)" class="text-emerald-600 float-right">Forget password?</a>
-                </div>
-
-                <button type="submit" class="btn w-full btn-theme" [disabled]="isLoading">
-                    <btn-spinner *ngIf="isLoading" [show]="isLoading"></btn-spinner>
-                    <span class="btn-text" [ngClass]="{'translate-x-0.5': isLoading}">
-                        Sign in
-                    </span>
-                </button>
-            </form>
-
-            <div class="text-sm text-gray-400">
-                <p>Don't have any account? <a [routerLink]="commonService.prepareRoute(publicRoutes.Signup)"
-                        class="text-emerald-600">Sign up</a> now!</p>
             </div>
         </div>
-        <div class="md:block hidden text-white bg-emerald-600 rounded-lg p-8 xl:p-12">
-            <h2 class="text-lg xl:text-2xl pb-3">The simplest way to manage<br>your events</h2>
-            <p class="text-xs">Enter your credentials to access your account</p>
-            <div class="py-8">
-                <img src={{signinBannerImage}} alt="login page image" class="border rounded-lg border-emerald-600">
-            </div>
-        </div>
+
     </div>
 </div>

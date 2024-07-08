@@ -3,16 +3,37 @@
         <a href="#" class="brand text-center">
             <h1 class="flex items-center font-bold text-slate-300">
                 <span class="mr-2 h-8 w-8 rounded-md bg-orange-600 text-2xl">G</span>
-                <span class="text-2xl tracking-widest">R SONATEL</span>
+                <span class="text-2xl tracking-widest">RH SNT DV</span>
             </h1>
         </a>
     </div>
     <ul class="menu-links">
-        <li>
+        <!-- <li>
             <a [routerLink]="commonServices.prepareRoute(appRoutes.Admin, adminRoutes.Dashboard)"
                 routerLinkActive="active" class="menu-item" ariaCurrentWhenActive="page">
                 <i class="bi bi-columns-gap"></i>
                 <span>Accueil</span>
+            </a>
+        </li>        -->
+        <li>
+            <a class="menu-item"
+                [routerLink]="commonServices.prepareRoute(appRoutes.Admin, adminRoutes.Elements, elementRoutes.Forms)"
+                routerLinkActive="active" ariaCurrentWhenActive="page">
+                <span>Employeur</span>
+            </a>
+        </li>
+        <li>
+            <a class="menu-item"
+                [routerLink]="commonServices.prepareRoute(appRoutes.Admin, adminRoutes.Elements, elementRoutes.DataPrestataire)"
+                routerLinkActive="active" ariaCurrentWhenActive="page">
+                <span>Prestataire</span>
+            </a>
+        </li>
+        <li>
+            <a class="menu-item"
+                [routerLink]="commonServices.prepareRouteId(1,appRoutes.Admin, adminRoutes.Elements, elementRoutes.DataTable)"
+                routerLinkActive="active" ariaCurrentWhenActive="page">
+                <span>Permanent</span>
             </a>
         </li>
         <!-- <li>
@@ -23,6 +44,44 @@
             </a>
         </li> -->
         <li>
+            <a href="javascript:void(0)" class="menu-item sub-menu" aria-expanded="false"
+                (click)="subMenuToggleHandler($event)">
+                <i class="bi bi-diagram-3"></i>
+                <span>Interimaire</span>
+            </a>
+            <ul class="sub-menu-item">
+                <li>
+                    <a [routerLink]="commonServices.prepareRoute(appRoutes.Admin, adminRoutes.Dashboard)"
+                        routerLinkActive="active" class="menu-item" ariaCurrentWhenActive="page">
+                        <i class="bi bi-columns-gap"></i>
+                        <span>Liste</span>
+                    </a>
+                </li> 
+                <li>
+                    <!--  [routerLink]="commonServices.prepareRoute(appRoutes.Admin, adminRoutes.Dashboard)" -->
+                        <a routerLinkActive="active" class="menu-item" ariaCurrentWhenActive="page">
+                        <i class="bi bi-sunrise-fill"></i>
+                        <span>Contrat</span>
+                    </a>
+                </li>
+                <li>
+                    <a
+                        routerLinkActive="active" class="menu-item" ariaCurrentWhenActive="page">
+                        <i class="bi bi-sunset"></i>
+                        <span>Fin de Contrat</span>
+                    </a>
+                </li>
+                <li>
+                    <a
+                        routerLinkActive="active" class="menu-item" ariaCurrentWhenActive="page">
+                        <i class="bi bi-stack-overflow"></i>
+                        <span>Kangouru</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
+
+        <!-- <li>
             <a href="javascript:void(0)" class="menu-item sub-menu" aria-expanded="false"
                 (click)="subMenuToggleHandler($event)">
                 <i class="bi bi-diagram-3"></i>
@@ -57,13 +116,7 @@
                         <span>Entreprise</span>
                     </a>
                 </li>
-                <li>
-                    <a class="menu-item"
-                        [routerLink]="commonServices.prepareRoute(appRoutes.Admin, adminRoutes.Elements, elementRoutes.DataTable)"
-                        routerLinkActive="active" ariaCurrentWhenActive="page">
-                        <span>Direction</span>
-                    </a>
-                </li>
+               
                 <li>
                     <a class="menu-item"
                         [routerLink]="commonServices.prepareRoute(appRoutes.Admin, adminRoutes.Elements, elementRoutes.Forms)"
@@ -72,35 +125,15 @@
                     </a>
                 </li>
             </ul>
-        </li>
-        <li>
-            <!--  [routerLink]="commonServices.prepareRoute(appRoutes.Admin, adminRoutes.Dashboard)" -->
-                <a routerLinkActive="active" class="menu-item" ariaCurrentWhenActive="page">
-                <i class="bi bi-sunrise-fill"></i>
-                <span>Contrat</span>
-            </a>
-        </li>
-        <li>
-            <a
-                routerLinkActive="active" class="menu-item" ariaCurrentWhenActive="page">
-                <i class="bi bi-sunset"></i>
-                <span>Fin de Contrat</span>
-            </a>
-        </li>
-        <li>
-            <a
-                routerLinkActive="active" class="menu-item" ariaCurrentWhenActive="page">
-                <i class="bi bi-stack-overflow"></i>
-                <span>Kangouru</span>
-            </a>
-        </li>
+        </li> -->
+        
         <li>
             <a href="javascript:void(0)" class="menu-item sub-menu" aria-expanded="false"
                 (click)="subMenuToggleHandler($event)">
                 <i class="bi bi-sliders2-vertical"></i>
                 <span>Settings</span>
             </a>
-            <ul class="sub-menu-item">
+            <!-- <ul class="sub-menu-item">
                 <li>
                     <a class="menu-item"
                         [routerLink]="commonServices.prepareRoute(appRoutes.Admin, adminRoutes.Settings, settingRoutes.Profile)"
@@ -120,20 +153,25 @@
                         <span>Website</span>
                     </a>
                 </li>
-            </ul>
+            </ul> -->
         </li>
         <li>
             <a [routerLink]="commonServices.prepareRoute(appRoutes.Admin, adminRoutes.Elements, elementRoutes.Alert)"
                 routerLinkActive="active" class="menu-item" ariaCurrentWhenActive="page">
                 <i class="bi bi-bell"></i>
                 <span>Notification</span>
+                <div class="relative inline-block">
+                    <button type="button" class="text-light h-7 w-7 rounded-full text-xl transition bg-red-800 hover:text-white">
+                        <span class="text-center items-center">3</span>
+                    </button>
+                </div>
             </a>
         </li>
         <li>
-            <a href="#" class="menu-item">
+            <button  class="menu-item" (click)="deconnecter()">
                 <i class="bi bi-box-arrow-right"></i>
                 <span>Logout</span>
-            </a>
+            </button>
         </li>
     </ul>
 </aside>

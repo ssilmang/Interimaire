@@ -22,6 +22,10 @@ class Interim extends Model
     {
         return $this->belongsTo(Poste::class);
     }
+    public function statut()
+    {
+        return $this->belongsTo(Statut::class);
+    }
     public function responsable()
     {
         return $this->belongsTo(Permanent::class);
@@ -33,5 +37,8 @@ class Interim extends Model
     public function profile()
     {
         return $this->belongsTo(Profile::class);
+    }
+    public function locau(){
+        return $this->belongsTo(Locau::class);
     }
 }

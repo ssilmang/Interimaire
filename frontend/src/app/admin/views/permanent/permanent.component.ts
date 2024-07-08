@@ -32,7 +32,7 @@ export class PermanentComponent implements OnInit {
   }
   
   ngOnInit(): void {
-    this.indexPermanent();
+    this.indexPermanent('1');
   }
   
   
@@ -44,11 +44,11 @@ export class PermanentComponent implements OnInit {
   onModalCloseHandler(event: boolean) {
     this.showModal = event;
   }
-  indexPermanent()
+  indexPermanent(id:string)
   {
-    this.service.indexPermanents().subscribe({
+    this.service.indexPermanents(id).subscribe({
       next:(response=>{
-        this.dataDV = response.data.dvs
+        this.dataDV = response.data
         console.log(response);
       })
     })

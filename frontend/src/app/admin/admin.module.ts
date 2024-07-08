@@ -18,13 +18,15 @@ import { ElementsModule } from './views/elements/elements.module';
     // DashboardComponent,
     AdminPageNotFoundComponent,
     EventsComponent,
+    
   ],
   imports: [
     CommonModule,
     AdminRoutingModule,
     LayoutsModule,
     SettingsModule,
-    ElementsModule
+    ElementsModule,
+    
   ]
 })
 export class AdminModule { }

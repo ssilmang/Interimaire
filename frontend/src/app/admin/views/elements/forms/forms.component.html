@@ -1,22 +1,79 @@
-<div [@pageTransition]>
+<div >
   
   <form action="" [formGroup]="formPermanent" (ngSubmit)="enregistrer()">
      <div class="card">
          @if(message){
-            <app-alert [show]="true"  [dismissible]="true">
-               <h6 class="text-lg font-semibold">
-                   <i class="bi bi-check2-circle"></i>
-                   Success
-               </h6>
-               <p>
-                   {{ message }}
-               </p>
+            <app-modal
+            [show]="showModal"
+            [footer]="footer"
+            [close]="close"
+             >
+             <app-alert [show]="true"  [dismissible]="true"  [type]="alertType.Success">
+              <h6 class="text-lg font-semibold">
+                  <i class="bi bi-check2-circle"></i>
+                  Succés
+              </h6>
+              <p>
+                {{ message }}
+              </p>
            </app-alert>
+           </app-modal>
          }
+           @if(messageError){
+            <app-modal
+            [show]="showModal"
+            [footer]="footer"
+            [close]="close"
+             >
+               <app-alert [show]="true" [dismissible]="true" [type]="alertType.Danger">
+                  <h6 class="text-lg font-semibold">
+                     <i class="bi bi-bug"></i>
+                     Danger
+                  </h6>
+                  <p>
+                     {{ messageError }}
+                  </p>
+            </app-alert>
+            </app-modal>
+           }
+           @if(messageAttention){
+            <app-modal
+            [show]="showModal"
+            [footer]="footer"
+            [close]="close"
+             >
+               <app-alert [show]="true" [dismissible]="true" [type]="alertType.Warning">
+                  <h6 class="text-lg font-semibold">
+                     <i class="bi bi-exclamation-triangle"></i>
+                     Warning
+                  </h6>
+                  <p>
+                     {{messageAttention}}
+                  </p>
+            </app-alert>
+            </app-modal>
+           }
+           @if(messageInfo){
+            <app-modal
+            [show]="showModal"
+            [footer]="footer"
+            [close]="close"
+             >
+               <app-alert [show]="true" [dismissible]="true" [type]="alertType.Info">
+                  <h6 class="text-lg font-semibold">
+                     <i class="bi bi-exclamation-circle"></i>
+                     Info
+                  </h6>
+                  <p>
+                     {{messageInfo}}
+                  </p>
+             </app-alert>
+            </app-modal>
+           }
          <div class="card-title text-center">
-            <h3 class="text-xl font-bold leading-none">Infos User</h3>
+            <h3 class="text-xl font-bold leading-none"></h3>
          </div>
-         <div class="mt-1">
+         <div class="mt-4">
             <div class="max-w-full p-2">
                <div class="flex space-x-16">
                   <div class="grid grid-cols-12 mt-[-25px]  gap-x-6 ">         
@@ -132,7 +189,7 @@
                      <div class="col-span-12 md:col-span-12">
                         <div class="form-group">
                            <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="user_contrat">
-                           Téléverser Contrat
+                           Télécharger Contrat
                            </label>
                            <input class="file-upload file" formControlName="contrat" aria-describedby="user_avatar_help" id="user_contrat" type="file">   
                         </div> 
@@ -207,8 +264,8 @@
       </div>
       <div class="card p-3">
          <div class="flex  justify-around">
-            <div class="card-title">
-               <label for="statut" class="form-label required"> Statut </label>
+            <div class="card-title ml-[-105px]">
+               <label for="statut" class="form-label  required"> Statut </label>
             </div>
             <div class="card-title">
                <label for="base-input" class="form-label required">Poste</label>
@@ -219,9 +276,9 @@
                <label for="statut" class="form-label">
                </label>
                @if(!autreStatut){
-                  <select id="statut"  (click)="selectedStatut($event)" formControlName="statut_id"  class="form-select col-span-2"
-                  [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('statut_id')?.invalid &&(formPermanent.get('statut_id')?.touched || formPermanent.get('statut_id')?.dirty),
-                  'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('statut_id')?.valid &&(formPermanent.get('statut_id')?.touched || formPermanent.get('statut_id')?.dirty)}"
+                  <select id="statut"  (click)="selectedStatut($event)" formControlName="statut"  class="form-select col-span-2" [compareWith]="compare"
+                  [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('statut')?.invalid &&(formPermanent.get('statut')?.touched || formPermanent.get('statut')?.dirty),
+                  'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('statut')?.valid &&(formPermanent.get('statut')?.touched || formPermanent.get('statut')?.dirty)}"
      
                   >
                      <option value="" selected disabled>Selectionner un statut</option>
@@ -230,27 +287,33 @@
                      }
                      <option value="Autre">autre</option>
                   </select>
-                  @if(formPermanent.get('statut_id')?.invalid && formPermanent.get('statut_id')?.touched){
-                     @if(formPermanent.get('statut_id')?.hasError('required')){
+                  @if(formPermanent.get('statut')?.invalid && formPermanent.get('statut')?.touched){
+                     @if(formPermanent.get('statut')?.hasError('required')){
                        
                            <div class="text-red-500 text-xs">Le statut est obligatoire</div>
                    }
                  }
                }@else{
-                  <input type="text"   formControlName="statut_id"  placeholder="Massar " class="form-control"
-                  [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('statut_id')?.invalid &&(formPermanent.get('statut_id')?.touched || formPermanent.get('statut_id')?.dirty),
-                  'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('statut_id')?.valid &&(formPermanent.get('statut_id')?.touched || formPermanent.get('statut_id')?.dirty)}"
+                  <input type="text"   formControlName="statut"  placeholder="Massar " class="form-control"
+                  [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('statut')?.invalid &&(formPermanent.get('statut')?.touched || formPermanent.get('statut')?.dirty),
+                  'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('statut')?.valid &&(formPermanent.get('statut')?.touched || formPermanent.get('statut')?.dirty)}"
      
                   />
+                  @if(formPermanent.get('statut')?.invalid && formPermanent.get('statut')?.touched){
+                     @if(formPermanent.get('statut')?.hasError('required')){
+                       
+                           <div class="text-red-500 text-xs">Le statut est obligatoire</div>
+                   }
+                 }
                }
             </div>
             <div class="max-w-screen-md  w-full">
                <label for="poste" class="form-label">
                </label>
                @if(!autrePoste){
-                  <select id="poste" (click)="selectedPoste($event)" formControlName="poste_id" class="form-select"
-                  [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('poste_id')?.invalid &&(formPermanent.get('poste_id')?.touched || formPermanent.get('poste_id')?.dirty),
-                  'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('poste_id')?.valid &&(formPermanent.get('poste_id')?.touched || formPermanent.get('poste_id')?.dirty)}"
+                  <select id="poste" (click)="selectedPoste($event)" formControlName="poste" class="form-select" [compareWith]="compare"
+                  [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('poste')?.invalid &&(formPermanent.get('poste')?.touched || formPermanent.get('poste')?.dirty),
+                  'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('poste')?.valid &&(formPermanent.get('poste')?.touched || formPermanent.get('poste')?.dirty)}"
      
                   >
                      <option value="" selected disabled>Selectionner un poste</option>
@@ -259,18 +322,22 @@
                      }
                      <option value="Autre">autre</option>
                   </select>
-                  @if(formPermanent.get('poste_id')?.invalid && formPermanent.get('poste_id')?.touched){
-                     @if(formPermanent.get('poste_id')?.hasError('required')){
+                  @if(formPermanent.get('poste')?.invalid && formPermanent.get('poste')?.touched){
+                     @if(formPermanent.get('poste')?.hasError('required')){
                        
                            <div class="text-red-500 text-xs">Le poste est obligatoire</div>
                    }
                  }
                }@else{
-                  <input type="text"   formControlName="poste_id"  placeholder="Massar " class="form-control"
-                  [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('poste_id')?.invalid &&(formPermanent.get('poste_id')?.touched || formPermanent.get('poste_id')?.dirty),
-                  'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('poste_id')?.valid &&(formPermanent.get('poste_id')?.touched || formPermanent.get('poste_id')?.dirty)}"
-     
+                  <input type="text"   formControlName="poste"  placeholder="Massar " class="form-control"
+                  [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('poste')?.invalid &&(formPermanent.get('poste')?.touched || formPermanent.get('poste')?.dirty),
+                  'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('poste')?.valid &&(formPermanent.get('poste')?.touched || formPermanent.get('poste')?.dirty)}"
                   />
+                  @if(formPermanent.get('poste')?.invalid && formPermanent.get('poste')?.touched){
+                     @if(formPermanent.get('poste')?.hasError('required')){             
+                           <div class="text-red-500 text-xs">Le poste est obligatoire</div>
+                   }
+                 }
                }
             </div>
          </div>
@@ -283,12 +350,12 @@
                   <label for="categorie" class="form-label required"> Categorie </label>
                </div>
             }
-            <div class="card-title">
-               <label for="agence" class="form-label required"> Agence Interim </label>          
+            <div class="card-title ">
+               <label for="agence" class="form-label required"> Employeur </label>          
             </div>
-           @if( dataAgence?.categories?.length !=0 || dataAgence?.categories !=undefined){
-            <div class="card-title">
-               <label for="agence" class="form-label required"> Categorie d'intérim </label>          
+           @if(interimCategorie){
+            <div class="card-title ">
+               <label for="agence" class="form-label-  required"> Categorie d'intérim </label>          
             </div>
            }
          </div>
@@ -298,9 +365,9 @@
                <label for="groupe" class="form-label">      
                </label>
                @if(!autreGroupe){
-                  <select id="groupe"(click)="selectedGroupe($event)" formControlName="groupe_id" class="form-select"
-                  [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('groupe_id')?.invalid &&(formPermanent.get('groupe_id')?.touched || formPermanent.get('groupe_id')?.dirty),
-                  'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('groupe_id')?.valid &&(formPermanent.get('groupe_id')?.touched || formPermanent.get('groupe_id')?.dirty)}"
+                  <select id="groupe"(click)="selectedGroupe($event)" formControlName="groupe" class="form-select" [compareWith]="compare"
+                  [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('groupe')?.invalid &&(formPermanent.get('groupe')?.touched || formPermanent.get('groupe')?.dirty),
+                  'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('groupe')?.valid &&(formPermanent.get('groupe')?.touched || formPermanent.get('groupe')?.dirty)}"
      
                   >
                      <option value="" selected disabled>Selectionner un groupe</option>
@@ -309,26 +376,32 @@
                      }
                      <option value="Autre">autre</option>
                   </select>
-                  @if(formPermanent.get('groupe_id')?.invalid && formPermanent.get('groupe_id')?.touched){
-                     @if(formPermanent.get('groupe_id')?.hasError('required')){
+                  @if(formPermanent.get('groupe')?.invalid && formPermanent.get('groupe')?.touched){
+                     @if(formPermanent.get('groupe')?.hasError('required')){
                        
                            <div class="text-red-500 text-xs">Le statut est obligatoire</div>
                    }
                  }
                }@else{
-                  <input type="text"   formControlName="groupe_id"  placeholder="Massar " class="form-control"
-                  [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('groupe_id')?.invalid &&(formPermanent.get('groupe_id')?.touched || formPermanent.get('groupe_id')?.dirty),
-                  'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('groupe_id')?.valid &&(formPermanent.get('groupe_id')?.touched || formPermanent.get('groupe_id')?.dirty)}"    
+                  <input type="text"   formControlName="groupe"  placeholder="Massar " class="form-control"
+                  [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('groupe')?.invalid &&(formPermanent.get('groupe')?.touched || formPermanent.get('groupe')?.dirty),
+                  'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('groupe')?.valid &&(formPermanent.get('groupe')?.touched || formPermanent.get('groupe')?.dirty)}"    
                   />
+                  @if(formPermanent.get('groupe')?.invalid && formPermanent.get('groupe')?.touched){
+                     @if(formPermanent.get('groupe')?.hasError('required')){
+                       
+                           <div class="text-red-500 text-xs">Le groupe est obligatoire</div>
+                   }
+                 }
                }
             </div>
             <div class="max-w-screen-md w-full">
                <label for="categorie" class="form-label">      
                </label>
                @if(!autreCategorie){
-                  <select  formControlName="categorie_id" (click)="selectedCategorie($event)" id="categorie" class="form-select"
-                  [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('categorie_id')?.invalid &&(formPermanent.get('categorie_id')?.touched || formPermanent.get('categorie_id')?.dirty),
-                  'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('categorie_id')?.valid &&(formPermanent.get('categorie_id')?.touched || formPermanent.get('categorie_id')?.dirty)}"
+                  <select  formControlName="categorie" (click)="selectedCategorie($event)" id="categorie" class="form-select" [compareWith]="compare"
+                  [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('categorie')?.invalid &&(formPermanent.get('categorie')?.touched || formPermanent.get('categorie')?.dirty),
+                  'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('categorie')?.valid &&(formPermanent.get('categorie')?.touched || formPermanent.get('categorie')?.dirty)}"
      
                   >
                      <option value="" disabled select>Selectionner un Catégorie</option>
@@ -337,17 +410,23 @@
                      }
                      <option value="Autre">autre</option>
                   </select>
-                  @if(formPermanent.get('categorie_id')?.invalid && formPermanent.get('categorie_id')?.touched){
-                     @if(formPermanent.get('categorie_id')?.hasError('required')){
+                  @if(formPermanent.get('categorie')?.invalid && formPermanent.get('categorie')?.touched){
+                     @if(formPermanent.get('categorie')?.hasError('required')){
                        
                            <div class="text-red-500 text-xs">Le categorie est obligatoire</div>
                    }
                  }
                }@else{
-                  <input type="text"   formControlName="categorie_id"  placeholder="Massar " class="form-control"
-                  [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('categorie_id')?.invalid &&(formPermanent.get('categorie_id')?.touched || formPermanent.get('categorie_id')?.dirty),
-                  'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('categorie_id')?.valid &&(formPermanent.get('categorie_id')?.touched || formPermanent.get('categorie_id')?.dirty)}"
+                  <input type="text"   formControlName="categorie"  placeholder="Massar " class="form-control"
+                  [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('categorie')?.invalid &&(formPermanent.get('categorie')?.touched || formPermanent.get('categorie')?.dirty),
+                  'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('categorie')?.valid &&(formPermanent.get('categorie')?.touched || formPermanent.get('categorie')?.dirty)}"
                   />
+                  @if(formPermanent.get('categorie')?.invalid && formPermanent.get('categorie')?.touched){
+                     @if(formPermanent.get('categorie')?.hasError('required')){
+                       
+                           <div class="text-red-500 text-xs">Le categorie est obligatoire</div>
+                   }
+                 }
                }
             </div>
            }
@@ -355,37 +434,43 @@
                <label for="agence" class="form-label">    
                </label>
               @if(!autreAgence){
-               <select id="agence" (click)="selectedAgence($event)" formControlName="agence_id" class="form-select"
-               [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('agence_id')?.invalid &&(formPermanent.get('agence_id')?.touched || formPermanent.get('agence_id')?.dirty),
-               'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('agence_id')?.valid &&(formPermanent.get('agence_id')?.touched || formPermanent.get('agence_id')?.dirty)}"
+               <select id="agence" (click)="selectedAgence($event)" formControlName="agence" class="form-select" [compareWith]="compare"
+               [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('agence')?.invalid &&(formPermanent.get('agence')?.touched || formPermanent.get('agence')?.dirty),
+               'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('agence')?.valid &&(formPermanent.get('agence')?.touched || formPermanent.get('agence')?.dirty)}"
                >
-                  <option value="" selected disabled>Selectionner un agence d'interim</option>
+                  <option value="" selected disabled>Selectionner un employeur</option>
                   @for(agence of dataAll?.agences;track agence?.id){
                      <option [ngValue]="agence">{{ agence?.libelle }}</option>   
                   }
                   <option value="Autre">autre</option>
                </select>
-               @if(formPermanent.get('agence_id')?.invalid && formPermanent.get('agence_id')?.touched){
-                  @if(formPermanent.get('agence_id')?.hasError('required')){
+               @if(formPermanent.get('agence')?.invalid && formPermanent.get('agence')?.touched){
+                  @if(formPermanent.get('agence')?.hasError('required')){
                     
                         <div class="text-red-500 text-xs">L'agence est obligatoire</div>
                 }
               }
               }@else{
-               <input type="text"   formControlName="agence_id"  placeholder="Permanent" class="form-control"
-               [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('agence_id')?.invalid &&(formPermanent.get('agence_id')?.touched || formPermanent.get('agence_id')?.dirty),
-               'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('agence_id')?.valid &&(formPermanent.get('agence_id')?.touched || formPermanent.get('agence_id')?.dirty)}"
+               <input type="text"   formControlName="agence"  placeholder="Permanent" class="form-control"
+               [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('agence')?.invalid &&(formPermanent.get('agence')?.touched || formPermanent.get('agence')?.dirty),
+               'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('agence')?.valid &&(formPermanent.get('agence')?.touched || formPermanent.get('agence')?.dirty)}"
                />
+                  @if(formPermanent.get('agence')?.invalid && formPermanent.get('agence')?.touched){
+                     @if(formPermanent.get('agence')?.hasError('required')){
+                     
+                           <div class="text-red-500 text-xs">L'agence est obligatoire</div>
+                  }
+               }
               }
             </div>
            
-               @if(  dataAgence?.categories?.length !=0 ||  dataAgence?.categories !=undefined ){
+               @if(interimCategorie ){
                   <div class="max-w-screen-md w-full">
                      <label for="agence" class="form-label">    
                      </label>
-                     <select id="agence"  formControlName="categorieInterim_id" class="form-select"
-                     [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('catorieInterim_id_id')?.invalid &&(formPermanent.get('catorieInterim_id_id')?.touched || formPermanent.get('catorieInterim_id_id')?.dirty),
-                     'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('catorieInterim_id_id')?.valid &&(formPermanent.get('catorieInterim_id_id')?.touched || formPermanent.get('catorieInterim_id_id')?.dirty)}"
+                     <select id="agence"  formControlName="categorieInterim" class="form-select"  [compareWith]="compare"
+                     [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('categorieInterim')?.invalid &&(formPermanent.get('categorieInterim')?.touched || formPermanent.get('categorieInterim')?.dirty),
+                     'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('categorieInterim')?.valid &&(formPermanent.get('categorieInterim')?.touched || formPermanent.get('categorieInterim')?.dirty)}"
                      >
                         <option value="" selected disabled>Selectionner un agence d'interim</option>
                         @for(categorie of dataAgence?.categories;track categorie?.id){
@@ -393,16 +478,16 @@
                         }
                         <option value="Autre">autre</option>
                      </select>
-                     @if(formPermanent.get('catorieInterim_id_id')?.invalid && formPermanent.get('catorieInterim_id_id')?.touched){
-                        @if(formPermanent.get('catorieInterim_id_id')?.hasError('required')){
+                     @if(formPermanent.get('categorieInterim')?.invalid && formPermanent.get('categorieInterim')?.touched){
+                        @if(formPermanent.get('categorieInterim')?.hasError('required')){
                           
                               <div class="text-red-500 text-xs">categorie intérim est obligatoire</div>
                       }
                     }
                     <!-- }@else{
-                     <input type="text"   formControlName="agence_id"  placeholder="Permanent" class="form-control"
-                     [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('agence_id')?.invalid &&(formPermanent.get('agence_id')?.touched || formPermanent.get('agence_id')?.dirty),
-                     'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('agence_id')?.valid &&(formPermanent.get('agence_id')?.touched || formPermanent.get('agence_id')?.dirty)}"
+                     <input type="text"   formControlName="agence"  placeholder="Permanent" class="form-control"
+                     [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('agence')?.invalid &&(formPermanent.get('agence')?.touched || formPermanent.get('agence')?.dirty),
+                     'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('agence')?.valid &&(formPermanent.get('agence')?.touched || formPermanent.get('agence')?.dirty)}"
                      /> -->
                   </div>
                }
@@ -429,9 +514,9 @@
                <label for="lieu" class="form-label">
                </label>
                @if(!autreLocau){
-                  <select id="lieu" (click)="selectedLocau($event)" formControlName="locau_id" class="form-select"
-                  [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('locau_id')?.invalid &&(formPermanent.get('locau_id')?.touched || formPermanent.get('locau_id')?.dirty),
-                  'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('locau_id')?.valid &&(formPermanent.get('locau_id')?.touched || formPermanent.get('locau_id')?.dirty)}"
+                  <select id="lieu" (click)="selectedLocau($event)" formControlName="locau" class="form-select" [compareWith]="compare"
+                  [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('locau')?.invalid &&(formPermanent.get('locau')?.touched || formPermanent.get('locau')?.dirty),
+                  'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('locau')?.valid &&(formPermanent.get('locau')?.touched || formPermanent.get('locau')?.dirty)}"
                   >
                      <option value="">Selectionner un lieu</option>
                     @for(locau of dataAll?.locaux;track locau?.id){
@@ -439,26 +524,32 @@
                     }
                      <option value="Autre">autre</option>
                   </select>
-                  @if(formPermanent.get('locau_id')?.invalid && formPermanent.get('locau_id')?.touched){
-                     @if(formPermanent.get('locau_id')?.hasError('required')){
+                  @if(formPermanent.get('locau')?.invalid && formPermanent.get('locau')?.touched){
+                     @if(formPermanent.get('locau')?.hasError('required')){
                        
-                           <div class="text-red-500 text-xs">Le statut est obligatoire</div>
+                           <div class="text-red-500 text-xs">Le lieu d'exécution est obligatoire</div>
                    }
                  }
                }@else{
-                  <input type="text"   formControlName="locau_id"  placeholder="Massar " class="form-control"
-                  [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('locau_id')?.invalid &&(formPermanent.get('locau_id')?.touched || formPermanent.get('locau_id')?.dirty),
-                  'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('locau_id')?.valid &&(formPermanent.get('locau_id')?.touched || formPermanent.get('locau_id')?.dirty)}"
+                  <input type="text"   formControlName="locau"  placeholder="Massar " class="form-control"
+                  [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('locau')?.invalid &&(formPermanent.get('locau')?.touched || formPermanent.get('locau')?.dirty),
+                  'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('locau')?.valid &&(formPermanent.get('locau')?.touched || formPermanent.get('locau')?.dirty)}"
                   />
+                  @if(formPermanent.get('locau')?.invalid && formPermanent.get('locau')?.touched){
+                     @if(formPermanent.get('locau')?.hasError('required')){
+                       
+                           <div class="text-red-500 text-xs">Le lieu d'exécution est obligatoire</div>
+                   }
+                 }
                }
             </div>
             <div class="max-w-screen-md  w-full">
                <label for="canal" class="form-label">
                </label>
                @if(!autreCanal){
-                  <select id="canal" (click)="selectedCanal($event)" formControlName="canal_id" class="form-select"
-                  [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('canal_id')?.invalid &&(formPermanent.get('canal_id')?.touched || formPermanent.get('canal_id')?.dirty),
-                  'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('canal_id')?.valid &&(formPermanent.get('canal_id')?.touched || formPermanent.get('canal_id')?.dirty)}"
+                  <select id="canal" (click)="selectedCanal($event)" formControlName="canal" class="form-select" [compareWith]="compare"
+                  [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('canal')?.invalid &&(formPermanent.get('canal')?.touched || formPermanent.get('canal')?.dirty),
+                  'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('canal')?.valid &&(formPermanent.get('canal')?.touched || formPermanent.get('canal')?.dirty)}"
                   >
                      <option value="" selected disabled>Selectionner un Canal</option>
                      @for(canal of dataAll?.canals;track canal?.id){
@@ -466,17 +557,23 @@
                      }
                      <option value="Autre">autre</option>
                   </select>
-                  @if(formPermanent.get('canal_id')?.invalid && formPermanent.get('canal_id')?.touched){
-                     @if(formPermanent.get('canal_id')?.hasError('required')){
+                  @if(formPermanent.get('canal')?.invalid && formPermanent.get('canal')?.touched){
+                     @if(formPermanent.get('canal')?.hasError('required')){
                        
                            <div class="text-red-500 text-xs">Le canal est obligatoire</div>
                    }
                  }
                }@else{
-                  <input type="text"   formControlName="canal_id"  placeholder="entrez une canal " class="form-control" 
-                  [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('canal_id')?.invalid &&(formPermanent.get('canal_id')?.touched || formPermanent.get('canal_id')?.dirty),
-                  'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('canal_id')?.valid &&(formPermanent.get('canal_id')?.touched || formPermanent.get('canal_id')?.dirty)}"
+                  <input type="text"   formControlName="canal"  placeholder="entrez une canal " class="form-control" 
+                  [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('canal')?.invalid &&(formPermanent.get('canal')?.touched || formPermanent.get('canal')?.dirty),
+                  'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('canal')?.valid &&(formPermanent.get('canal')?.touched || formPermanent.get('canal')?.dirty)}"
                   />
+                  @if(formPermanent.get('canal')?.invalid && formPermanent.get('canal')?.touched){
+                     @if(formPermanent.get('canal')?.hasError('required')){
+                       
+                           <div class="text-red-500 text-xs">Le canal est obligatoire</div>
+                   }
+                 }
                }
             </div>
             <div class="max-w-screen-md  w-full">
@@ -485,9 +582,9 @@
                @if(!autreDirection){
                  <div class="flex space-x-1">
                     <div class="w-full">
-                     <select id="direction" formControlName="direction_id"  (click)="selectedDirection($event)" class="form-select" 
-                     [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('direction_id')?.invalid &&(formPermanent.get('direction_id')?.touched || formPermanent.get('direction_id')?.dirty),
-                     'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('direction_id')?.valid &&(formPermanent.get('direction_id')?.touched || formPermanent.get('direction_id')?.dirty)}"
+                     <select id="direction" formControlName="direction"  (click)="selectedDirection($event)" class="form-select" [compareWith]="compare"
+                     [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('direction')?.invalid &&(formPermanent.get('direction')?.touched || formPermanent.get('direction')?.dirty),
+                     'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('direction')?.valid &&(formPermanent.get('direction')?.touched || formPermanent.get('direction')?.dirty)}"
                      >
                         <option value="" selected disabled>Selectionner une direction</option>
                         @for(direction of dataAll?.directions;track direction?.id){
@@ -495,8 +592,8 @@
                         }
                         <option value="Autre">autre</option>
                      </select>
-                     @if(formPermanent.get('direction_id')?.invalid && formPermanent.get('direction_id')?.touched){
-                        @if(formPermanent.get('direction_id')?.hasError('required')){
+                     @if(formPermanent.get('direction')?.invalid && formPermanent.get('direction')?.touched){
+                        @if(formPermanent.get('direction')?.hasError('required')){
                           
                               <div class="text-red-500 text-xs">La direction est obligatoire</div>
                       }
@@ -514,10 +611,16 @@
                      }
                  </div>
                }@else{
-                  <input type="text"   formControlName="direction_id"  placeholder="Massar " class="form-control"
-                  [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('direction_id')?.invalid &&(formPermanent.get('direction_id')?.touched || formPermanent.get('direction_id')?.dirty),
-                  'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('direction_id')?.valid &&(formPermanent.get('direction_id')?.touched || formPermanent.get('direction_id')?.dirty)}"
+                  <input type="text"   formControlName="direction"  placeholder="Massar " class="form-control"
+                  [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('direction')?.invalid &&(formPermanent.get('direction')?.touched || formPermanent.get('direction')?.dirty),
+                  'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('direction')?.valid &&(formPermanent.get('direction')?.touched || formPermanent.get('direction')?.dirty)}"
                   />
+                  @if(formPermanent.get('direction')?.invalid && formPermanent.get('direction')?.touched){
+                     @if(formPermanent.get('direction')?.hasError('required')){
+                       
+                           <div class="text-red-500 text-xs">La direction est obligatoire</div>
+                   }
+                 }
                }
             </div>
          </div>
@@ -546,9 +649,9 @@
                   @if(!autrePole){
                     <div class="flex space-x-1">
                        <div class="w-full">
-                           <select id="pole" formControlName="pole_id" (click)="selectedPole($event)" class="form-select"
-                           [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('pole_id')?.invalid &&(formPermanent.get('pole_id')?.touched || formPermanent.get('pole_id')?.dirty),
-                           'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('pole_id')?.valid &&(formPermanent.get('pole_id')?.touched || formPermanent.get('pole_id')?.dirty)}"
+                           <select id="pole" formControlName="pole" (click)="selectedPole($event)" class="form-select" [compareWith]="compare"
+                           [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('pole')?.invalid &&(formPermanent.get('pole')?.touched || formPermanent.get('pole')?.dirty),
+                           'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('pole')?.valid &&(formPermanent.get('pole')?.touched || formPermanent.get('pole')?.dirty)}"
                            >
                               <option value="" selected disabled>Selectionner une pôle</option>
                            @for(pole of poles;track pole.id){
@@ -556,8 +659,8 @@
                            }
                               <option value="Autre">Autre</option>
                            </select>
-                           @if(formPermanent.get('pole_id')?.invalid && formPermanent.get('pole_id')?.touched){
-                              @if(formPermanent.get('pole_id')?.hasError('required')){
+                           @if(formPermanent.get('pole')?.invalid && formPermanent.get('pole')?.touched){
+                              @if(formPermanent.get('pole')?.hasError('required')){
                               
                                     <div class="text-red-500 text-xs">Le pole est obligatoire</div>
                            }
@@ -576,19 +679,25 @@
                         }
                     </div>
                   }@else{
-                     <input type="text"   formControlName="pole_id"  placeholder="Massar " class="form-control"
-                     [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('pole_id')?.invalid &&(formPermanent.get('pole_id')?.touched || formPermanent.get('pole_id')?.dirty),
-                     'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('pole_id')?.valid &&(formPermanent.get('pole_id')?.touched || formPermanent.get('pole_id')?.dirty)}"
+                     <input type="text"   formControlName="pole"  placeholder="Massar " class="form-control"
+                     [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('pole')?.invalid &&(formPermanent.get('pole')?.touched || formPermanent.get('pole')?.dirty),
+                     'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('pole')?.valid &&(formPermanent.get('pole')?.touched || formPermanent.get('pole')?.dirty)}"
                       />
+                      @if(formPermanent.get('pole')?.invalid && formPermanent.get('pole')?.touched){
+                        @if(formPermanent.get('pole')?.hasError('required')){
+                        
+                                 <div class="text-red-500 text-xs">Le pole est obligatoire</div>
+                        }
+                     }
                   }
                </div>
             }
             @if(!notExistPole){
                <div class="card-title">
                   <label for="base-input" class="form-label required">Pole</label>
-                  <input type="text"   formControlName="pole_id"  placeholder="entrez une pole " class="form-control"
-                  [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('pole_id')?.invalid &&(formPermanent.get('pole_id')?.touched || formPermanent.get('pole_id')?.dirty),
-                  'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('pole_id')?.valid &&(formPermanent.get('pole_id')?.touched || formPermanent.get('pole_id')?.dirty)}"
+                  <input type="text"   formControlName="pole"  placeholder="entrez une pole " class="form-control"
+                  [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('pole')?.invalid &&(formPermanent.get('pole')?.touched || formPermanent.get('pole')?.dirty),
+                  'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('pole')?.valid &&(formPermanent.get('pole')?.touched || formPermanent.get('pole')?.dirty)}"
                   />
                </div>
             }
@@ -600,7 +709,7 @@
                @if(!autreDepartement){
                 <div class="flex space-x-1">
                  <div class="w-full">
-                     <select id="departement" formControlName="departement_id" (click)="selectedDepartement($event)" class="form-select"
+                     <select id="departement" formControlName="departement" (click)="selectedDepartement($event)" class="form-select" [compareWith]="compare"
                      [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('department_id')?.invalid &&(formPermanent.get('department_id')?.touched || formPermanent.get('department_id')?.dirty),
                      'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('department_id')?.valid &&(formPermanent.get('department_id')?.touched || formPermanent.get('department_id')?.dirty)}"
                      >
@@ -610,12 +719,12 @@
                      }
                         <option value="Autre">Autre</option>
                      </select>
-                     @if(formPermanent.get('departement_id')?.invalid && formPermanent.get('departement_id')?.touched){
-                        @if(formPermanent.get('departement_id')?.hasError('required')){
+                     @if(formPermanent.get('departement')?.invalid && formPermanent.get('departement')?.touched){
+                        @if(formPermanent.get('departement')?.hasError('required')){
                         
                               <div class="text-red-500 text-xs">Le departement est obligatoire</div>
+                        }
                      }
-                  }
                  </div>
                   @if(suiteservice){
                      <button type="button" (click)="clickSuitedepartement()" class="btn px-2  py-1/2 btn-primary btn-icon ">
@@ -629,57 +738,115 @@
                   }
                 </div>
                }@else{
-                  <input type="text"   formControlName="departement_id"  placeholder="Massar " class="form-control"
-                  [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('departement_id')?.invalid &&(formPermanent.get('departement_id')?.touched || formPermanent.get('departement_id')?.dirty),
-                  'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('departement_id')?.valid &&(formPermanent.get('departement_id')?.touched || formPermanent.get('departement_id')?.dirty)}"
+                  <input type="text"   formControlName="departement"  placeholder="Massar " class="form-control"
+                  [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('departement')?.invalid &&(formPermanent.get('departement')?.touched || formPermanent.get('departement')?.dirty),
+                  'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('departement')?.valid &&(formPermanent.get('departement')?.touched || formPermanent.get('departement')?.dirty)}"
                   />
+                  @if(formPermanent.get('departement')?.invalid && formPermanent.get('departement')?.touched){
+                     @if(formPermanent.get('departement')?.hasError('required')){
+                     
+                           <div class="text-red-500 text-xs">Le departement est obligatoire</div>
+                     }
+                  }
                }
             </div>
             }
             @if(!notExistDepartement){
                <div class="card-title">
                   <label for="base-input" class="form-label required">Département</label>
-                  <input type="text"   formControlName="departement_id"  placeholder="Entrez un departement " class="form-control"
-                  [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('departement_id')?.invalid &&(formPermanent.get('departement_id')?.touched || formPermanent.get('departement_id')?.dirty),
-                  'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('departement_id')?.valid &&(formPermanent.get('departement_id')?.touched || formPermanent.get('departement_id')?.dirty)}"
+                  <input type="text"   formControlName="departement"  placeholder="Entrez un departement " class="form-control"
+                  [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('departement')?.invalid &&(formPermanent.get('departement')?.touched || formPermanent.get('departement')?.dirty),
+                  'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('departement')?.valid &&(formPermanent.get('departement')?.touched || formPermanent.get('departement')?.dirty)}"
                   />
+                  @if(formPermanent.get('departement')?.invalid && formPermanent.get('departement')?.touched){
+                     @if(formPermanent.get('departement')?.hasError('required')){
+                     
+                           <div class="text-red-500 text-xs">Le departement est obligatoire</div>
+                     }
+                  }
                </div>
             }
             @if(poles?.length && departements?.length && services?.length){
                <div class="max-w-screen-md w-full">
                   <label for="service" class="form-label">
                   </label>
-                  @if(!autreService){
-                     <select id="service" formControlName="service_id" (click)="selectedService($event)" class="form-select"
-                     [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('service_id')?.invalid &&(formPermanent.get('service_id')?.touched || formPermanent.get('service_id')?.dirty),
-                     'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('service_id')?.valid &&(formPermanent.get('service_id')?.touched || formPermanent.get('service_id')?.dirty)}"
-                     >
-                        <option value="" selected disabled>Selectionner un service</option>
-                       @for(service of services;track service.id){
-                        <option [ngValue]="service">{{ service?.libelle }}</option>
+                  @if(commercialExiste){
+                     @if(!autreCommercial){
+                        <select id="commercial" formControlName="agence_commercial" (click)="selectedCommercial($event)" class="form-select" [compareWith]="compare"
+                        [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('agence_commercial')?.invalid &&(formPermanent.get('agence_commercial')?.touched || formPermanent.get('agence_commercial')?.dirty),
+                        'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('agence_commercial')?.valid &&(formPermanent.get('agence_commercial')?.touched || formPermanent.get('agence_commercial')?.dirty)}"
+                        >
+                           <option value="" selected disabled>Selectionner un service</option>
+                          @for(service of services;track service.id){
+                           <option [ngValue]="service">{{ service?.libelle }}</option>
+                          }
+                           <option value="Autre">Autre</option>
+                        </select> 
+                        @if(formPermanent.get('agence_commercial')?.invalid && formPermanent.get('agence_commercial')?.touched){
+                           @if(formPermanent.get('agence_commercial')?.hasError('required')){
+                             
+                                 <div class="text-red-500 text-xs">L'agence commercial est obligatoire</div>
+                         }
                        }
-                        <option value="Autre">Autre</option>
-                     </select> 
-                     @if(formPermanent.get('service_id')?.invalid && formPermanent.get('service_id')?.touched){
-                        @if(formPermanent.get('service_id')?.hasError('required')){
-                          
-                              <div class="text-red-500 text-xs">Le service est obligatoire</div>
-                      }
-                    }
-                  }@else{
-                     <input type="text"   formControlName="service_id"  placeholder="Massar " class="form-control" 
-                     [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('service_id')?.invalid &&(formPermanent.get('service_id')?.touched || formPermanent.get('service_id')?.dirty),
-                     'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('service_id')?.valid &&(formPermanent.get('service_id')?.touched || formPermanent.get('service_id')?.dirty)}"
-                     />
+                     }@else{
+                        <input type="text"   formControlName="agence_commercial"  placeholder="ACAD " class="form-control" 
+                        [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('service')?.invalid &&(formPermanent.get('service')?.touched || formPermanent.get('service')?.dirty),
+                        'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('service')?.valid &&(formPermanent.get('service')?.touched || formPermanent.get('service')?.dirty)}"
+                        />
+                        @if(formPermanent.get('agence_commercial')?.invalid && formPermanent.get('agence_commercial')?.touched){
+                           @if(formPermanent.get('agence_commercial')?.hasError('required')){
+                             
+                                 <div class="text-red-500 text-xs">L'agence commercial est obligatoire</div>
+                         }
+                       }
+                     }
                   }
+                 @else{
+                     @if(!autreService){
+                        <select id="service" formControlName="service" (click)="selectedService($event)" class="form-select" [compareWith]="compare"
+                        [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('service')?.invalid &&(formPermanent.get('service')?.touched || formPermanent.get('service')?.dirty),
+                        'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('service')?.valid &&(formPermanent.get('service')?.touched || formPermanent.get('service')?.dirty)}"
+                        >
+                           <option value="" selected disabled>Selectionner un service</option>
+                          @for(service of services;track service.id){
+                           <option [ngValue]="service">{{ service?.libelle }}</option>
+                          }
+                           <option value="Autre">Autre</option>
+                        </select> 
+                        @if(formPermanent.get('service')?.invalid && formPermanent.get('service')?.touched){
+                           @if(formPermanent.get('service')?.hasError('required')){
+                             
+                                 <div class="text-red-500 text-xs">Le service est obligatoire</div>
+                         }
+                       }
+                     }@else{
+                        <input type="text"   formControlName="service"  placeholder="Massar " class="form-control" 
+                        [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('service')?.invalid &&(formPermanent.get('service')?.touched || formPermanent.get('service')?.dirty),
+                        'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('service')?.valid &&(formPermanent.get('service')?.touched || formPermanent.get('service')?.dirty)}"
+                        />
+                        @if(formPermanent.get('service')?.invalid && formPermanent.get('service')?.touched){
+                           @if(formPermanent.get('service')?.hasError('required')){
+                             
+                                 <div class="text-red-500 text-xs">Le service est obligatoire</div>
+                         }
+                       }
+                     }
+                  }
+                  
                </div>
             }@if(!notExistService){
                <div class="card-title">
                   <label for="base-input" class="form-label required">Service</label>
-                  <input type="text"   formControlName="service_id"  placeholder="Entrz une service " class="form-control" 
-                  [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('service_id')?.invalid &&(formPermanent.get('service_id')?.touched || formPermanent.get('service_id')?.dirty),
-                  'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('service_id')?.valid &&(formPermanent.get('service_id')?.touched || formPermanent.get('service_id')?.dirty)}"
+                  <input type="text"   formControlName="service"  placeholder="Entrz une service " class="form-control" 
+                  [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('service')?.invalid &&(formPermanent.get('service')?.touched || formPermanent.get('service')?.dirty),
+                  'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('service')?.valid &&(formPermanent.get('service')?.touched || formPermanent.get('service')?.dirty)}"
                   />
+                  @if(formPermanent.get('service')?.invalid && formPermanent.get('service')?.touched){
+                     @if(formPermanent.get('service')?.hasError('required')){
+                       
+                           <div class="text-red-500 text-xs">Le service est obligatoire</div>
+                   }
+                 }
                </div>
             }
          </div>
@@ -705,27 +872,69 @@
                <div class="max-w-screen-md ">
                   <label for="statut" class="form-label">
                   </label>
-                  <input type="date" formControlName="date_debut_contrat" id="telephone_pro" placeholder="04/05/2024" class="form-control form-control-lg" />
+                  <input type="date" formControlName="date_debut_contrat" id="tee_pro" placeholder="04/05/2024" class="form-control form-control-lg" 
+                  [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('date_debut_contrat')?.invalid &&(formPermanent.get('date_debut_contrat')?.touched || formPermanent.get('date_debut_contrat')?.dirty),
+                  'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('date_debut_contrat')?.valid &&(formPermanent.get('date_debut_contrat')?.touched || formPermanent.get('date_debut_contrat')?.dirty)}"  
+                  />
+                  @if(formPermanent.get('date_debut_contrat')?.invalid && formPermanent.get('date_debut_contrat')?.touched){
+                     @if(formPermanent.get('date_debut_contrat')?.hasError('required')){
+                       
+                           <div class="text-red-500 text-xs">Date début contrat est obligatoire</div>
+                   }
+                 }
+                  <div *ngIf="formPermanent.controls['date_debut_contrat'].hasError('hors')" class="text-red-500 text-xs">
+                     La  date de debut  doit  inférieur à la date de fin.
+                   </div>
                </div>
                <div class="max-w-screen-md ">
                   <label for="statut" class="form-label">
                   </label>
-                  <input type="date" formControlName="date_fin_contrat" id="telephone_pro" placeholder="05/05/2025" class="form-control form-control-lg" />
+                  <input type="date" formControlName="date_fin_contrat" id="tehone_pro" placeholder="05/05/2025" class="form-control form-control-lg" 
+                  [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('date_fin_contrat')?.invalid &&(formPermanent.get('date_fin_contrat')?.touched || formPermanent.get('date_fin_contrat')?.dirty),
+                  'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('date_fin_contrat')?.valid &&(formPermanent.get('date_debut_contrat')?.touched || formPermanent.get('date_debut_contrat')?.dirty)}"  
+                  />
+                  @if(formPermanent.get('date_fin_contrat')?.invalid && formPermanent.get('date_fin_contrat')?.touched){
+                     @if(formPermanent.get('date_fin_contrat')?.hasError('required')){
+                        
+                           <div class="text-red-500 text-xs">Date fin contrat est obligatoire</div>
+                   }
+                  <div *ngIf="formPermanent.controls['date_fin_contrat'].hasError('hors')" class="text-red-500 text-xs">
+                     La  date de fin  doit  supérieur à la date de debut.
+                   </div>
+                   <div *ngIf="formPermanent.controls['date_fin_contrat'].hasError('error')" class="text-red-500 text-xs">
+                     Le Contrat doit durée maximun deux ans .
+                   </div>
+                 }
                </div>
                <div class="max-w-screen-md ">
                   <label for="statut" class="form-label">
                   </label>
-                  <input type="number" min="0" formControlName="temps_presence_autre_structure_sonatel" id="telephone_pro" placeholder="3" class="form-control form-control-lg w-32" />
+                  <input type="number" min="0" formControlName="temps_presence_autre_structure_sonatel" id="telepe_pro" placeholder="3" class="form-control form-control-lg w-32"
+                  [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('temps_presence_autre_structure_sonatel')?.invalid &&(formPermanent.get('temps_presence_autre_structure_sonatel')?.touched || formPermanent.get('temps_presence_autre_structure_sonatel')?.dirty),
+                  'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('temps_presence_autre_structure_sonatel')?.valid &&(formPermanent.get('temps_presence_autre_structure_sonatel')?.touched || formPermanent.get('temps_presence_autre_structure_sonatel')?.dirty)}"  
+                  />
+                  @if(formPermanent.get('temps_presence_autre_structure_sonatel')?.invalid && formPermanent.get('temps_presence_autre_structure_sonatel')?.touched){
+                     @if(formPermanent.get('temps_presence_autre_structure_sonatel')?.hasError('required')){
+                       
+                           <div class="text-red-500 text-xs">temps de presence autre structure est obligatoire</div>
+                   }
+                 }
                </div>
                <div class="max-w-screen-md">
                   <label for="statut" class="form-label">
                   </label>
-                  <input type="number" min="0" formControlName="DA" id="DA" placeholder="65432" class="form-control form-control-lg px-2" />
+                  <input type="number" min="0" formControlName="DA" id="DA" placeholder="65432" class="form-control form-control-lg px-2"
+                  [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('DA')?.invalid &&(formPermanent.get('DA')?.touched || formPermanent.get('DA')?.dirty),
+                  'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('DA')?.valid &&(formPermanent.get('DA')?.touched || formPermanent.get('DA')?.dirty)}"  
+                  />
                </div>
                <div class="max-w-screen-md">
                   <label for="statut" class="form-label">
                   </label>
-                  <input type="number" min="0" formControlName="DA_kangourou" id="DA_kangourou" placeholder="65432" class="form-control form-control-lg" />
+                  <input type="number" min="0" formControlName="DA_kangourou" id="DA_kangourou" placeholder="65432" class="form-control form-control-lg" 
+                  [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('DA_kangourou')?.invalid &&(formPermanent.get('DA_kangourou')?.touched || formPermanent.get('DA_kangourou')?.dirty),
+                  'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('DA_kangourou')?.valid &&(formPermanent.get('DA_kangourou')?.touched || formPermanent.get('DA_kangourou')?.dirty)}"  
+                  />
                </div>
             </div>
 
@@ -749,7 +958,7 @@
                   </div>
                   <div>
                      <label  class="ml-2 form-switch">         
-                        <input  (click)="choiceResponsable($event)" type="checkbox" value=""  class="sr-only peer" />
+                        <input #checkboxRef  (click)="choiceResponsable($event)" id="checkbox" type="checkbox" value=""  class="sr-only peer" />
                         <div class="form-input-switch">
                         </div>
                         <span class="form-check-label">Oui</span>
@@ -761,9 +970,9 @@
             <div class="max-w-screen-md w-full">         
                <label for="responsable" class="form-label">
                </label>
-               <select id="responsable" formControlName="responsable_id"  class="form-select"
-               [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('responsable_id')?.invalid &&(formPermanent.get('responsable_id')?.touched || formPermanent.get('responsable_id')?.dirty),
-               'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('responsable_id')?.valid &&(formPermanent.get('responsable_id')?.touched || formPermanent.get('responsable_id')?.dirty)}"
+               <select id="responsable" formControlName="responsable"  class="form-select" [compareWith]="compare"
+               [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('responsable')?.invalid &&(formPermanent.get('responsable')?.touched || formPermanent.get('responsable')?.dirty),
+               'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('responsable')?.valid &&(formPermanent.get('responsable')?.touched || formPermanent.get('responsable')?.dirty)}"
                >
                   <option value="" selected disabled>Selectionner un responsable</option>
                @for(responsable of dataAll?.responsable;track responsable.id){
@@ -771,8 +980,8 @@
                }
                   <option>Autre</option>
                </select>       
-               @if(formPermanent.get('responsable_id')?.invalid && formPermanent.get('responsable_id')?.touched){
-                  @if(formPermanent.get('responsable_id')?.hasError('required')){
+               @if(formPermanent.get('responsable')?.invalid && formPermanent.get('responsable')?.touched){
+                  @if(formPermanent.get('responsable')?.hasError('required')){
                     
                         <div class="text-red-500 text-xs">Le responsable est obligatoire</div>
                 }
@@ -780,9 +989,9 @@
             </div>
             }
          </div>    
-         <div class="mt-10 flex  gap-x-6">
+         <div class="mt-8 flex  gap-x-6">
             <!-- <button type="button" class="text-sm font-semibold leading-6 text-gray-900">Cancel</button> -->
-            <button type="submit" class="btn btn-primary btn-sm" >Enregistrer</button>
+            <button type="submit"  class="btn {{ color }} btn-sm" >{{enregistre ? 'Enregistrer': 'Modifier' }}</button>
          </div>      
       </div>
   </form>

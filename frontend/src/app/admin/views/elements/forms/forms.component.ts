@@ -1,5 +1,5 @@
-import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild, inject } from '@angular/core';
+import { AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Images } from 'src/assets/data/images';
 import { Agence, DataDepartement, DataPole, DataService, Pole } from 'src/app/_core/interface/interim';
 import { DataALL } from 'src/app/_core/interface/permanent';
@@ -7,11 +7,15 @@ import { PermanentService } from 'src/app/_core/services/permanent.service';
 import { AlertComponent } from 'src/app/shared/components/alert/alert.component';
 import { AlertType } from 'src/app/shared/components/alert/alert.type';
 import { CommonModule } from '@angular/common';
+import { LocalStorageService } from 'src/app/shared/services/localStorage.service';
+import { environment } from 'src/environments/environment.development';
+import { ToastrService } from 'ngx-toastr';
+import { ModalModule } from 'src/app/shared/components/modal/modal.module';
 
 @Component({
   selector: 'app-forms',
   standalone: true,
-  imports: [ReactiveFormsModule,FormsModule,AlertComponent,CommonModule],
+  imports: [ReactiveFormsModule,FormsModule,ModalModule,AlertComponent,CommonModule],
   templateUrl: './forms.component.html',
   styleUrl: './forms.component.css'
 })
@@ -28,6 +32,9 @@ export class FormsComponent implements AfterViewInit,OnInit
   responsable:boolean = true;
   formPermanent:FormGroup;
   fb = inject(FormBuilder);
+  apiImag=environment.apiInterim;
+  apiImagPermanent=environment.apiImg;
+  apiImagPrestataire=environment.apiPrestataire;
   message:string="";
   autreStatut:boolean = false;
   autrePoste:boolean = false;
@@ -48,8 +55,25 @@ export class FormsComponent implements AfterViewInit,OnInit
   suiteservice :boolean =false;
   image:File|null=null; 
   interimaire:boolean = false;
-
-  constructor( ){
+  messageError:string = ""
+  messageAttention:string = "";
+  messageInfo:string = "";
+  commercialExiste:boolean = false;
+  autreCommercial:boolean = true;
+  interimCategorie:boolean=false
+  enregistre:boolean=true;
+  color:string = 'btn-primary';
+  idInterim:number=0;
+  idProfile:number=0;
+  contrat_id:number=0;
+  imageUpdate:string = "";
+  upload:string = "";
+  showModal:boolean = true;
+  footer: boolean = false;
+  close:boolean = false;
+  visible:boolean =false
+  @ViewChild('checkboxRef',{static:false}) checkboxRef!:ElementRef<HTMLInputElement>;
+  constructor(private sharedService:LocalStorageService,private cdRef:ChangeDetectorRef ){
     this.formPermanent = this.fb.group({
       prenom:['',[Validators.required,Validators.minLength(2),Validators.maxLength(100),Validators.pattern("^[A-Za-z\\sé^']*$")]],
       nom:['',[Validators.required,Validators.minLength(2),Validators.maxLength(50),Validators.pattern("^[A-Za-z\\sé^']*$")]],
@@ -60,34 +84,121 @@ export class FormsComponent implements AfterViewInit,OnInit
       telephone_pro:[],
       adresse:[],
       photo:[this.userOne,[Validators.required]],
-      poste_id:['',[Validators.required]],
-      statut_id:['',[Validators.required]],
-      groupe_id:['',[Validators.required]],
-      categorie_id:['',[Validators.required]],
-      agence_id:['',[Validators.required]],
-      locau_id:['',[Validators.required]],
-      canal_id:['',[Validators.required]],
-      direction_id:['',[Validators.required]],
-      pole_id:['',[Validators.required]],
-      departement_id:['',[Validators.required]],
-      service_id:['',[Validators.required]],
-      responsable_id:['',[Validators.required]],
-      categorieInterim_id:['',[Validators.required]],
-      date_debut_contrat:[''],
-      date_fin_contrat:[''],
-      temps_presence_autre_structure_sonatel:[''],
-      DA:[],
-      DA_kangourou:[''],
+      poste:['',[Validators.required]],
+      statut:['',[Validators.required]],
+      groupe:['',[Validators.required]],
+      categorie:['',[Validators.required]],
+      agence:['',[Validators.required]],
+      locau:['',[Validators.required]],
+      canal:['',[Validators.required]],
+      direction:['',[Validators.required]],
+      pole:['',[Validators.required]],
+      departement:['',[Validators.required]],
+      service:['',[Validators.required]],
+      agence_commercial:['',[Validators.required]],
+      responsable:['',[Validators.required]],
+      categorieInterim:['',[Validators.required]],
+      date_debut_contrat:['',[Validators.required,this.DateDebutValidator]],
+      date_fin_contrat:['',[Validators.required,this.DateFinValidator]],
+      temps_presence_autre_structure_sonatel:['',[Validators.required]],
+      DA:['',[Validators.required]],
+      DA_kangourou:['',[Validators.required]],
     })
   }
-  ngAfterViewInit(): void {}
+  ngAfterViewInit(): void {
+    this.sharedService.currentInterim.subscribe(interim=>{
+      if(interim){ 
+        this.formPermanent.reset();
+        this.formPermanent.patchValue(interim)
+        this.enregistre = false;
+        this.color = "btn-success"
+        this.idInterim=interim.id;
+        this.idProfile = interim.profile.id;
+        if (interim.responsable && interim.responsable.id) {
+          this.responsable  = false
+          this.checkboxRef.nativeElement.checked =true;
+        }
+        if(interim.statut.libelle ==="Interimaire"){
+          this.contrat_id = interim.contrats.id;
+          this.interimaire = true;
+          this.formPermanent.get('date_debut_contrat')?.patchValue(interim.contrats.date_debut_contrat)
+          this.interimCategorie =true;
+          this.sharedService.currentAgence.subscribe(element=>{
+            this.dataAgence=element.find((ele:any)=>ele.id === interim.categorie.agence.id)
+            console.log(this.dataAgence);
+          
+            this.formPermanent.get('agence')?.patchValue(interim.categorie.agence)
+            this.formPermanent.get('categorieInterim')?.patchValue(interim.categorie)     
+          })
+         
+          this.formPermanent.get('date_fin_contrat')?.patchValue(interim.contrats.date_fin_contrat)
+          this.formPermanent.get('temps_presence_autre_structure_sonatel')?.patchValue(interim.contrats.temps_presence_autre_structure_sonatel)
+          this.formPermanent.get('DA')?.patchValue(interim.contrats.DA)
+          this.formPermanent.get('DA_kangourou')?.patchValue(interim.contrats.DA_kangourou)
+          this.formPermanent.get('photo')?.patchValue( this.apiImag + interim.profile.photo)
+        }
+        else if(interim.statut.libelle==="Permanent"){
+          
+          this.formPermanent.get('photo')?.patchValue( this.apiImagPermanent + interim.profile.photo)
+        }else if(interim.statut.libelle==="Prestataire"){
+          this.formPermanent.get('photo')?.patchValue( this.apiImagPrestataire + interim.profile.photo)
+        }
+        console.log(interim);
+        console.log(interim.statut);
+        this.formPermanent.get('prenom')?.patchValue(interim.profile.prenom)
+        this.formPermanent.get('nom')?.patchValue(interim.profile.nom)
+        this.formPermanent.get('matricule')?.patchValue(interim.profile.matricule)
+        this.formPermanent.get('email')?.patchValue(interim.profile.email)
+        
+        this.imageUpdate=interim.profile.photo;
+        this.formPermanent.get('telephone')?.patchValue(interim.profile.telephone)
+        this.formPermanent.get('telephone_pro')?.patchValue(interim.profile.telephone_pro)
+        this.formPermanent.get('adresse')?.patchValue(interim.profile.adresse)
+      
+        this.cdRef.detectChanges();
+      }
+    })
+  }
   ngOnInit(): void {
-    this.indexAll()
+    
+    this.index()
+   
+  }
+  compare=function(option:any,value:any)
+  {
+   
+    return option && value ? option.id === value.id : option===value
+  }
+  DateDebutValidator(control: AbstractControl): { [key: string]: boolean} | null {
+    const debut = new Date(control.value);
+    const fin = new Date(control.parent?.get('date_fin_contrat')?.value);
+    if (debut && fin) {
+      if (debut >= fin ) {
+        return { 'hors': true };
+      }
+    }
+    return null;
+  }
+  DateFinValidator(control: AbstractControl): { [key: string]: boolean} | null {
+    const fin = new Date(control.value);
+    const debut = new Date(control.parent?.get('date_debut_contrat')?.value); 
+    const autreStructure = control.parent?.get('temps_presence_autre_structure_sonatel')?.value;
+    if (debut && fin) {
+      const diffMillisecondes = fin.getTime() - debut.getTime();
+      const autreStructureEnAnnee = autreStructure /12;
+      const deuxAns = diffMillisecondes /(1000 * 60 * 60 * 24 *365.25) + autreStructureEnAnnee;
+      if (debut >= fin ) {
+        return { 'hors': true };
+      }if( deuxAns >2){
+        return {'error':true}
+      }
+    }
+    return null;
   }
   get avatars(){
     return this.formPermanent.get('photo')?.value
   }
-  indexAll()
+  index()
   {
     this.service.indexAll().subscribe({
       next:(response=>{
@@ -112,8 +223,8 @@ export class FormsComponent implements AfterViewInit,OnInit
   }
   selectedStatut(event:Event)
   {
-    let option = this.formPermanent.get('statut_id')?.value;
-     let autre =  this.Autre(event,'statut_id');
+    let option = this.formPermanent.get('statut')?.value;
+     let autre =  this.Autre(event,'statut');
      if(autre===true){
       this.autreStatut = true
      }
@@ -129,51 +240,48 @@ export class FormsComponent implements AfterViewInit,OnInit
   }
   selectedPoste(event:Event)
   {
-    let autre = this.Autre(event,'poste_id');
+    let autre = this.Autre(event,'poste');
     if(autre===true){
       this.autrePoste = true;
     }
   }
   selectedGroupe(event:Event)
   {
-   let autre = this.Autre(event,'groupe_id');
+   let autre = this.Autre(event,'groupe');
    if(autre===true){
     this.autreGroupe= true;
    }
   }
   selectedCategorie(event:Event)
   {
-   let autre = this.Autre(event,'categorie_id');
+   let autre = this.Autre(event,'categorie');
    if(autre===true){
     this.autreCategorie= true;
    }
   }
   selectedAgence(event:Event)
   {
-    let select =this.formPermanent.get('agence_id')?.value;
-   let autre = this.Autre(event,'agence_id');
-   if(autre===true){
-    this.autreAgence = true;
-   }else{
-    console.log(select);
-   if(select){
-     
-    this.dataAgence=this.dataAll?.agences.find(element=>element.libelle.toLowerCase() === select.libelle.toLowerCase())
-    console.log(this.dataAgence);
-   }
-    
+    let select =this.formPermanent.get('agence')?.value;
+    let autre = this.Autre(event,'agence');
+    if(autre===true){
+      this.autreAgence = true;
+    }else{
+    if(select){
+      this.interimCategorie = true
+      this.dataAgence=this.dataAll?.agences.find(element=>element.libelle.toLowerCase() === select.libelle.toLowerCase())
+    }
    }
   }
   selectedLocau(event:Event)
   {
-   let autre = this.Autre(event,'locau_id');
+   let autre = this.Autre(event,'locau');
    if(autre===true){
     this.autreLocau = true;
    }
   }
   selectedCanal(event:Event)
   {
-   let autre = this.Autre(event,'canal_id');
+   let autre = this.Autre(event,'canal');
    if(autre===true){
     this.autreCanal = true;
    }
@@ -181,14 +289,13 @@ export class FormsComponent implements AfterViewInit,OnInit
   selectedDirection(event:Event)
   {
     console.log((event.target as HTMLSelectElement).value);
-    let select =this.formPermanent.get('direction_id')?.value;
-    
+    let select =this.formPermanent.get('direction')?.value;
     if(select )
     {
       this.notExistPole = true
       if(select==="Autre")
       {
-        let autre = this.Autre(event,'direction_id');
+        let autre = this.Autre(event,'direction');
         if(autre===true)
         {
           this.autreDirection = true;
@@ -200,7 +307,7 @@ export class FormsComponent implements AfterViewInit,OnInit
     }  
   }
   clickSuitedirection(){
-    let select =this.formPermanent.get('direction_id')?.value;
+    let select =this.formPermanent.get('direction')?.value;
     let data = this.dataAll?.directions.find(element=>element.libelle.toLowerCase() === select.libelle.toLowerCase())
       this.poles = data?.poles;
       if(this.poles?.length == 0){
@@ -213,7 +320,7 @@ export class FormsComponent implements AfterViewInit,OnInit
   }
   clickSuitepole()
   {
-    let select = this.formPermanent.get('pole_id')?.value;
+    let select = this.formPermanent.get('pole')?.value;
     let data = this.poles?.find(ele=>ele.libelle.toLowerCase() ===select.libelle.toLowerCase())
     this.departements = data?.departements;
     if(this.departements?.length ==0){
@@ -226,23 +333,36 @@ export class FormsComponent implements AfterViewInit,OnInit
   }
   clickSuitedepartement()
   {
-    let departement = this.formPermanent.get('departement_id')?.value;
+    let departement = this.formPermanent.get('departement')?.value;
     let data = this.departements?.find(element=>element.libelle.toLowerCase()=== departement.libelle.toLowerCase());
-    this.services = data?.services;
+    if(data?.agence_commercials.length !== 0){
+      this.commercialExiste = true;
+      this.autreCommercial = false;
+      this.services = data?.agence_commercials;
+    }else{
+      this.commercialExiste = false;
+      this.autreService = true
+      this.services = data?.services;
+      
+      console.log(this.services);
+    }
+    console.log(this.services);
+    
     if(this.services?.length== 0){
       this.notExistService = false;
     }else{
-      this.notExistService = true
+      this.notExistService = true;
+      this.autreCommercial = false;
       this.autreService = false;
     }
     this.suiteservice = false;
   }
   selectedPole(event:Event)
   {
-    let select = this.formPermanent.get('pole_id')?.value;
+    let select = this.formPermanent.get('pole')?.value;
     if(select){
       if(select==="Autre"){
-        let autre = this.Autre(event,'pole_id');
+        let autre = this.Autre(event,'pole');
         if(autre === true){
           this.autrePole = true;
           this.departements =[]
@@ -257,10 +377,10 @@ export class FormsComponent implements AfterViewInit,OnInit
   }
   selectedDepartement(event:Event)
   {
-    let departement = this.formPermanent.get('departement_id')?.value;
+    let departement = this.formPermanent.get('departement')?.value;
     if(departement){
       if(departement==="Autre"){
-        let autre = this.Autre(event,'departement_id');
+        let autre = this.Autre(event,'departement');
         if(autre===true){
           this.autreDepartement = true;
         }
@@ -272,9 +392,17 @@ export class FormsComponent implements AfterViewInit,OnInit
   }
   selectedService(event:Event){
     if(event){
-      let autre = this.Autre(event,'service_id');
+      let autre = this.Autre(event,'service');
       if(autre===true){
         this.autreService = true;
+      }
+    }
+  }
+  selectedCommercial(event:Event){
+    if(event){
+      let autre = this.Autre(event,'service');
+      if(autre===true){
+        this.autreCommercial = true;
       }
     }
   }
@@ -302,111 +430,135 @@ export class FormsComponent implements AfterViewInit,OnInit
   {
     console.log(this.formPermanent.value);
     const formData :FormData = new FormData();
-    let poste = this.formPermanent.get('poste_id')?.value;
-    let statut = this.formPermanent.get('statut_id')?.value;
-    let groupe = this.formPermanent.get('groupe_id')?.value;
-    let categorie = this.formPermanent.get('categorie_id')?.value;
-    let agence = this.formPermanent.get('agence_id')?.value;
-    let lieu = this.formPermanent.get('locau_id')?.value;
-    let canal = this.formPermanent.get('canal_id')?.value;
-    let direction = this.formPermanent.get('direction_id')?.value;
-    let pole = this.formPermanent.get('pole_id')?.value;
-    let departement = this.formPermanent.get('departement_id')?.value;
-    let service = this.formPermanent.get('service_id')?.value;
-    let responsable = this.formPermanent.get('responsable_id')?.value;
+    let poste = this.formPermanent.get('poste')?.value;
+    let statut = this.formPermanent.get('statut')?.value;
+    let groupe = this.formPermanent.get('groupe')?.value;
+    let categorie = this.formPermanent.get('categorie')?.value;
+    let agence = this.formPermanent.get('agence')?.value;
+    let lieu = this.formPermanent.get('locau')?.value;
+    let canal = this.formPermanent.get('canal')?.value;
+    let direction = this.formPermanent.get('direction')?.value;
+    let pole = this.formPermanent.get('pole')?.value;
+    let departement = this.formPermanent.get('departement')?.value;
+    let service = this.formPermanent.get('service')?.value;
+    let responsable = this.formPermanent.get('responsable')?.value;
+    let agence_commercial = this.formPermanent.get('agence_commercial')?.value;
     if(poste && poste.id)
     {
-     formData.append('poste_id',poste.id)
+     formData.append('poste',poste.id)
     }else{
-      formData.append('poste_id',this.formPermanent.get('poste_id')?.value)
+      formData.append('poste',this.formPermanent.get('poste')?.value)
     }
     if(statut && statut.id)
     {
-      formData.append('statut_id',statut.id)
+      formData.append('statut',statut.id)
     }else{
-      formData.append('statut_id',this.formPermanent.get('statut_id')?.value)
+      formData.append('statut',this.formPermanent.get('statut')?.value)
     }
     if(groupe && groupe.id)
     {
-      formData.append('groupe_id',groupe.id)
+      formData.append('groupe',groupe.id)
     }else{
-      formData.append('groupe_id',this.formPermanent.get('groupe_id')?.value)
+      formData.append('groupe',this.formPermanent.get('groupe')?.value)
     }
     if(categorie && categorie.id)
     {
-     formData.append('categorie_id',categorie.id)
+     formData.append('categorie',categorie.id)
     }else{
-      formData.append('categorie_id',this.formPermanent.get('categorie')?.value)
+      formData.append('categorie',this.formPermanent.get('categorie')?.value)
     }
     if(agence && agence.id)
     {
-      formData.append('agence_id',agence.id)
+      formData.append('agence',agence.id)
     }else{
-      formData.append('agence_id',this.formPermanent.get('agence_id')?.value)
+      formData.append('agence',this.formPermanent.get('agence')?.value)
     }
     if(lieu && lieu.id)
     {
-      formData.append('locau_id',lieu.id)
+      formData.append('locau',lieu.id)
     }else{
-      formData.append('locau_id',this.formPermanent.get('locau_id')?.value)
+      formData.append('locau',this.formPermanent.get('locau')?.value)
     }
     if(canal && canal.id)
     {
-      formData.append('canal_id',canal.id)
+      formData.append('canal',canal.id)
     }else{
-      formData.append('canal_id',this.formPermanent.get('canal_id')?.value)
+      formData.append('canal',this.formPermanent.get('canal')?.value)
     }
     if(direction && direction.id)
     {
-      formData.append('direction_id',direction.id)
+      formData.append('direction',direction.id)
     }else{
-      formData.append('direction_id',this.formPermanent.get('direction_id')?.value)
+      formData.append('direction',this.formPermanent.get('direction')?.value)
     }
     if(pole && pole.id)
     {
-      formData.append('pole_id',pole.id)
+      formData.append('pole',pole.id)
     }else{
-      formData.append('pole_id',this.formPermanent.get('pole_id')?.value)
+      formData.append('pole',this.formPermanent.get('pole')?.value)
     }
     if(departement && departement.id)
     {
-      formData.append('departement_id',departement.id)
+      formData.append('departement',departement.id)
     }else{
-      formData.append('departement_id',this.formPermanent.get('departement_id')?.value)
+      formData.append('departement',this.formPermanent.get('departement')?.value)
     }
     if(service && service.id)
     {
-      formData.append('service_id',service.id)
+      formData.append('service',service.id)
     }else{
-      formData.append('service_id',this.formPermanent.get('service_id')?.value)
+      formData.append('service',this.formPermanent.get('service')?.value)
     }
+    if(agence_commercial && agence_commercial.id)
+      {
+        formData.append('agence_commercial',agence_commercial.id)
+      }else{
+        formData.append('agence_commercial',this.formPermanent.get('agence_commercial')?.value)
+      }
     if(responsable && responsable.id)
     {
-      formData.append('responsable_id',responsable.id)
+      formData.append('responsable',responsable.id)
     }
     if(this.image)
     {
       formData.append('photo',this.image,this.image?.name);
-      formData.append('nom',this.formPermanent.get('nom')?.value);
-      formData.append('prenom',this.formPermanent.get('prenom')?.value);
-      formData.append('matricule',this.formPermanent.get('matricule')?.value);
-      formData.append('email',this.formPermanent.get('email')?.value);
-      formData.append('contrat',this.formPermanent.get('contrat')?.value);
-      formData.append('adresse',this.formPermanent.get('adresse')?.value);
-      formData.append('telephone',this.formPermanent.get('telephone')?.value);
-      formData.append('telephone_pro',this.formPermanent.get('telephone_pro')?.value);
-      formData.append('date_debut_contrat',this.formPermanent.get('date_debut_contrat')?.value)
-      formData.append('date_fin_contrat',this.formPermanent.get('date_fin_contrat')?.value)
-      formData.append('DA',this.formPermanent.get('DA')?.value)
-      formData.append('DA_kangourou',this.formPermanent.get('DA_kangourou')?.value)
-      formData.append('temps_presence_autre_structure_sonatel',this.formPermanent.get('temps_presence_autre_structure_sonatel')?.value)
-      formData.append('categorieInterim_id',this.formPermanent.get('categorieInterim_id')?.value.id)
+      this.upload="null"
+    }else{
+      formData.append('photo',this.imageUpdate);
+      this.upload="upload";
     }
-    this.service.store(formData).subscribe({
+    formData.append('nom',this.formPermanent.get('nom')?.value);
+    formData.append('prenom',this.formPermanent.get('prenom')?.value);
+    formData.append('matricule',this.formPermanent.get('matricule')?.value);
+    formData.append('email',this.formPermanent.get('email')?.value);
+    formData.append('contrat',this.formPermanent.get('contrat')?.value);
+    formData.append('adresse',this.formPermanent.get('adresse')?.value);
+    formData.append('telephone',this.formPermanent.get('telephone')?.value);
+    formData.append('telephone_pro',this.formPermanent.get('telephone_pro')?.value);
+    formData.append('date_debut_contrat',this.formPermanent.get('date_debut_contrat')?.value)
+    formData.append('date_fin_contrat',this.formPermanent.get('date_fin_contrat')?.value)
+    formData.append('DA',this.formPermanent.get('DA')?.value)
+    formData.append('DA_kangourou',this.formPermanent.get('DA_kangourou')?.value)
+    formData.append('temps_presence_autre_structure_sonatel',this.formPermanent.get('temps_presence_autre_structure_sonatel')?.value)
+    let categInterim = this.formPermanent.get('categorieInterim')?.value;
+    if(categInterim!=null){
+      formData.append('categorieInterim',this.formPermanent.get('categorieInterim')?.value.id)
+    }
+    console.log(this.idInterim);
+    console.log(this.idProfile);
+    console.log(this.contrat_id);
+    console.log(this.upload);
+    
+    
+    
+    
+    this.service.store(formData,this.idInterim,this.idProfile,this.upload,this.contrat_id).subscribe({
       next:(response=>{
         console.log(response);
         if(response.statut===200)
           {
+            console.log(response);
+            
             this.message = response.message;
           setTimeout(()=>{
             this.message =""
@@ -415,6 +567,31 @@ export class FormsComponent implements AfterViewInit,OnInit
           this.formPermanent.get('photo')?.setValue(this.userOne);
           this.responsable =false;
         }
+        else if(response.statut === 221){
+          // this.toastr.success(response.message)
+          this.visible = true
+          this.messageInfo = response.message;
+          setTimeout(()=>{
+            this.visible = false
+            this.messageInfo =""
+          },10000)
+        }else{
+          // this.toastr.warning(response.message)
+          this.visible = true
+          this.messageAttention = response.message;
+          setTimeout(()=>{
+            this.visible = false
+            this.messageAttention =""
+          },10000)
+        }
+      }),error:(error=>{
+        // this.toastr.error(error.error.message)
+        this.visible = true
+        this.messageError = error.error.message;
+        setTimeout(()=>{
+          this.messageError = "";
+          this.visible = false
+        },10000)
       })
     })
   }

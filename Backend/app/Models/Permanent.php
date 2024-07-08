@@ -21,6 +21,10 @@ class Permanent extends Model
     {
         return $this->belongsTo(Categoriegroupe::class);
     }
+    public function agence_commercial()
+    {
+        return $this->belongsTo(AgenceCommercial::class);
+    }
     public function poste()
     {
         return $this->belongsTo(Poste::class);

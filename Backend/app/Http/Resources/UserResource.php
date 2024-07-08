@@ -19,7 +19,7 @@ class UserResource extends JsonResource
             'nom'=>$this->nom,
             'prenom'=>$this->prenom,
             'email'=>$this->email,
-            // 'password'=>$this->password,
+            'telephone_pro'=>$this->telephone_pro,
             'matricule'=>$this->matricule,
             'telephone'=>$this->telephone,
             'role'=>RoleResource::make($this->role),

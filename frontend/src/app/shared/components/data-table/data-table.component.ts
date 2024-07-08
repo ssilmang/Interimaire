@@ -1,20 +1,25 @@
 import { NgClass, NgIf } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit, inject } from '@angular/core';
 import { Permanent } from 'src/app/_core/interface/permanent';
 import { environment } from 'src/environments/environment.development';
 import { ModalComponent } from '../modal/modal.component';
 import { ModalModule } from '../modal/modal.module';
 import { FormsModule } from '@angular/forms';
 import { InterimService } from 'src/app/_core/services/interim.service';
-
+import { CommonService } from 'src/app/_core/services/common.service';
+import { AppRoutes } from 'src/app/app.routes';
+import { AdminRoutes, ElementRoutes, SettingRoutes } from 'src/app/admin/admin.routes';
+import { ActivatedRoute, ParamMap, Router, RouterLink } from '@angular/router';
+import { PermanentService } from 'src/app/_core/services/permanent.service';
+import { LocalStorageService } from '../../services/localStorage.service';
 @Component({
   selector: 'data-table',
   standalone: true,
-  imports: [NgClass, NgIf,ModalModule,FormsModule],
+  imports: [NgClass, NgIf,ModalModule,FormsModule,RouterLink],
   templateUrl: './data-table.component.html',
   styleUrl: './data-table.component.css',
 })
-export class DataTableComponent {
+export class DataTableComponent implements OnInit{
   @Input() columnData: any = [];
   @Input() rowData?: Permanent;
   @Input() pageData: number[] = [];
@@ -26,9 +31,41 @@ export class DataTableComponent {
   collaborateur?:Permanent;
   modalCompnent: ModalComponent;
   faireCommentaire:boolean = true;
-  commentaire:string = "huhuhouho";
-  constructor(private service:InterimService){
+  isCommentaire:boolean = false
+  couleur:string = "bg-red-600  hover:bg-red-700"
+  commentaire:string = "";
+  annuler: boolean = true;
+  readonly appRoutes = AppRoutes;
+  readonly adminRoutes = AdminRoutes;
+  readonly settingRoutes = SettingRoutes;
+  readonly elementRoutes = ElementRoutes;
+  id:string|null = null
+  route = inject(ActivatedRoute)
+  constructor(
+    private service:InterimService ,
+    private serve:PermanentService, 
+     public readonly commonService:CommonService,
+     private shared:LocalStorageService,
+     private router:Router,
+    ){
     this.modalCompnent = new ModalComponent();
+  }
+  ngOnInit(): void {
+    this.route.paramMap.subscribe((params: ParamMap) => {
+      this.id = params.get('id');
+      console.log(this.id);
+      this.indexPermanent(this.id);
+    });
+  }
+  indexPermanent(id:string|null)
+  {
+    this.serve.indexPermanents(id).subscribe({
+      next:(response=>{
+        this.rowData = response.data
+        this.collaborateur  =response.data
+        console.log(response);
+      })
+    })
   }
   sortingUp() {
     this.shorting = !this.shorting;
@@ -42,10 +79,14 @@ export class DataTableComponent {
     this.dataDetails= collab;
     this.showModal = !this.showModal;
     this.faireCommentaire = true
-    // Mettez en œuvre la logique pour afficher les détails du collaborateur
+   
   }
   onModalCloseHandler(event: boolean) {
     this.showModal = event;
+    this.faireCommentaire = true
+    this.annuler = true
+    this.isCommentaire = false;
+    this.couleur =  "bg-red-600  hover:bg-red-700"
   }
 
   toggleDropdown() {
@@ -61,37 +102,42 @@ export class DataTableComponent {
     this.rowData = collab;
 
   }
+ 
+
   clickCommentaire(event:string)
   {
     this.faireCommentaire = false;
     let string = "Enregistrer";   
-    console.log(event.toLowerCase() === string.toLowerCase());  
+    this.isCommentaire = true; 
+    this.annuler = false;
+    this.couleur= "bg-green-700  hover:bg-green-800"
     if(event.toLowerCase() === string.toLowerCase())
-      {
-        console.log( this.commentaire); 
-        console.log(this.dataDetails  );
+    {
         let idUser = this.dataDetails?.profile.id;
         const data = {
           commentaire:this.commentaire
           };
         this.service.isCommentaire(data,idUser!).subscribe({
           next:(response=>{
-            console.log(response);
-            
             if(response.statut==200)
             {
-             if(this.dataDetails?.profile){
-              this.dataDetails.profile = response.data
-             }
+              if (this.dataDetails) {
+                this.dataDetails.profile = response.data;
+              }
+              this.annuler = true;
               this.showModal =false
               this.faireCommentaire = true
+              this.isCommentaire = false;
+               this.couleur= "bg-red-600  hover:bg-red-700"
             }
-
           })
         })
-      }else{
-        this.commentaire = this.dataDetails?.profile.commentaire!
-      }
-      this.commentaire == "jgkhkgkihi"
+    }else{
+      this.commentaire = this.dataDetails?.profile.commentaire!
+    }
+  }
+  editer(permanent?:Permanent){
+    this.shared.changeInterim(permanent);
+    this.router.navigateByUrl('/admin/elements/forms');
   }
 }

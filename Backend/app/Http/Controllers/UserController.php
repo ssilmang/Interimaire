@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\ResponsableResource;
+use App\Http\Resources\UserResource;
 use App\Models\AgenceCommercial;
 use App\Models\Contrat;
 use App\Models\Service;
@@ -19,11 +20,16 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 class UserController extends Controller
 {
+    private $controller;
+    public function __construct( HeriteController $controller){
+        $this->controller= $controller; 
+    }
     
 public function store(Request $request)
 {
@@ -36,66 +42,28 @@ public function store(Request $request)
                 'password' => 'required|max:6',
                 'matricule' => 'required|string|unique:users,matricule',
                 'telephone' => ['required', 'string', 'regex:/^(70|77|76|75|78)\d{7}$/', 'unique:users,telephone'],
-                'role_id' => 'nullable|exists:roles,id',
+                'telephone_pro' => ['nullable', 'string', 'regex:/^(70|77|76|75|78)\d{7}$/', 'unique:users,telephone'],
+                'role' => 'string',
             ]);
-          
+
+          $role = $this->controller->store($request->role,'Role',"role ajouter avec succès");
             $username = Str::slug($request->nom . '_' . $request->matricule, '_');
             $user = User::create([
                 'nom' => $request->nom,
                 'prenom' => $request->prenom,
                 'email' => $request->email,
-                'password' => Hash::make($request->password),
+                'password' =>$request->password,
                 'matricule' => $request->matricule,
                 'username' => $username,
                 'telephone' => $request->telephone,
-                'role_id' => $request->role_id, 
+                'telephone_pro' => $request->telephone_pro,
+                'role_id' => $role->id, 
             ]);
             $message="utilisateur ajouter avec succès";
-           
-            if ($request->has('role_id') && $request->role_id) {
-                $role = Role::findOrFail($request->role_id);
-                if ($role->libelle === "Responsable") {
-                    $request->validate([
-                        'departement_id' => 'required|exists:departements,id',
-                        'service_id' => 'exists:services,id',
-                    ]);
-                    $departement = Departement::findOrFail($request->departement_id);
-                    $service = 0;
-                    $agence_commercial = 0;
-                    if(isset($request->service_id)&& $request->service_id){
-                        $service = Service::findOrFail($request->service_id);
-                            if ($service->departement_id !== $departement->id) {
-                            return response()->json([
-                                "status" => 400,
-                                "message" => "Le service sélectionné n'appartient pas au département spécifié."
-                            ], 400);
-                        }
-                    }
-                    if(isset($request->agence_commercial_id)&& $request->agence_commercial_id){
-                        $agence_commercial= AgenceCommercial::findOrFail($request->agence_commercial_id);
-                        if ($agence_commercial->departement_id !== $departement->id) {
-                            return response()->json([
-                                "status" => 400,
-                                "message" => "Le service sélectionné n'appartient pas au département spécifié."
-                            ], 400);
-                        }
-                    }               
-                    $message="responsable existe déjà";
-                    $responsable = new Responsable();
-                    $responsable->user_id = $user->id;
-                    $responsable->departement_id = $departement->id;
-                    $responsable->service_id = $request->service_id? $service->id:$service;
-                    $responsable->agencecommercial_id=$request->agence_commercial_id?$agence_commercial->id:$agence_commercial;              
-                    if(!$responsable->exists){
-                        $responsable->save();
-                        $message = "Responsable ajouté avec succès ";
-                    }
-                }
-            }
             return response()->json([
-                "status" => 200,
+                "statut" => 200,
                 "message" => $message,
-                "data" => $user,
+                "data" => UserResource::make($user),
             ]);
         });
     } catch (QueryException $e) {
@@ -114,6 +82,57 @@ public function getResponsable(Request $request)
         "message"=>"all",
         "data"=>ResponsableResource::collection($responsable)
 
+    ]);
+}
+public function login(Request $request)
+{
+    try{
+        
+        $identifiants = $request->validate([
+            'username'=>'required',
+            'password'=>'required'
+        ]);
+        if(strpos($identifiants['username'],'@gmail.com'))
+        {
+            $user = Auth::attempt(["password"=>$identifiants['password'],"email"=>$identifiants['username']]);
+        }
+        else
+        {
+            $user =Auth::attempt($identifiants);
+        }
+        if(!$user)
+        {
+            return response()->json([
+                'statut'=>Response::HTTP_NO_CONTENT,
+                'message'=>"Mot de passe ou nom d'utilisateur incorrecte",
+            ],422);
+        }
+        $user = Auth::user();         
+        $token = $user->createToken('MON_TOKEN')->plainTextToken;
+        return response()->json([
+            'statut'=>Response::HTTP_OK,
+            "message"=>"connecter avec succès",
+            "data"=>[
+                "token"=>$token,
+                "user"=>UserResource::make($user)
+            ]
+        ],200);
+    }catch(QueryException $e)
+    {
+        return response()->json([
+            "statut"=>221,
+            "message"=>"erreur",
+            "data"=>$e->getMessage(),
+        ]);
+    }
+}
+public function logout()
+{
+    $user=Auth::user();
+    $user->currentAccessToken()->delete();
+    return response()->json([
+        "statut"=>Response::HTTP_NO_CONTENT,
+        "message"=>"vous êtes déconnecter avec succès"
     ]);
 }
 }

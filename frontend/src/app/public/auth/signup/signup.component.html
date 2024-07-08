@@ -1,89 +1,356 @@
-<div [@pageTransition] class="bg-slate-50 flex justify-center items-center pt-8">
-    <div class="card p-5 w-10/12 xl:w-1/2 grid grid-cols-1 md:grid-cols-2">
-        <div class="relative flex flex-col p-1 md:p-8">
-                <h2 class="text-lg  pb-2">
-                    Get Started Now
-                </h2>
-            <p class="text-xs">Enter your credentials to create your account</p>
-            <div class="py-4">
-                <button type="button" class="text-sm border border-gray-100 px-5 py-3 rounded-lg w-full
-                 hover:bg-emerald-100 hover:border-emerald-100 transition-all ease-in-out duration-300">
-                    <i class="bi bi-google mr-1"></i>
-                    Log in with Google
-                </button>
-            </div>
-            <div class="grid grid-cols-5 items-center">
-                <div class="col-span-2">
-                    <hr>
-                </div>
-                <p class="text-center">or</p>
-                <div class="col-span-2">
-                    <hr>
-                </div>
-            </div>
-            <form class="my-5" (submit)="onFormSubmitHandler($event)">
-                <div class="form-group">
-                    <label class="form-label" for="username">Username</label>
-                    <div class="relative">
-                        <input type="text" id="username" class="form-control w-full ps-10"
-                            placeholder="please enter your username">
-                        <span class="absolute top-2 left-0 ps-3 text-gray-400">
-                            <i class="bi bi-person-circle"></i>
-                        </span>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="email">Email</label>
-                    <div class="relative">
-                        <input type="email" id="email" class="form-control w-full ps-10"
-                            placeholder="please enter your email">
-                        <span class="absolute top-2 left-0 ps-3 text-gray-400">
-                            <i class="bi bi-envelope-at"></i>
-                        </span>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="password">Password</label>
-                    <div class="relative">
-                        <input type="password" id="password" class="form-control w-full ps-10"
-                            placeholder="please enter your password">
-                        <span class="absolute top-2 left-0 ps-3 text-gray-400">
-                            <i class="bi bi-shield-lock"></i>
-                        </span>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="confirmpassword">Confirm Password</label>
-                    <div class="relative">
-                        <input type="password" id="confirmpassword" class="form-control w-full ps-10"
-                            placeholder="please enter your password again">
-                        <span class="absolute top-2 left-0 ps-3 text-gray-400">
-                            <i class="bi bi-shield-lock"></i>
-                        </span>
-                    </div>
-                </div>
-                <div class="my-5"></div>
-                <button type="submit" class="btn w-full btn-theme" [disabled]="isLoading">
-                    <btn-spinner *ngIf="isLoading"></btn-spinner>
-                    Sign up
-                </button>
-            </form>
-            <div class="text-sm text-gray-400">
-                <p>
-                    Already have an account?
-                    <a [routerLink]="commonService.prepareRoute(publicRoutes.Signin)" class="text-emerald-600">
-                        Sign in
-                    </a>
-                    instead.
-                </p>
-            </div>
-        </div>
-        <div class="md:block hidden text-white bg-emerald-600 rounded-lg p-8 xl:p-12">
-            <h2 class="text-lg xl:text-2xl pb-3">The simplest way to manage<br>your events</h2>
-            <div class="py-3">
-                <img src={{signupbannerImage}} alt="login page image"
-                    class="border rounded-lg border-emerald-600 shadow">
-            </div>
-        </div>
+<div [@pageTransition] class="flex h-screen overflow-hidd  mt-[-65px] items-center justify-center bg-slate-50 bg-cover bg-center bg-no-repeat">
+  @if(message){
+    <app-modal
+    [show]="showModal"
+    [footer]="footer"
+    [close]="close"
+     >
+     <app-alert [show]="true"  [dismissible]="true"  [type]="alertType.Success">
+      <h6 class="text-lg font-semibold">
+          <i class="bi bi-check2-circle"></i>
+          Succés
+      </h6>
+      <p>
+        {{ message }}
+      </p>
+   </app-alert>
+   </app-modal>
+ }
+   @if(messageError){
+    <app-modal
+    [show]="showModal"
+    [footer]="footer"
+    [close]="close"
+     >
+       <app-alert [show]="true" [dismissible]="true" [type]="alertType.Danger">
+          <h6 class="text-lg font-semibold">
+             <i class="bi bi-bug"></i>
+             Danger
+          </h6>
+          <p>
+             {{ messageError }}
+          </p>
+    </app-alert>
+    </app-modal>
+   }
+   @if(messageAttention){
+    <app-modal
+    [show]="showModal"
+    [footer]="footer"
+    [close]="close"
+     >
+       <app-alert [show]="true" [dismissible]="true" [type]="alertType.Warning">
+          <h6 class="text-lg font-semibold">
+             <i class="bi bi-exclamation-triangle"></i>
+             Warning
+          </h6>
+          <p>
+             {{messageAttention}}
+          </p>
+    </app-alert>
+    </app-modal>
+   }
+   @if(messageInfo){
+    <app-modal
+    [show]="showModal"
+    [footer]="footer"
+    [close]="close"
+     >
+       <app-alert [show]="true" [dismissible]="true" [type]="alertType.Info">
+          <h6 class="text-lg font-semibold">
+             <i class="bi bi-exclamation-circle"></i>
+             Info
+          </h6>
+          <p>
+             {{messageInfo}}
+          </p>
+     </app-alert>
+    </app-modal>
+   }
+<img src="{{sonatelbannerImage}}" alt="background" class="overflow-hidden inset-0 h-[100%] w-[100%] rounded-lg">
+  <div class="card absolute grid   w-full grid-cols-1 p-1 md:grid-cols-2 xl:w-4/5">
+    <div class="hidden rounded-lg p-2  text-white md:block xl:p-1.5">
+      <div class="  py-0">
+        <img src="{{signupbannerImage}}" alt="login page image" class="h-full rounded-lg border border-emerald-600 shadow">
+      </div>
     </div>
+    <div class="relative w-6/5 flex flex-col  rounded-lg bg-opacity-80 p-2 md:p-3">
+      <img src="{{loginnbannerImage}}" alt="login page image" class="0 mx-auto h-16 w-56 shadow">
+      <!-- <div class="py-2">
+        <button type="button" class="w-full rounded-lg border border-gray-100 bg-indigo-600 px-4 py-2 text-white duration-300 ease-in-out hover:border-red-100 hover:bg-red-500">
+          <i class="bi bi-google mr-1"></i>
+          Log in with Google
+        </button>
+      </div> -->
+      <div class="grid grid-cols-5 items-center py-2">
+        <div class="col-span-2">
+          <hr>
+        </div>
+        <p class="text-center">or</p>
+        <div class="col-span-2">
+          <hr>
+        </div>
+      </div>
+      <div class="overflow-auto scroller">
+        <form [formGroup]="formSignup"  class="my-2 w-full" (submit)="Submit()">
+          <div class="grid grid-cols-1  gap-3 md:grid-cols-2" >
+            <div class="form-group">
+              <label class="form-label required" for="prenom">Prénom</label>
+              <div class="relative">
+                <input type="text" id="prenom" formControlName="prenom" class="form-control w-full ps-10" placeholder=" Entrez votre prenom" required
+                [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formSignup.get('prenom')?.invalid &&(formSignup.get('prenom')?.touched || formSignup.get('prenom')?.dirty),
+                'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formSignup.get('prenom')?.valid &&(formSignup.get('prenom')?.touched || formSignup.get('prenom')?.dirty)}"
+                  />
+                  @if(formSignup.get('prenom')?.invalid && formSignup.get('prenom')?.touched){
+                      @if(formSignup.get('prenom')?.hasError('required')){
+                        
+                            <div class="text-red-500 text-xs">Le prenom est obligatoire</div>
+                    }
+                  }
+                  @if(formSignup.get('prenom')?.hasError('maxLength')){
+                      <div  class="text-red-500 text-xs">
+                          Taille maximum 200
+                      </div>
+                  }
+                  @if(formSignup.get('prenom')?.hasError('pattern')){
+                      <div  class="text-red-500 text-xs">
+                        Doit contenir que des caractere
+                      </div>
+                  }
+                  @if(formSignup.get('prenom')?.hasError('minLength')){
+                      <div  class="text-red-500 text-xs">
+                        Taille minimum 3
+                      </div>
+                  }
+                <span class="absolute left-0 top-2 ps-3 text-gray-400">
+                  <i class="bi bi-person-circle"></i>
+                </span>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label required" for="nom">Nom</label>
+              <div class="relative">
+                <input type="text" id="nom" formControlName="nom" class="form-control w-full ps-10" placeholder=" Entrez votre nom de famille" required
+                [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formSignup.get('nom')?.invalid &&(formSignup.get('nom')?.touched || formSignup.get('nom')?.dirty),
+                'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formSignup.get('nom')?.valid &&(formSignup.get('nom')?.touched || formSignup.get('nom')?.dirty)}"
+                />
+                @if(formSignup.get('nom')?.invalid && formSignup.get('nom')?.touched){
+                    @if(formSignup.get('nom')?.hasError('required')){
+                      
+                          <div class="text-red-500 text-xs">Le nom est obligatoire</div>
+                  }
+                }
+                @if(formSignup.get('nom')?.hasError('maxLength')){
+                    <div  class="text-red-500 text-xs">
+                       Taille maximum 200
+                    </div>
+                }
+                @if(formSignup.get('nom')?.hasError('pattern')){
+                    <div  class="text-red-500 text-xs">
+                      Doit contenir que des caractere
+                    </div>
+                }
+                @if(formSignup.get('nom')?.hasError('minLength')){
+                    <div  class="text-red-500 text-xs">
+                      Taille minimum 3
+                    </div>
+                }
+
+                <span class="absolute left-0 top-2 ps-3 text-gray-400">
+                  <i class="bi bi-person-circle"></i>
+                </span>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label required" for="matricule">Matricule</label>
+              <div class="relative">
+                <input type="text" id="matricule" formControlName="matricule" class="form-control w-full ps-10" placeholder="Entrez votre matricule" required
+                [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formSignup.get('matricule')?.invalid &&(formSignup.get('matricule')?.touched || formSignup.get('matricule')?.dirty),
+                      'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formSignup.get('matricule')?.valid &&(formSignup.get('matricule')?.touched || formSignup.get('matricule')?.dirty)}"
+                      />
+                      @if(formSignup.get('matricule')?.invalid && formSignup.get('matricule')?.touched){
+                        @if(formSignup.get('matricule')?.hasError('required')){
+                          
+                              <div class="text-red-500 text-xs">Le matricule est obligatoire</div>
+                       }
+                     }
+                      @if(formSignup.get('matricule')?.hasError('pattern')){
+                        <div  class="text-red-500 text-xs">
+                          Doit contenir que des caractères
+                        </div>
+                     }
+                <span class="absolute left-0 top-2 ps-3 text-gray-400">
+                  <i class="bi bi-person-circle"></i>
+                </span>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label required" for="email">Email</label>
+              <div class="relative">
+                <input type="email" id="email" formControlName="email" class="form-control w-full ps-10" placeholder="Votre email" required
+                [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formSignup.get('email')?.invalid &&(formSignup.get('email')?.touched || formSignup.get('email')?.dirty),
+                'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formSignup.get('email')?.valid &&(formSignup.get('email')?.touched || formSignup.get('email')?.dirty)}"
+                />
+                @if(formSignup.get('email')?.invalid && formSignup.get('email')?.touched){
+                    @if(formSignup.get('email')?.hasError('required')){
+                      
+                          <div class="text-red-500 text-xs">L'adresse email est obligatoire</div>
+                  }
+                }
+                @if(formSignup.get('email')?.errors){
+                  <!-- @if(formSignup.get('email')?.hasError('pattern')){
+                      <div  class="text-red-600">
+                        Doit contenir que des caractere
+                      </div>
+                  } -->
+                  @if (formSignup.get('email')?.hasError('email')) {
+                      <div class="text-red-500 text-xs">Email invalide</div>
+                  }
+                }
+                <span class="absolute left-0 top-2 ps-3 text-gray-400">
+                  <i class="bi bi-envelope-at"></i>
+                </span>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label required" for="telephone-mobile">Telephone Mobile</label>
+              <div class="relative">
+                <input type="text" id="telephone-mobile" formControlName="telephone" class="form-control w-full ps-10" placeholder="Votre numéro de téléphone" required
+                [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formSignup.get('telephone')?.invalid &&(formSignup.get('telephone')?.touched || formSignup.get('telephone')?.dirty),
+                'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formSignup.get('telephone')?.valid &&(formSignup.get('telephone')?.touched || formSignup.get('telephone')?.dirty)}"
+                />
+                @if(formSignup.get('telephone')?.invalid && formSignup.get('telephone')?.touched){
+                  @if(formSignup.get('telephone')?.hasError('required')){
+                    
+                        <div class="text-red-500 text-xs">Le téléphone est obligatoire</div>
+                 }
+               }
+                @if(formSignup.get('telephone')?.hasError('pattern')){
+                  <div  class="text-red-500 text-xs">
+                    Doit contenir que des chiffres
+                  </div>
+               }
+                <span class="absolute left-0 top-2 ps-3 text-gray-400">
+                  <i class="bi bi-telephone"></i>
+                </span>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="telephone-professionnel">Téléphone Professionnel</label>
+              <div class="relative">
+                <input type="text" id="telephone-professionnel" formControlName="telephone_pro" class="form-control w-full ps-10" placeholder="Votre numéro de téléphone professionnel" required>
+                <span class="absolute left-0 top-2 ps-3 text-gray-400">
+                  <i class="bi bi-telephone"></i>
+                </span>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label required" for="role">Role</label>
+              <div class="relative">
+                <input type="text" id="role" formControlName="role" class="form-control w-full ps-10" placeholder="Définir votre role " required
+                [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formSignup.get('role')?.invalid &&(formSignup.get('role')?.touched || formSignup.get('role')?.dirty),
+                'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formSignup.get('role')?.valid &&(formSignup.get('role')?.touched || formSignup.get('role')?.dirty)}"
+                />
+                @if(formSignup.get('role')?.invalid && formSignup.get('role')?.touched){
+                  @if(formSignup.get('role')?.hasError('required')){
+                    
+                        <div class="text-red-500 text-xs">Le role est obligatoire</div>
+                  }
+                }
+                <span class="absolute left-0 top-2 ps-3 text-gray-400">
+                  <i class="bi bi-person-badge"></i>
+                </span>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="username">Nom d'utilisateur</label>
+              <div class="relative">
+                <input type="text" id="username" formControlName="username" class="form-control w-full ps-10" placeholder="Nom d'utilisateur" readonly>
+                <span class="absolute left-0 top-2 ps-3 text-gray-400">
+                  <i class="bi bi-person-circle"></i>
+                </span>
+              </div>
+            </div>
+           
+            <div class="form-group">
+              <label class="form-label required" for="password">Password</label>
+              <div class="relative">
+                <input type="password" id="password" formControlName="password" class="form-control w-full ps-10" placeholder="Votre mot de passe" required
+                [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formSignup.get('password')?.invalid &&(formSignup.get('password')?.touched || formSignup.get('password')?.dirty),
+                'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formSignup.get('password')?.valid &&(formSignup.get('password')?.touched || formSignup.get('password')?.dirty)}"
+                />
+                <button (click)="toggle('password')"  type="button"   class="absolute top-0 end-0 p-3.5 rounded-e-md">
+                  <svg class="flex-shrink-0 size-3.5 text-gray-400 dark:text-neutral-600" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path class="{{ hiddenn }}" d="M9.88 9.88a3 3 0 1 0 4.24 4.24"></path>
+                    <path class="{{ hiddenn }}" d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"></path>
+                    <path class="{{ hiddenn }}" d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"></path>
+                    <line class="{{ hiddenn }}" x1="2" x2="22" y1="2" y2="22"></line>
+                    <path class=" {{ blockk }}" d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
+                    <circle class=" {{ blockk }}" cx="12" cy="12" r="3"></circle>
+                  </svg>
+                </button>
+                @if(formSignup.get('password')?.invalid && formSignup.get('password')?.touched){
+                  @if(formSignup.get('password')?.hasError('required')){
+                    
+                        <div class="text-red-500 text-xs">Le mot de passe est obligatoire</div>
+                 }
+               }
+                <span class="absolute left-0 top-2 ps-3 text-gray-400">
+                  <i class="bi bi-shield-lock"></i>
+                </span>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label required" for="confirmpassword">Confirmer mot de passe</label>
+              <div class="relative">
+                <input type="password" id="confirmpassword" formControlName="confirm_password" class="form-control w-full ps-10" placeholder="Confirmer votre mot de passe " required
+                [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formSignup.get('confirm_password')?.invalid &&(formSignup.get('confirm_password')?.touched || formSignup.get('confirm_password')?.dirty),
+                'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formSignup.get('confirm_password')?.valid &&(formSignup.get('confirm_password')?.touched || formSignup.get('confirm_password')?.dirty)}"
+                />
+                <button (click)="toggle('confirmPassword')"  type="button"   class="absolute top-0 end-0 p-3.5 rounded-e-md">
+                  <svg class="flex-shrink-0 size-3.5 text-gray-400 dark:text-neutral-600" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path class="{{ hiddenns }}" d="M9.88 9.88a3 3 0 1 0 4.24 4.24"></path>
+                    <path class="{{ hiddenns }}" d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"></path>
+                    <path class="{{ hiddenns }}" d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"></path>
+                    <line class="{{ hiddenns }}" x1="2" x2="22" y1="2" y2="22"></line>
+                    <path class=" {{ blockks }}" d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
+                    <circle class=" {{ blockks }}" cx="12" cy="12" r="3"></circle>
+                  </svg>
+                </button>
+                @if(formSignup.get('confirm_password')?.invalid && formSignup.get('confirm_password')?.touched){
+                    @if(formSignup.get('confirm_password')?.hasError('required')){
+                      
+                          <div class="text-red-500 text-xs">La confirmation de mot de passe est obligatoire</div>
+                  }
+                }
+                <!-- @if(formSignup.get('confirm_password')?.errors?.confirme){
+                      
+                    <div class="text-red-500">La confirmation du mot de passe doit correspondre au mot de passe</div>
+                } -->
+                <div *ngIf="formSignup.get('confirm_password')?.errors?.['confirme']">
+                    <div class="text-red-500 text-xs">Ces mots de passe ne correspondent pas. Veuillez réessayer.</div>
+                </div>
+                <span class="absolute left-0 top-2 ps-3 text-gray-400">
+                  <i class="bi bi-shield-lock"></i>
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="my-3"></div>
+          <button type="submit" class="btn btn-theme w-full" [disabled]="isLoading">
+            <btn-spinner *ngIf="isLoading"></btn-spinner>
+            S'inscrire
+          </button>
+        </form>
+        <div class="text-sm text-gray-400">
+          <p>
+            J'ai dèjà un compte?
+            <a [routerLink]="commonService.prepareRoute(publicRoutes.Signin)" class="text-emerald-600">Connecter</a>
+            maintenant.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

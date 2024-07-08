@@ -1,19 +1,9 @@
-<header class="admin-navbar sticky top-0 bg-white px-8 py-3 shadow-[0_5px_5px_-5px] shadow-gray-600">
-    <div class="flex items-center justify-between">
-        <div class="flex items-center justify-start gap-x-9">
-            <div class="relative inline-block hover:bg-slate-200  ">
-                <a  [routerLink]="'/admin/permanent'" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}" ariaCurrentWhenActive="page" class="text-sm font-semibold leading-6 text-gray-900 py-2 px-2 rounded-2xl  cursor-pointer hover:bg-slate-200">Permanent</a>
-            </div>
-            <div class="relative inline-block hover:bg-slate-200">
-                <a  [routerLink]="'/admin/prestataire'" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}" ariaCurrentWhenActive="page"class="text-sm font-semibold leading-6 text-gray-900  py-2 px-2  rounded-2xl cursor-pointer hover:bg-slate-200">Prestatiare</a>
-            </div>
-           <div class="relative inline-block hover:bg-slate-200 ">
-                <a   [routerLink]="'/admin/dashboard'" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}" ariaCurrentWhenActive="page" class="text-sm font-semibold leading-6 text-gray-900 cursor-pointer  rounded-2xl  py-2 px-2 hover:bg-slate-200">Interimaire</a>
-           </div>
-        </div>
+<header class="admin-navbar  sticky top-0 bg-white px-8 py-3 shadow-[0_5px_5px_-5px] shadow-gray-600">
+    <div class="flex items-center justify-end">
+       
         <div class="flex items-center justify-end gap-x-3">
             <div class="relative inline-block">
-                <button type="button" class="text-light h-10 w-10 rounded-full text-xl transition hover:bg-red-800 hover:text-white">
+                <button (click)="theme()" type="button" class="text-light h-10 w-10 rounded-full text-xl transition hover:bg-red-800 hover:text-white">
                     <i class="bi bi-moon-stars"></i>
                 </button>
             </div>
@@ -26,44 +16,50 @@
                 <div class="flex items-center">
                     <button type="button" (click)="onClickProfile()"
                         class="flex h-10 w-10 overflow-hidden rounded-full border-2 border-emerald-600 shadow">
-                        <img src={{userOne}} alt="pape moussa" class="w-full object-cover">
+                        <!-- <img src={{userOne}} alt="pape moussa" class="w-full object-cover"> -->
+                        <span  class="rounded-full w-10 h-10 bg-gray-400 flex items-center justify-center text-white font-semibold">
+                            {{ profile }}
+                          </span>
                     </button>
                     <div class="ml-3 text-left">
-                        <p>Pape Moussa Thiam</p>
-                        <p class="text-light text-xs">Developpeur FullStack</p>
+                        <p>{{dataUser?.prenom+' '+ dataUser?.nom}}</p>
+                        <p class="text-light text-xs">{{dataUser?.role?.libelle}}</p>
                     </div>
                 </div>
 
                 <div class="profile-dropdown-list" aria-expanded="false">
                     <div class="flex items-center gap-3">
                         <div
-                            class="w-19 h-18 flex items-center justify-center overflow-hidden rounded-full border-2 border-emerald-600">
-                            <img class="w-full object-cover" src={{userOne}} alt="Profile">
+                            class="w-10 h-10 flex items-center justify-center overflow-hidden rounded-full border-2 border-emerald-600">
+                            <span  class="rounded-full w-10 h-10 bg-gray-400 flex items-center justify-center text-white font-semibold">
+                                {{ profile }}
+                              </span>
+                            <!-- <img class="w-full object-cover" src={{userOne}} alt="Profile"> -->
                         </div>
                         <div>
                             <div class="flex gap-1 text-sm font-semibold">
-                                <span>Pape Moussa</span>
+                                <span>{{dataUser?.prenom+' '+ dataUser?.nom}}</span>
                                 <span class="text-emerald-600">
                                     <i class="bi bi-check2-circle"></i>
                                 </span>
                             </div>
-                            <div class="text-xs text-slate-400">papemoussa.thiam&#64;orange-sonatel.com</div>
+                            <div class="text-xs text-slate-400">{{dataUser?.email}}</div>
                         </div>
                     </div>
                     <div class="border-t border-slate-500/30"></div>
                     <div class="flex flex-col text-sm">
-                        <a href="#" class="flex items-center gap-3 rounded-md p-2 hover:bg-slate-200">
+                        <a  class="flex items-center gap-3 rounded-md p-2 hover:bg-slate-200">
                             <i class="bi bi-person-circle"></i>
-                            <span>Profile</span>
+                            <span>{{dataUser?.matricule}}</span>
                         </a>
-                        <a href="#" class="flex items-center gap-3 rounded-md p-2 hover:bg-slate-200">
-                            <i class="bi bi-info-circle"></i>
-                            <span>Help Center</span>
+                        <a class="flex items-center gap-3 rounded-md p-2 hover:bg-slate-200">
+                            <i class="bi bi-telephone"></i>
+                            <span>{{dataUser?.telephone}}</span>
                         </a>
                     </div>
                     <div class="border-t border-slate-500/30"></div>
                     <div class="">
-                        <button type="button"
+                        <button (click)="deconnecter()" type="button"
                             class="w-full rounded p-2 text-left text-sm font-semibold text-red-400 transition hover:bg-slate-200">
                             <i class="bi bi-power"></i>
                             Logout

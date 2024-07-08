@@ -17,8 +17,8 @@ class DepartementResource extends JsonResource
         return [
             'id'=>$this->id,
             'libelle'=>$this->libelle,
-            'services'=>$this->services->isNotEmpty()? ServiceResource::collection($this->services): AgenceCommercialeResource::collection($this->agenceCommerciales),
-           
+            'services'=>$this->services->isNotEmpty()? ServiceResource::collection($this->services):null,
+            'agence_commercials'=>AgenceCommercialeResource::collection($this->agenceCommerciales),
         ];
     }
 }

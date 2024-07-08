@@ -11,7 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        //
+        Schema::table('postes', function (Blueprint $table) {
+            $table->string('date_debut')->nullable();
+            $table->string('date_fin')->nullable();
+        });
     }
 
     /**
@@ -19,6 +22,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
+        Schema::table('postes', function (Blueprint $table) {
+            //
+        });
     }
 };

@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgClass, NgStyle } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Interim } from 'src/app/_core/interface/interim';
 import { CommentaireComponent } from '../commentaire/commentaire.component';
@@ -8,49 +8,49 @@ import { CommentaireComponent } from '../commentaire/commentaire.component';
   selector: 'app-modal',
   templateUrl: './modal.component.html',
   styleUrls: ['./modal.component.css'],
-  imports: [CommonModule,CommentaireComponent]
+  imports: [CommonModule,CommentaireComponent,NgClass]
 })
 export class ModalComponent {
   @Input() show: boolean = false;
+  @Input() rompre: boolean = false;
   @Input() title: string = "Modal";
   @Input() size: string = "xl:max-w-7xl";
   @Input() footer: boolean = true;
+  @Input() close:boolean = true;
   @Input() dataInterim?:Interim
+  @Input() premierButtonText: string = 'Commentaire';
+  @Input() deuxiemeButtonText: string = 'Fermer';
+  @Input() couleur:string = "bg-red-600  hover:bg-red-500";
   @Output() closeModal = new EventEmitter<boolean>();
+  @Output() closeModalRompre = new EventEmitter<boolean>();
   @Output() clickCommentaire = new EventEmitter<string>();
- 
+  @Output() clickRompre = new EventEmitter<boolean>();
+  @Output() clickButton = new EventEmitter<void>();
+  @Output() clickPoint = new EventEmitter<void>();
   showModal: boolean = false;
   enregistrer:boolean = true;
   annuler:boolean = true;
   modalCompnent: CommentaireComponent;
-  couleur:string = "bg-red-600  hover:bg-red-500";
-
   constructor() {
     this.modalCompnent = new CommentaireComponent();
   }
-
   openModal(event:Event) 
   {
     let option = (event.target as HTMLButtonElement).textContent?.trim();
-   this.enregistrer = false;
    this.annuler = false
-   this.couleur = "bg-green-600  hover:bg-green-500"
     if(option)
     {
       this.clickCommentaire.emit(option)
     }
+    this.clickButton.emit();
   }
-
   onModalCloseHandler(event: boolean) {
     this.showModal = event;
   }
   onModalClose() {
     this.show = false;
-    this.enregistrer = true;
     this.annuler = true
-    ;this.couleur ="bg-red-600  hover:bg-red-500";
     this.closeModal.emit(this.show);
   }
-  
 }
 

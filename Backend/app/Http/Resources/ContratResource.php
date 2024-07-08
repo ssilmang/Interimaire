@@ -26,7 +26,7 @@ class ContratResource extends JsonResource
             'cout_mensuel'=>$this->cout_mensuel,
             'cout_global'=>$this->cout_global,
             'DA'=>$this->DA,
-            'DA_kangurou'=>$this->DA_kangurou,
+            'DA_kangourou'=>$this->DA_kangurou,
             'commentaire'=>$this->commentaire,
             'etat'=>$this->etat,
             'interim'=>$this->interim_id,

@@ -10,10 +10,14 @@ export interface DataInterim{
 }
 export interface Interim{
     id:number
-   profile:Profile
-    contrats:Contrat[]
+    etat:string
+    date:string
+    motif:string
+    profile:Profile
+    contrats:Contrat
     categorie:Categorie
     poste:Poste
+    statut:Role
     responsable:Permanent
 }
 export interface Contrat{
@@ -28,7 +32,7 @@ export interface Contrat{
     cout_mensuel:number
     cout_global:number
     DA:number
-    DA_kangurou:number
+    DA_kangourou:number
     etat:number
     commentaire:number
     interim:number
@@ -89,6 +93,7 @@ export interface User{
     email:string
     matricule:string
     telephone:string
+    telephone_pro:string
     role:Agence
 }
 export interface Role{
@@ -110,10 +115,35 @@ export interface DataDepartement{
     id:number
     libelle:string
     services:DataService[]
+    agence_commercials:DataService[]
 }
 export interface DataService{
     id:number
     libelle:string
     adresse:string
 
+}
+  
+  export interface RequestRompre{
+    date:string
+    motif:String
+  }
+  export interface dataUser{
+    username:string
+    password:string
+  }
+  export interface RequestUser{
+    nom:string
+    prenom:string
+    email:string
+    matricule:string
+    telephone:string
+    role:string
+    telephone_pro:string
+    password:string
+
+}
+export interface UserToken{
+    token:string
+    user:User
 }
