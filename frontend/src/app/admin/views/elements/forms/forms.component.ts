@@ -172,6 +172,14 @@ export class FormsComponent implements AfterViewInit,OnInit
   DateDebutValidator(control: AbstractControl): { [key: string]: boolean} | null {
     const debut = new Date(control.value);
     const fin = new Date(control.parent?.get('date_fin_contrat')?.value);
+    const dateActuel = new Date();
+    // if(debut < dateActuel ){
+    //   return {'error':true};
+    // }
+    // dateActuel.setDate(dateActuel.getDate()+3);
+    // if(debut <dateActuel){
+    //   return {'trois':true};
+    // }
     if (debut && fin) {
       if (debut >= fin ) {
         return { 'hors': true };
@@ -267,8 +275,10 @@ export class FormsComponent implements AfterViewInit,OnInit
       this.autreAgence = true;
     }else{
     if(select){
-      this.interimCategorie = true
-      this.dataAgence=this.dataAll?.agences.find(element=>element.libelle.toLowerCase() === select.libelle.toLowerCase())
+      this.dataAgence=this.dataAll?.agences.find(element=>element.libelle.toLowerCase() === select.libelle.toLowerCase()) 
+      if(this.dataAgence?.categories.length!==0){
+        this.interimCategorie = true
+      }
     }
    }
   }

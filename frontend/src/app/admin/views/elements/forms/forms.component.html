@@ -862,7 +862,7 @@
                   <label for="base-input" class="form-label  required">Autre Structure</label>
                </div> 
                <div class="card-title mr-24">
-                  <label for="base-input" class="form-label   required">DA</label>
+                  <label for="base-input" class="form-label   required"> Numéro DA</label>
                </div>  
                <div class="card-title mr-4">
                   <label for="base-input" class="form-label   required">DA Kangourou</label>
@@ -885,6 +885,12 @@
                   <div *ngIf="formPermanent.controls['date_debut_contrat'].hasError('hors')" class="text-red-500 text-xs">
                      La  date de debut  doit  inférieur à la date de fin.
                    </div>
+                   <!-- <div *ngIf="formPermanent.controls['date_debut_contrat'].hasError('error')" class="text-red-500 text-xs">
+                     La  date de debut ne doit pas être une date antérieur.
+                   </div>
+                   <div *ngIf="formPermanent.controls['date_debut_contrat'].hasError('trois')" class="text-red-500 text-xs">
+                     La  date de debut doit commencer 3 jours a partir d'aujourd'hui.
+                   </div> -->
                </div>
                <div class="max-w-screen-md ">
                   <label for="statut" class="form-label">

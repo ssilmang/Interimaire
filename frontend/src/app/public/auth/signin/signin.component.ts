@@ -81,15 +81,19 @@ export class SigninComponent implements OnInit, AfterViewInit {
     this.userService.login(data).subscribe({
       next:(response)=>{
         console.log(response);
-        this.shared.destroy();
-        this.shared.put('user',JSON.stringify(response.data.user));
-        this.shared.put("token",response.data.token)
-        this.message=response.message;
-         this.isLoading = true;
-        setTimeout(() => {
-          this.isLoading = false;
-          this.router.navigate([AppRoutes.Admin, AdminRoutes.Dashboard]);
-        }, 3000);
+       if(response.statut===200){
+          this.shared.destroy();
+          this.shared.put('user',JSON.stringify(response.data.user));
+          this.shared.put("token",response.data.token)
+          // this.message=response.message;
+          this.isLoading = true;
+          setTimeout(() => {
+            this.isLoading = false;
+            this.router.navigate([AppRoutes.Admin, AdminRoutes.Dashboard]);
+          }, 3000);
+       }else{
+        this.message =response.message;
+       }
         },
       error: (error) => {
         this.isLoading = false;

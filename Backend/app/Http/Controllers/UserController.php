@@ -39,7 +39,7 @@ public function store(Request $request)
                 'nom' => 'required|string',
                 'prenom' => 'required|string',
                 'email' => 'required|email|unique:users,email',
-                'password' => 'required|max:6',
+                'password' => 'required|min:8',
                 'matricule' => 'required|string|unique:users,matricule',
                 'telephone' => ['required', 'string', 'regex:/^(70|77|76|75|78)\d{7}$/', 'unique:users,telephone'],
                 'telephone_pro' => ['nullable', 'string', 'regex:/^(70|77|76|75|78)\d{7}$/', 'unique:users,telephone'],
