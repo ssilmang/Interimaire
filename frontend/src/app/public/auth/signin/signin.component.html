@@ -39,6 +39,7 @@
                                 >
                                 @if(signInForm.get('username')?.invalid && signInForm.get('username')?.touched){
                                     @if(signInForm.get('username')?.hasError('required')){
+                                        <svg class="h-5 w-5 text-red-700  sc-iIPllB jWijMY MuiSvgIcon-root MuiSvgIcon-colorError MuiSvgIcon-fontSizeMedium" focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="ErrorIcon"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2m1 15h-2v-2h2zm0-4h-2V7h2z"></path></svg>
                                         <div class="text-red-500 text-xs">Ce champ est obligatoire</div>
                                 }
                                 }
@@ -66,9 +67,15 @@
                                 <circle class=" {{ blockk }}" cx="12" cy="12" r="3"></circle>
                               </svg>
                             </button>
+                           
                             @if(signInForm.get('password')?.invalid && signInForm.get('password')?.touched){
-                                @if(signInForm.get('password')?.hasError('required')){                         
-                                      <div class="text-red-500 text-xs">Ce champ est obligatoire</div>
+                                @if(signInForm.get('password')?.hasError('required')){ 
+                                   <div class="flex  justify-around">
+                                        <div>
+                                            <svg class="h-5 w-5 text-red-700  sc-iIPllB jWijMY MuiSvgIcon-root MuiSvgIcon-colorError MuiSvgIcon-fontSizeMedium" focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="ErrorIcon"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2m1 15h-2v-2h2zm0-4h-2V7h2z"></path></svg>                        
+                                        </div>
+                                            <div class="text-red-500 text-xs">Ce champ est obligatoire</div>
+                                   </div>
                               }
                             }
                             <span class="absolute left-0 top-2 ps-3 text-gray-400">
