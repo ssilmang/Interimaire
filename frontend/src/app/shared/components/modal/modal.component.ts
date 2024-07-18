@@ -27,6 +27,7 @@ export class ModalComponent {
   @Output() clickRompre = new EventEmitter<boolean>();
   @Output() clickButton = new EventEmitter<void>();
   @Output() clickPoint = new EventEmitter<void>();
+  @Input() formeValide:boolean=false;
   showModal: boolean = false;
   enregistrer:boolean = true;
   annuler:boolean = true;

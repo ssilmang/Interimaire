@@ -100,13 +100,13 @@ Route::middleware('auth:sanctum')->prefix('Interim')->group(function()
     Route::controller(InterimController::class)->group(function()
     {
         Route::post('interimaire','store');
-        Route::get('interimaires','index');
+        Route::get('interimaires/{index?}/{page?}','index');
         Route::post('image','inserImage');
         Route::get('indexImage','indexImage');
         Route::put('profile/commentaire/{id}','editeCommentaire');
         Route::put('contratRompre/{id}','rompreAnnuler');
-        Route::get('interim/finContrat','finContrat');
-        Route::get('processusKangourou','processusKangourou');
+        Route::get('interim/finContrat/{index?}/{page?}','finContrat');
+        Route::get('processusKangourou/{index?}/{page?}','processusKangourou');
     });   
     Route::controller(RemplacementsController::class)->group(function()
     {

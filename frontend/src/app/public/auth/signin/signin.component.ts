@@ -9,7 +9,6 @@ import { pageTransition } from 'src/app/shared/utils/animations';
 import { Images } from 'src/assets/data/images';
 import { AlertType } from '../../../shared/components/alert/alert.type';
 import { PublicRoutes } from '../../public.routes';
-
 import { dataUser } from 'src/app/_core/interface/interim';
 import { PrestataireService } from 'src/app/_core/services/prestataire.service';
 import { LocalStorageService } from 'src/app/shared/services/localStorage.service';
@@ -51,7 +50,6 @@ export class SigninComponent implements OnInit, AfterViewInit {
     ngOnInit(): void {  
       this.shared.currentLogout.subscribe(ele=>{
         if(ele){
-          console.log(ele);
           this.shared.destroy();
           this.cdRef.detectChanges();
         }
@@ -80,7 +78,6 @@ export class SigninComponent implements OnInit, AfterViewInit {
     }
     this.userService.login(data).subscribe({
       next:(response)=>{
-        console.log(response);
        if(response.statut===200){
           this.shared.destroy();
           this.shared.put('user',JSON.stringify(response.data.user));

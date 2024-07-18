@@ -23,16 +23,21 @@ class InterimController extends Controller
     public function __construct(HeriteController $controller) {
         $this->controller = $controller;
     }
-    public function index(Request $request)
+    public function index(Request $request,$index=null,$page=null)
     {
-        
         try{
-            $interim = Interim::whereIn('etat',['en cours','rompre'])->get();
-            return response()->json([
+            $interim = Interim::whereIn('etat',['en cours','rompre'])->paginate($index);
+          
+                return response()->json([
                 'statut'=>Response::HTTP_OK,
                 'message'=>'all interim',
                 'data'=>[
-                    "interimaires"=>InterimResource::collection($interim)
+                    "interimaires"=>InterimResource::collection($interim),
+                    "pagination"=>[
+                        "page"=>$interim->currentPage(),
+                        "taille"=>$interim->perPage(),
+                        "total"=>$interim->total(),
+                    ]
                 ]
             ]);
         }catch(QueryException $e)
@@ -44,7 +49,7 @@ class InterimController extends Controller
             ]);
         }
     }
-    public function finContrat(Request $request)
+    public function finContrat(Request $request,$index=null,$page=null)
     {
         try{
             $interim = Interim::where('etat','terminer')->get();
@@ -55,12 +60,17 @@ class InterimController extends Controller
                     $idsInterim[] = $contrat->interim_id;
                 }
             }
-            $allInterim = Interim::whereIn('id',$idsInterim)->get();
+            $allInterim = Interim::whereIn('id',$idsInterim)->paginate($index);
             return response()->json([
                 'statut'=>Response::HTTP_OK,
                 'message'=>'all interim',
                 'data'=>[
-                    "interimaires"=>InterimResource::collection($allInterim)
+                    "interimaires"=>InterimResource::collection($allInterim),
+                    "pagination"=>[
+                        "page"=>$allInterim->currentPage(),
+                        "taille"=>$allInterim->perPage(),
+                        "total"=>$allInterim->total(),
+                    ]
                 ]
             ]);
         }catch(QueryException $e)
@@ -300,7 +310,7 @@ class InterimController extends Controller
         }
 
     } 
-    public function processusKangourou(Request $request)
+    public function processusKangourou(Request $request,$index=null,$page=null)
     {
         $interims = Interim::all();
         $dataInterims = [];
@@ -310,15 +320,23 @@ class InterimController extends Controller
             $duree =  $contrat->duree_contrat* 30 - $contrat->temps_presence_structure_actuel;
            
             if($duree <= 60){
-                $dataInterims[]=$interim;
+                $dataInterims[]=$interim['id'];
             }
            }
         }
+        $interimaires = Interim::whereIn('id',$dataInterims)->paginate($index);
+
+
         return response()->json([
             'statut'=>Response::HTTP_OK,
             'message'=>'all interim',
             'data'=>[
-                "interimaires"=>InterimResource::collection($dataInterims)
+                "interimaires"=>InterimResource::collection($interimaires),
+                "pagination"=>[
+                        "page"=>$interimaires->currentPage(),
+                        "taille"=>$interimaires->perPage(),
+                        "total"=>$interimaires->total(),
+                    ]
             ]
         ]);
     }

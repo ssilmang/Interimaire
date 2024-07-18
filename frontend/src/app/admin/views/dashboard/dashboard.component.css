@@ -44,3 +44,20 @@
 .activeKangourou{
   border-bottom: 4px solid rgb(9, 179, 179);
 }
+.activate{
+  border-bottom: 4px solid #f97316;
+  color: #f97316;
+  
+}
+.activate:hover{
+  transition-duration: 300ms;
+}
+
+.activate:hover {
+  transform: scale(1.1);
+ 
+}
+
+.bg-indigo-500 {
+  background-color: #5a67d8; 
+}

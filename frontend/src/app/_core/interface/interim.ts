@@ -7,6 +7,7 @@ export interface Response<T> {
 }
 export interface DataInterim{
     interimaires:Interim[]
+    pagination:pagination
 }
 export interface Interim{
     id:number
@@ -59,6 +60,11 @@ export interface Responsable{
     user:User
     service:Service
 
+}
+export interface pagination{
+    page:number
+    taille:number
+    total:number
 }
 export interface Service{
     id:number

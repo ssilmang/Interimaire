@@ -11,11 +11,12 @@ import { LocalStorageService } from 'src/app/shared/services/localStorage.servic
 import { environment } from 'src/environments/environment.development';
 import { ToastrService } from 'ngx-toastr';
 import { ModalModule } from 'src/app/shared/components/modal/modal.module';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-forms',
   standalone: true,
-  imports: [ReactiveFormsModule,FormsModule,ModalModule,AlertComponent,CommonModule],
+  imports: [ReactiveFormsModule,FormsModule,ModalModule,AlertComponent,CommonModule,RouterLink],
   templateUrl: './forms.component.html',
   styleUrl: './forms.component.css'
 })
@@ -159,14 +160,11 @@ export class FormsComponent implements AfterViewInit,OnInit
       }
     })
   }
-  ngOnInit(): void {
-    
-    this.index()
-   
+  ngOnInit(): void {  
+    this.index() 
   }
   compare=function(option:any,value:any)
-  {
-   
+  { 
     return option && value ? option.id === value.id : option===value
   }
   DateDebutValidator(control: AbstractControl): { [key: string]: boolean} | null {

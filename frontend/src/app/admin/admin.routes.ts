@@ -14,7 +14,8 @@ export enum ElementRoutes {
   Tabs = 'tabs',
   DataTable = 'data-table/:id',
   Forms = 'forms',
-  DataPrestataire='data-prestataire'
+  DataPrestataire='data-prestataire',
+  Import = 'import-excel',
 }
 export enum ElementData{
   DataTable = 'data-table/1',

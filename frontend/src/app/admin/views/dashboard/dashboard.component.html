@@ -1,4 +1,4 @@
-<div >
+<div  class="overflow-x-hidden">
     <section class="grid grid-cols-1 gap-2 md:grid-cols-2 xl:grid-cols-4">
         <div class="card flex items-center cursor-pointer hover:shadow-md hover:border-y-4 hover:border-b-emerald-700 gap-1">
             <div class="rounded-lg bg-gradient-to-br from-emerald-500 to-emerald-700 px-3 py-2 text-white">
@@ -44,12 +44,12 @@
                            <tr>
                               <th scope="col" class="ng-wind-header-item">
                                 
-                                 <button (click)="sortingUp()" *ngIf="shorting === false" class="ml-2 text-lg">
+                                 <!-- <button (click)="sortingUp()" *ngIf="shorting === false" class="ml-2 text-lg">
                                     <i class="bi bi-arrow-down-short"></i>
                                  </button>
                                  <button (click)="sortingDown()" *ngIf="shorting === true" class="ml-2 text-lg">
                                     <i class="bi bi-arrow-up-short"></i>
-                                 </button>
+                                 </button> -->
                               </th>
                               <th scope="col" class="ng-wind-header-item">
                                  Prenom
@@ -198,30 +198,32 @@
                 <div class="ng-wind-table-page-view flex items-center">
                   Lignes par page:
                   <div class="mx-2">
-                    <select id="states" class="block w-full rounded-sm bg-gray-100 p-1 text-xs text-gray-900">
-                      <option value="10">10</option>
-                      <option value="20">20</option>
-                      <option value="50">50</option>
-                      <option value="100">100</option>
-                      <option value="200">200</option>
-                      <option value="300">300</option>
-                      <option value="400">400</option>
+                    <select  (change)="PageTailleChange($event)" id="states" class="block w-full rounded-sm bg-gray-100 p-1 text-xs text-gray-900">
+                    <option value="3">3</option>
+                    <option value="6">6</option>
+                    <option value="8">8</option>
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                    <option value="200">200</option>
+                    <option value="300">300</option>
+                    <option value="400">400</option>
                     </select>
                   </div>
-                  <span class="me-1 ms-4 font-semibold text-gray-900">1-10</span> of
-                  <span class="ms-1 font-semibold text-gray-900">1000</span>
+                  <span class="me-1 ms-4 font-semibold text-gray-900">{{ currentPage }}</span> /
+                  <span class="ms-1 font-semibold text-gray-900">{{ totalPages.length }}</span>
                 </div>
-        
                 <ul class="inline-flex h-8 -space-x-px mt-2 text-xs rtl:space-x-reverse">
                   <li>
-                    <a href="#" class="ng-wind-page-prev bg-gray-200 px-3 py-1 rounded-l-md">Prev</a>
+                    <a  (click)="prevPage()" class="ng-wind-page-prev cursor-pointer bg-gray-200 px-3 py-1 rounded-l-md">Précédent</a>
                   </li>
                   <!-- Loop through pages dynamically -->
-                  <li *ngFor="let page of pages">
-                    <a href="#" class="ng-wind-page bg-gray-200 px-3 py-1">{{ page }}</a>
+                  <li *ngFor="let page of totalPages" [class.activate]="page===currentPage">
+                    <a (click)="selectPage(page)" class="ng-wind-page cursor-pointer  bg-gray-200 px-3 py-1">{{ page }}</a>
                   </li>
                   <li>
-                    <a href="#" class="ng-wind-page-next bg-gray-200 px-3 py-1 rounded-r-md">Next</a>
+                    <a   (click)="nextPage()" id="aziz"  class="ng-wind-page-next cursor-pointer bg-gray-200 px-3 py-1 rounded-r-md">Suivant</a>
                   </li>
                 </ul>
               </nav>
@@ -231,9 +233,7 @@
  
     <!-- Example Modal -->
 </div>
-
 <!-- details -->
- 
 <app-modal  [show]="showModal" 
 (clickCommentaire)="clickCommentaire($event)" (closeModal)="onModalCloseHandler($event)"
 [premierButtonText]="isCommentaire ? 'Enregistrer':'Commentaire'"
@@ -306,7 +306,7 @@
               <button type="button" class="btn btn-outline-secondary me-2">{{interimaire?.responsable?.profile?.prenom }} {{interimaire?.responsable?.profile?.nom}}</button>
           </div>
           <div>
-              <div>Structure :</div>
+              <div>Structure : &nbsp;</div>
               @if(interimaire?.responsable?.service!=null){
                   @if(interimaire?.responsable?.service?.departement?.pole?.libelle == 'N/A'){
                       <button  class="btn btn-outline-secondary me-2">{{ interimaire?.responsable?.service?.departement?.pole?.direction?.libelle}}/{{ interimaire?.responsable?.service?.departement?.libelle }}/{{ interimaire?.responsable?.service?.libelle }}</button>
@@ -355,7 +355,7 @@
               </button>
           </div>
           <div  class="flex flex-col">
-              <button class=" tooltip relative  ">Durée:
+              <button class=" tooltip relative  ">Durée :
                   <span class="tooltip-text absolute bg-green-600 py-1 px-5 text-white text-xs rounded  whitespace-nowrap  bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
                       Durée Kangourou
                   </span>
@@ -444,7 +444,7 @@
       </div>
       <div class=" flex space-x-3 space-y-2 mt-7">
           <div  class="flex flex-col">
-              <button class="tooltip relative mt-1"> Contrat :
+              <button class="tooltip relative mt-2"> Contrat :
                   <span class="tooltip-text absolute bg-green-600 py-1 px-5 text-white text-xs rounded  whitespace-nowrap  bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
                       Durée Contrat
                   </span>
@@ -502,7 +502,7 @@
       </div>
       <div class=" flex space-x-3 mt-7">
           <div class="flex flex-col">
-              <button class="tooltip relative"> Kangourou  :
+              <button class="tooltip text-nowrap relative"> Kangourou :
                   <span class="tooltip-text absolute bg-green-600 py-1 px-5 text-white text-xs rounded  whitespace-nowrap  bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
                       DA kangourou
                   </span>
@@ -522,11 +522,7 @@
   }
   
 </app-modal>
-
-
-
 <!-- Rompre -->
-
 <app-modal 
     [show]="showModalRompre" 
     [premierButtonText]="'oui'"
@@ -534,6 +530,7 @@
     (clickCommentaire)="openModalRompre($event)"
     (closeModal)="onModalCloseRompre($event)"
     [couleur]="couleurRompre"
+    [formeValide]="formeValide"
 >
     <div class="sm:flex sm:items-start">
 
@@ -569,72 +566,76 @@
         <button type="button" class="btn btn-outline-secondary py-1  ">  {{interimaire?.poste?.libelle}}</button>
     </div>
     <div>
-        <form action="" [formGroup]="formRompre">
-            @if(interimaire?.etat!=="terminer"){
-                <div class="form-group mt-3">
-                    <label for="date" class="form-label required"> Date</label>
-                    <input type="date" formControlName="date" name="" class="form-control" id=""
-                    [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formRompre.get('date')?.invalid &&(formRompre.get('date')?.touched || formRompre.get('date')?.dirty),
-                    'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formRompre.get('date')?.valid &&(formRompre.get('date')?.touched || formRompre.get('date')?.dirty)}"
-                    >
-                    <div *ngIf="formRompre.controls['date'].hasError('horsIntervale')" class="text-red-500 text-xs">
-                        La  date doit compris entre {{ interimaire?.contrats?.date_debut_contrat }} et {{ interimaire?.contrats?.date_fin_contrat}} .
+        @if(interimaire?.etat!=="terminer"){
+                <form action="" [formGroup]="formRompre">
+                    <div class="form-group mt-3">
+                        <label for="date" class="form-label required"> Date</label>
+                        <input type="date" formControlName="date" name="" class="form-control" id=""
+                        [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formRompre.get('date')?.invalid &&(formRompre.get('date')?.touched || formRompre.get('date')?.dirty),
+                        'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formRompre.get('date')?.valid &&(formRompre.get('date')?.touched || formRompre.get('date')?.dirty)}"
+                        >
+                        <div *ngIf="formRompre.controls['date'].hasError('horsIntervale')" class="text-red-500 text-xs">
+                            La  date doit compris entre {{ interimaire?.contrats?.date_debut_contrat }} et {{ interimaire?.contrats?.date_fin_contrat}} .
+                        </div>
+                        <div *ngIf="formRompre.controls['date'].hasError('erreur')" class="text-red-500 text-xs">
+                            La  date ne doit pas être une date antérieur.
+                        </div>
                     </div>
-                    <div *ngIf="formRompre.controls['date'].hasError('erreur')" class="text-red-500 text-xs">
-                        La  date ne doit pas être une date antérieur.
+                    @if(interimaire?.etat ==="en cours"){
+                    <div class="form-group mt-3">
+                        <label for="prenom" class="form-label required"> Motif</label>
+                        <textarea name="" formControlName="motif" id="" class="border border-gray-400 bg-slate-200"
+                        [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formRompre.get('motif')?.invalid &&(formRompre.get('motif')?.touched || formRompre.get('motif')?.dirty),
+                        'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formRompre.get('motif')?.valid &&(formRompre.get('motif')?.touched || formRompre.get('motif')?.dirty)}"
+        
+                        ></textarea>
                     </div>
-                </div>
-                @if(interimaire?.etat ==="en cours"){
-                <div class="form-group mt-3">
-                    <label for="prenom" class="form-label required"> Motif</label>
-                    <textarea name="" formControlName="motif" id="" class="border border-gray-400 bg-slate-200"
-                    [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formRompre.get('motif')?.invalid &&(formRompre.get('motif')?.touched || formRompre.get('motif')?.dirty),
-                    'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formRompre.get('motif')?.valid &&(formRompre.get('motif')?.touched || formRompre.get('motif')?.dirty)}"
-    
-                    ></textarea>
-                </div>
-                 }
+                    }
+                   
+                </form>
             }
             @else{
-                <div>
-                    <div class="form-group mt-3">
-                        <label for="date" class="form-label required"> Date début</label>
-                        <input type="date" formControlName="date_debut" name="" class="form-control" id="">
-                        @if(formRompre.get('date_debut')?.invalid && formRompre.get('date_debut')?.touched){
-                            @if(formRompre.get('date_debut')?.hasError('required')){
-                              
-                                  <div class="text-red-500 text-xs">Date début contrat est obligatoire</div>
-                          }
-                        }
-                         <div *ngIf="formRompre.controls['date_debut'].hasError('hors')" class="text-red-500 text-xs">
-                            La  date de debut  doit  inférieur à la date de fin.
-                          </div>
-                          <div *ngIf="formRompre.controls['date_debut'].hasError('error')" class="text-red-500 text-xs">
-                            La  date de debut ne doit pas être une date antérieur.
-                          </div>
-                          <div *ngIf="formRompre.controls['date_debut'].hasError('trois')" class="text-red-500 text-xs">
-                            La  date de debut doit commencer 3 jours a partir d'aujourd'hui.
-                          </div>
+               <form action="" [formGroup]="formRenouveler">
+                    <div>
+                        <div class="form-group mt-3">
+                            <label for="date" class="form-label required"> Date début</label>
+                            <input type="date" formControlName="date_debut" name="" class="form-control" id="">
+                            @if(formRenouveler.get('date_debut')?.invalid && formRenouveler.get('date_debut')?.touched){
+                                @if(formRenouveler.get('date_debut')?.hasError('required')){
+                                
+                                    <div class="text-red-500 text-xs">Date début contrat est obligatoire</div>
+                            }
+                            }
+                            <div *ngIf="formRenouveler.controls['date_debut'].hasError('hors')" class="text-red-500 text-xs">
+                                La  date de debut  doit  inférieur à la date de fin.
+                            </div>
+                            <div *ngIf="formRenouveler.controls['date_debut'].hasError('error')" class="text-red-500 text-xs">
+                                La  date de debut ne doit pas être une date antérieur.
+                            </div>
+                            <div *ngIf="formRenouveler.controls['date_debut'].hasError('trois')" class="text-red-500 text-xs">
+                                La  date de debut doit commencer 3 jours a partir d'aujourd'hui.
+                            </div>
+                        </div>
+                        <div class="form-group mt-3">
+                            <label for="prenom" class="form-label required"> Date de fin</label>
+                            <input type="date" formControlName="date_fin" name="" class="form-control" id="">
+                            @if(formRenouveler.get('date_fin')?.invalid && formRenouveler.get('date_fin')?.touched){
+                                @if(formRenouveler.get('date_fin')?.hasError('required')){
+                                
+                                    <div class="text-red-500 text-xs">Date fin contrat est obligatoire</div>
+                            }
+                            }
+                            <div *ngIf="formRenouveler.controls['date_fin'].hasError('hors')" class="text-red-500 text-xs">
+                                La  date de fin  doit  supérieur à la date de debut.
+                            </div>
+                            <div *ngIf="formRenouveler.controls['date_fin'].hasError('error')" class="text-red-500 text-xs">
+                                Le Contrat doit durée maximun deux ans .
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-group mt-3">
-                        <label for="prenom" class="form-label required"> Date de fin</label>
-                        <input type="date" formControlName="date_fin" name="" class="form-control" id="">
-                        @if(formRompre.get('date_fin')?.invalid && formRompre.get('date_fin')?.touched){
-                            @if(formRompre.get('date_fin')?.hasError('required')){
-                              
-                                  <div class="text-red-500 text-xs">Date fin contrat est obligatoire</div>
-                          }
-                        }
-                         <div *ngIf="formRompre.controls['date_fin'].hasError('hors')" class="text-red-500 text-xs">
-                            La  date de fin  doit  supérieur à la date de debut.
-                          </div>
-                          <div *ngIf="formRompre.controls['date_fin'].hasError('error')" class="text-red-500 text-xs">
-                            Le Contrat doit durée maximun deux ans .
-                          </div>
-                    </div>
-                </div>
+               </form>
             }
-        </form>
+        
     </div>
 </app-modal>
 <!-- Rompre valider  -->
@@ -645,6 +646,7 @@
     (clickCommentaire)="validerRompre($event)"
     (closeModal)="closeRompre($event)"
     [couleur]="couleurRompre"
+    [footer]="footer"
 >
 @if(message){
     <app-alert [show]="true"  [dismissible]="true">
@@ -656,5 +658,7 @@
         </p>
     </app-alert>
 }
-<p> Voulez-vous vraiment {{messageContrat}} ce contrat</p>
+@if(footer){
+    <p> Voulez-vous vraiment {{messageContrat}} ce contrat</p>
+}
 </app-modal>

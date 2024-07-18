@@ -27,13 +27,13 @@ Chart.register(...registerables);
     AlertComponent,
     ReactiveFormsModule,
     RouterModule,
-
   ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
   animations: [pageTransition]
 })
-export class DashboardComponent implements OnInit, AfterViewInit {
+export class DashboardComponent implements OnInit, AfterViewInit
+{
   eventDate: any = formatDate(new Date(), 'MMM dd, yyyy', 'en');
   dataInterims:Interim[]=[]
   showModal: boolean = false;
@@ -45,7 +45,8 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   shorting: boolean = false;
   faireCommentaire:boolean = true;
   isCommentaire:boolean = false
-  couleur:string = "bg-red-600  hover:bg-red-700"
+  couleur:string = "bg-red-600  hover:bg-red-700";
+  formeValide:boolean=true
   commentaire:string = "";
   annuler: boolean = true;
   showModalRompre: boolean = false;
@@ -70,18 +71,41 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   isDropdownOpen:boolean=true;
   kangourouInterim:Interim[]=[];
   backg:string = "";
-  public pages: number[] = TableData.pageNumber;
-  constructor(private sharedService: LocalStorageService,private serve:PermanentService, private router: Router,private service:InterimService,private cdRef: ChangeDetectorRef){
+  currentPage:number=0;
+  total:number=0;
+  taille:number=3;
+  formRenouveler:FormGroup
+  footer: boolean = true;
+  constructor(
+    private sharedService: LocalStorageService,
+    private serve:PermanentService, 
+    private router: Router,
+    private service:InterimService,
+    private cdRef: ChangeDetectorRef
+  )
+  {
     this.modalCompnent = new ModalComponent();
-    this.formRompre = this.fb.group({
+    this.formRompre = this.fb.group(
+    {
       date:[,[Validators.required,this.DateValidator(this.interimaire!)]],
-      motif:[,[Validators.required]],
+      motif:[''],
+      date_debu:[''],
+      date_fin:['']
+    });
+    this.formRenouveler = this.fb.group({
       date_debut:['',[Validators.required,this.DateDebutValidator]],
       date_fin:['',[Validators.required,this.DateFinValidator()]]
     })
+    this.formRompre.valueChanges.subscribe(() => {
+      this.checkFormValidity();
+    });
+    this.formRenouveler.valueChanges.subscribe(()=>{
+      this.checkform()
+    })
   }
-  ngOnInit(): void {
-    this.cdRef.detectChanges();
+  ngOnInit(): void 
+  {
+   
     // var myChart = new Chart("areaWiseSale", {
     //   type: 'doughnut',
     //   data: {
@@ -114,27 +138,37 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     //     },
     //   },
     // });
-    if(this.activeFinContrat){
-     
+    this.index(this.taille,this.currentPage);
+    this.allAgence();
+  }
+  ngAfterViewInit=(): void=>
+  {     
+    if(this.activeFinContrat)
+    { 
       this.finContrat();
     }
-    if(this.activeKangourou){
+    if(this.activeKangourou)
+    {  
       this.Kangourou();
-     
     }
-    this.index();
-    this.allAgence()
   }
-  ngAfterViewInit(): void {
+  checkFormValidity() {
+    if (this.formRompre.valid) {
+      this.formeValide = false; 
+    } else {
+      this.formeValide = true; 
+    }
   }
-  
-
-  DateValidator(interimaire: Interim): ValidatorFn {
+  checkform(){
+    if(this.formRenouveler.valid){
+      this.formeValide = false;
+    }
+  }
+  DateValidator(interimaire: Interim): ValidatorFn
+ {
     return (control: AbstractControl): { [key: string]: boolean } | null => {
       const value = control.value;    
-      if (value && this.interimaire) {
-        console.log(interimaire);
-        
+      if (value && this.interimaire) {       
         const dateValue = new Date(value);
         const dateDebutContrat = new Date(this.interimaire.contrats.date_debut_contrat!);
         const dateFinContrat = new Date(this.interimaire.contrats.date_fin_contrat);
@@ -146,11 +180,11 @@ export class DashboardComponent implements OnInit, AfterViewInit {
           return {'erreur':true}
         }
       }
-  
       return null;
     };
   }
-  DateDebutValidator(control: AbstractControl): { [key: string]: boolean} | null {
+  DateDebutValidator(control: AbstractControl): { [key: string]: boolean} | null
+ {
     const debut = new Date(control.value);
     const fin = new Date(control.parent?.get('date_fin')?.value);
     const dateActuel = new Date();
@@ -166,13 +200,13 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         return { 'hors': true };
       }
     }
-        return null;
+      return null;
   }
-  DateFinValidator():ValidatorFn {
+  DateFinValidator():ValidatorFn
+  {
    return (control: AbstractControl): { [key: string]: boolean} | null=> {
       const fin = new Date(control.value);
       const debut = new Date(control.parent?.get('date_debut')?.value); 
-
       if (debut && fin && this.interimaire) {
         const contratAcheve = this.interimaire.contrats.temps_presence_autre_structure_sonatel + this.interimaire.contrats.duree_contrat;
         const diffMillisecondes = fin.getTime() - debut.getTime();
@@ -187,26 +221,26 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       return null;
     }
   }
-  index()
+  index(taille:number,page:number)
   {
-    this.service.index().subscribe({
+    this.service.index(taille,page).subscribe({
       next:(response=>{
-        console.log(response);
         this.backg = "bg-orange-600"
         this.dataInterims = response.data.interimaires;
+        this.currentPage = response.data.pagination.page;
+        this.total = response.data.pagination.total;
+        this.taille= response.data.pagination.taille;    
         this.activeFinContrat="";
         this.activeKangourou="";
         this.activeCours = "border-y-4 border-b-orange-600"
-
       })
     })
   }
-  allAgence(){
+  allAgence()
+  {
     this.serve.indexAll().subscribe({
       next:(response=>{
-        console.log(response);
-        this.dataAgence = response.data.agences
-        
+        this.dataAgence = response.data.agences       
       })
     })
   }
@@ -233,11 +267,10 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   }
   rompre(interim:Interim)
   {
-    console.log("rompre");
     this.showModalRompre =!this.showModalRompre;
     this.interimaire = interim;
     this.id = interim.id;
-    this.messageContrat =" rompre"
+    this.messageContrat ="rompre"
   }
   clickCommentaire(event:string)
   {
@@ -256,7 +289,8 @@ export class DashboardComponent implements OnInit, AfterViewInit {
           next:(response=>{
             if(response.statut==200)
             {
-              if (this.interimaire) {
+              if (this.interimaire)
+              {
                 this.interimaire.profile = response.data;
               }
               this.annuler = true;
@@ -281,35 +315,29 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   }
   validerRompre(event:string)
   {
-    if(event =="valider"){
-      let data :FormData = new FormData();
-      data.append('date',this.formRompre.get('date')?.value);
-      data.append('motif',this.formRompre.get('motif')?.value);
-      data.append('date_debut',this.formRompre.get('date_debut')?.value);
-      data.append('date_fin',this.formRompre.get('date_fin')?.value);
+    if(event === "valider")
+    {
+      this.formRompre.get('date_debut')?.setValue(this.formRenouveler.get('date_debut')?.value)
+      this.formRompre.get('date_fin')?.setValue(this.formRenouveler.get('date_fin')?.value)
       this.service.contratRompre(this.formRompre.value,this.id).subscribe({
         next:(response=>{
-          console.log(response);
-          if(response.statut==200){
+          if(response.statut==200)
+          {
             const index = this.dataInterims.findIndex(ele => ele.id === this.id);
-            if (index !== -1) {
-              console.log(index);
-              
+            if (index !== -1) 
+            {                  
               this.dataInterims[index].date = this.formRompre.value.date;
               this.dataInterims[index].motif = this.formRompre.value.motif;
-              this.dataInterims[index].etat = response.data.etat;
-              console.log(response.data.etat);
-              console.log(this.dataInterims);
-              
+              this.dataInterims[index].etat = response.data.etat;           
             } 
             this.message  = response.message
+            this.footer =false;
             setTimeout(()=>{
               this.message =""
               this.showModalRompre = false;
               this.showRompre = false
             },5000)
           }
-        
         })
       })
     }
@@ -320,7 +348,6 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   }
   renouveler(interim:Interim)
   {
-    console.log(interim);
     this.messageContrat = " renouveler "
     this.showModalRompre =!this.showModalRompre;
     this.interimaire = interim;
@@ -328,45 +355,121 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     this.renouvelerContrat = true
 
   }
-  editer(interim:Interim){
-    console.log(interim);
+  editer(interim:Interim)
+  {
     this.sharedService.changeInterim(interim);
     this.sharedService.allAgence(this.dataAgence);
     this.router.navigateByUrl('/admin/elements/forms')
   }
-  finContrat()
+  finContrat=()=>
   {
-    this.service.finContrat().subscribe({
+    this.taille=3;
+    this.currentPage =0
+    this.service.finContrat(this.taille,this.currentPage).subscribe({
       next:(response)=>{
-        console.log(response);
         this.activeFinContrat ="border-b-violet-700 border-y-4";
         this.backg = "bg-violet-700"
         this.activeCours="";
         this.activeKangourou="";
         this.dataInterims =response.data.interimaires
+        this.currentPage = response.data.pagination.page;
+        this.total = response.data.pagination.total;
+        this.taille= response.data.pagination.taille;
       }
     })
   }
-  contratCours()
+  contratCours=()=>
   {
-   
-    this.index();
+    this.index(this.taille,this.currentPage);
   }
-  Kangourou(){
-    this.service.processusKangourou().subscribe({
+  Kangourou()
+  {
+    this.taille=3;
+    this.currentPage =0
+    this.service.processusKangourou(this.taille,this.currentPage).subscribe({
       next:(response)=>{
-        console.log(response);
         this.activeKangourou = "border-y-4 border-b-cyan-700";
         this.backg = "bg-cyan-700"
         this.activeCours="";
         this.activeFinContrat="";   
         this.dataInterims = response.data.interimaires;
+        this.currentPage = response.data.pagination.page;
+        this.total = response.data.pagination.total;
+        this.taille= response.data.pagination.taille;
       }
     })
-
   }
   toggleDropdown() {
     this.isDropdownOpen = !this.isDropdownOpen;
     console.log(this.isDropdownOpen);
+  }
+  get totalPages(): number[] 
+  {
+    const pagesCount = Math.ceil(this.total / this.taille);
+    return Array.from({ length: pagesCount }, (_, index) => index + 1);
+  }
+  PageTailleChange=(event: Event): void =>
+ {
+    let nmbre =  Number((event.target as HTMLSelectElement).value);
+    if(nmbre <= this.total){
+      this.taille =nmbre;
+    }else{
+      this.taille= this.total
+      this.currentPage =0
+    }
+    if(this.activeCours){
+      this.index(this.taille,this.currentPage);
+    }
+    if(this.activeKangourou){
+      this.Kangourou()
+    }
+    if(this.activeFinContrat){
+      this.finContrat();
+    }
+  }
+  prevPage=(): void=>
+ {
+    if (this.currentPage > 1)
+   {
+      this.currentPage--;
+      if(this.activeCours){
+        this.index(this.taille,this.currentPage);
+      }
+      if(this.activeKangourou){
+        this.Kangourou()
+      }
+      if(this.activeFinContrat){
+        this.finContrat();
+      }
+    }
+  }
+  nextPage=(): void=>
+ {
+    if (this.currentPage < this.totalPages.length)
+    {
+      this.currentPage++;
+      if(this.activeCours){
+        this.index(this.taille,this.currentPage);
+      }
+      if(this.activeKangourou){
+        this.Kangourou()
+      }
+      if(this.activeFinContrat){
+        this.finContrat();
+      }
+    }
+  }
+  selectPage=(page:number):void=>
+  {
+    this.currentPage=page;
+    if(this.activeCours){
+      this.index(this.taille,this.currentPage);
+    }
+    if(this.activeKangourou){
+      this.Kangourou()
+    }
+    if(this.activeFinContrat){
+      this.finContrat();
+    }
   }
 }

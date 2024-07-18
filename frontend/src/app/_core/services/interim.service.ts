@@ -11,9 +11,9 @@ import { Profile } from '../interface/permanent';
 export class InterimService {
 
   constructor(private _http:HttpClient) { }
-  index():Observable<Response<DataInterim>>
+  index(taille:number,page:number):Observable<Response<DataInterim>>
   {
-    return this._http.get<Response<DataInterim>>(`${environment.apiUrl}interimaires`);
+    return this._http.get<Response<DataInterim>>(`${environment.apiUrl}interimaires/${taille}?page=${page}`);
   }
   isCommentaire(data:{commentaire:string},id:number):Observable<Response<Profile>>
   {
@@ -23,12 +23,12 @@ export class InterimService {
   {
     return this._http.put<Response<Interim>>(`${environment.apiUrl}contratRompre/${id}`,data);
   }
-  finContrat():Observable<Response<DataInterim>>
+  finContrat(taille:number,page:number):Observable<Response<DataInterim>>
   {
-    return this._http.get<Response<DataInterim>>(`${environment.apiUrl}interim/finContrat`);
+    return this._http.get<Response<DataInterim>>(`${environment.apiUrl}interim/finContrat/${taille}?page=${page}`);
   }
-  processusKangourou():Observable<Response<DataInterim>>
+  processusKangourou(taille:number,page:number):Observable<Response<DataInterim>>
   {
-    return this._http.get<Response<DataInterim>>(`${environment.apiUrl}processusKangourou`);
+    return this._http.get<Response<DataInterim>>(`${environment.apiUrl}processusKangourou/${taille}?page=${page}`);
   }
 }

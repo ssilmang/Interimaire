@@ -2,16 +2,13 @@
 <div [@pageTransition] class="flex h-screen items-center mt-[-65px]  justify-center bg-slate-50 bg-cover bg-center bg-no-repeat">
 <img src="{{sonatelBannerImage}}" alt="background" class="inset-0 h-screen w-full rounded-lg object-cover" />
     <div class="card absolute grid  w-full grid-cols-1 p-1 md:grid-cols-2 xl:w-3/5">
-
       <div class="hidden rounded-lg p-2 text-white md:block xl:p-1.5">
-
             <div class="h-full py-0">
                 <img src={{signinBannerImage}} alt="login page image" class="h-full rounded-lg border border-emerald-600 shadow">
             </div>
         </div>
         <div class="relative flex flex-col p-1 md:p-8">
-            <img src="{{loginnlogoBannerImage}}" alt="login page image" class="mx-auto h-16 w-56 shadow">
-           
+            <img src="{{loginnlogoBannerImage}}" alt="login page image" class="mx-auto h-16 w-56 shadow">  
             <div class="grid grid-cols-5 items-center">
                 <div class="col-span-2">
                     <hr>
@@ -35,12 +32,15 @@
                                 placeholder="Veuillez entrer votre email ou nom d'utilisateur"
                                 [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':signInForm.get('username')?.invalid &&(signInForm.get('username')?.touched || signInForm.get('username')?.dirty),
                                 'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':signInForm.get('username')?.valid &&(signInForm.get('username')?.touched || signInForm.get('username')?.dirty)}"
-    
                                 >
                                 @if(signInForm.get('username')?.invalid && signInForm.get('username')?.touched){
                                     @if(signInForm.get('username')?.hasError('required')){
-                                        <svg class="h-5 w-5 text-red-700  sc-iIPllB jWijMY MuiSvgIcon-root MuiSvgIcon-colorError MuiSvgIcon-fontSizeMedium" focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="ErrorIcon"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2m1 15h-2v-2h2zm0-4h-2V7h2z"></path></svg>
-                                        <div class="text-red-500 text-xs">Ce champ est obligatoire</div>
+                                        <div class="flex">
+                                            <div>
+                                                <svg class="h-5 w-5 text-red-700  sc-iIPllB jWijMY MuiSvgIcon-root MuiSvgIcon-colorError MuiSvgIcon-fontSizeMedium" focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="ErrorIcon"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2m1 15h-2v-2h2zm0-4h-2V7h2z"></path></svg>                        
+                                            </div>
+                                            <div class="text-red-500 text-xs">Ce champ est obligatoire</div>
+                                        </div>
                                 }
                                 }
                             <span class="absolute left-0 top-2 ps-3 text-gray-400">
@@ -66,11 +66,10 @@
                                 <path class=" {{ blockk }}" d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
                                 <circle class=" {{ blockk }}" cx="12" cy="12" r="3"></circle>
                               </svg>
-                            </button>
-                           
+                            </button>                         
                             @if(signInForm.get('password')?.invalid && signInForm.get('password')?.touched){
                                 @if(signInForm.get('password')?.hasError('required')){ 
-                                   <div class="flex  justify-around">
+                                   <div class="flex">
                                         <div>
                                             <svg class="h-5 w-5 text-red-700  sc-iIPllB jWijMY MuiSvgIcon-root MuiSvgIcon-colorError MuiSvgIcon-fontSizeMedium" focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="ErrorIcon"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2m1 15h-2v-2h2zm0-4h-2V7h2z"></path></svg>                        
                                         </div>
@@ -83,30 +82,26 @@
                             </span>
                         </div>
                         <!-- <validation-error [fieldControl]="signInForm.controls['password']"></validation-error> -->
-                    </div>
-    
+                    </div>  
                     <div class="my-4 text-sm">
                         <div class="inline-flex items-center gap-x-1">
                             <input type="checkbox" id="rememberme" class="h-auto cursor-pointer">
                             <label for="rememberme" class="cursor-pointer">Souviens-toi de moi</label>
                         </div>
                         <a href="javascript:void(0)" [routerLink]="commonService.prepareRoute(publicRoutes.Forget)" class="float-right text-emerald-600">Mot de passe oublié?</a>
-                    </div>
-    
-                    <button type="submit" class="btn btn-theme w-full" [disabled]="isLoading">
+                    </div>   
+                    <button type="submit"  class="btn btn-theme w-full" [disabled]="isLoading || signInForm.invalid">
                         <btn-spinner *ngIf="isLoading" [show]="isLoading"></btn-spinner>
                         <span class="btn-text" [ngClass]="{'translate-x-0.5': isLoading}">
                             Se connecter
                         </span>
                     </button>
-                </form>
-    
+                </form>    
                 <div class="text-sm text-gray-400">
                     <p>Je n'ai aucun compte? <a [routerLink]="commonService.prepareRoute(publicRoutes.Signup)"
                             class="text-emerald-600">'Créer un compte'</a></p>
                 </div>
             </div>
         </div>
-
     </div>
 </div>

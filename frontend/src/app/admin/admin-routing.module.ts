@@ -15,6 +15,7 @@ import { ProfileComponent } from './views/settings/profile/profile.component';
 import { UsersComponent } from './views/settings/users/users.component';
 import { PermanentComponent } from './views/permanent/permanent.component';
 import { AdminDataPrestataireComponent } from './views/elements/data-prestataire/data-prestataire.component';
+import { ImportExcelComponent } from './views/elements/import-excel/import-excel.component';
 
 
 const routes: Routes = [
@@ -82,6 +83,11 @@ const routes: Routes = [
         title: 'Forms',
         path: ElementRoutes.Forms,
         component: FormsComponent,
+      },
+      {
+        title: 'Importer',
+        path: ElementRoutes.Import,
+        component: ImportExcelComponent,
       },
     ],
   },
