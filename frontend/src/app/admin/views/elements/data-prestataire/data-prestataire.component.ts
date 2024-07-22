@@ -27,10 +27,7 @@ export class AdminDataPrestataireComponent implements OnInit {
   {
     this.service.isPrestataire().subscribe({
       next:(response=>{
-        console.log(response);
         this.dataPrestataire = response.data
-
-        
       })
     })
   }

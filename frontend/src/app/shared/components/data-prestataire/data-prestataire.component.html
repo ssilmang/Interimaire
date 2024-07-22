@@ -23,10 +23,20 @@
               <tbody *ngIf="rowData.length > 0">
                 <tr *ngFor="let collob of rowData" class="border-b bg-white hover:bg-gray-50">
                   <td class="ng-wind-data-item whitespace-nowrap font-medium text-gray-800 px-4 py-2">
+                   @if(collob?.profile?.photo){
                     <a
-                      class="flex cursor-pointer rounded-full h-8 w-8 overflow-hidden border-2 border-gray-500">
-                      <img class="w-full h-full object-contain" [src]="apiImag +collob?.profile?.photo" alt="Profile">
-                    </a>
+                    class="flex cursor-default rounded-full h-8 w-8 overflow-hidden border-2 border-gray-500">
+                    <img class="w-full h-full object-contain" [src]="apiImag +collob?.profile?.photo" alt="Profile">
+                  </a>
+                   }@else{
+                    <div
+                        class="w-10 h-10 flex items-center justify-center overflow-hidden rounded-full border-2 border-emerald-600">
+                        <span  class="rounded-full w-10 h-10 bg-gray-400 flex items-center justify-center text-white font-semibold">
+                          {{  getUserInitials( dataDetails?.profile?.prenom || '', dataDetails?.profile?.nom || '')}} 
+                          </span>
+                        <!-- <img class="w-full object-cover" src={{userOne}} alt="Profile"> -->
+                    </div>
+                  }
                   </td>
                   <td class="ng-wind-data-item px-4 py-2">{{collob?.profile?.prenom}}</td>
                   <td class="ng-wind-data-item px-4 py-2">{{collob?.profile?.nom}}</td>
@@ -122,9 +132,19 @@
        <div class="flex justify-between space-x-12">
            <div class="flex items-center gap-3 sticky top-0 bg-white px-8 py-3 shadow-[0_5px_5px_-5px] shadow-gray-600">
             <div class="bg-gray-800 rounded-lg p-1">
+               @if(dataDetails?.profile?.photo){
                 <div  class="flex  w-34 h-32 overflow-hidden border-2 border-gray-500">
-                    <img class="w-full h-full object-contain" [src]="apiImag + dataDetails?.profile?.photo" alt="Profile">
-                </div>
+                  <img class="w-full h-full object-contain" [src]="apiImag + dataDetails?.profile?.photo" alt="Profile">
+              </div>
+              }@else{
+                <div
+                        class="w-32 h-32 flex items-center justify-center overflow-hidden rounded-full border-2 border-emerald-600">
+                        <span  class="rounded-2xl w-10 h-10 bg-gray-400 flex items-center justify-center text-white font-semibold">
+                           {{   getUserInitials( dataDetails?.profile?.prenom || '', dataDetails?.profile?.nom || '')}} 
+                          </span>
+                        <!-- <img class="w-full object-cover" src={{userOne}} alt="Profile"> -->
+                    </div>
+              }
             </div>
            </div>
            <div class="space-y-2 mt-3 justify-end">

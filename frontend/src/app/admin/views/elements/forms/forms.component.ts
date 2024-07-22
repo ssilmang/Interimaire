@@ -343,19 +343,11 @@ export class FormsComponent implements AfterViewInit,OnInit
   {
     let departement = this.formPermanent.get('departement')?.value;
     let data = this.departements?.find(element=>element.libelle.toLowerCase()=== departement.libelle.toLowerCase());
-    if(data?.agence_commercials.length !== 0){
-      this.commercialExiste = true;
-      this.autreCommercial = false;
-      this.services = data?.agence_commercials;
-    }else{
+    
       this.commercialExiste = false;
       this.autreService = true
-      this.services = data?.services;
-      
+      this.services = data?.services;    
       console.log(this.services);
-    }
-    console.log(this.services);
-    
     if(this.services?.length== 0){
       this.notExistService = false;
     }else{

@@ -1,0 +1,5 @@
+.overflow-x{
+    overflow-x: scroll;
+    max-width: 960px;
+    width: 100%;
+}

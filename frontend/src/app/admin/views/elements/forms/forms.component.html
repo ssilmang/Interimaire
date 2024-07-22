@@ -78,16 +78,14 @@
                <div class="flex space-x-16">
                   <div class="grid grid-cols-12 mt-[-25px]  gap-x-6 ">         
                      <div class="col-span-1 mt-4 md:col-span-6">
-                        <div class="form-group ">
+                        <div class="form-group">
                            <label for="prenom" class="form-label required"> Prénom</label>
                            <input type="text" formControlName="prenom" id="prenom" placeholder="Massar " class="form-control"
                            [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('prenom')?.invalid &&(formPermanent.get('prenom')?.touched || formPermanent.get('prenom')?.dirty),
-                           'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('prenom')?.valid &&(formPermanent.get('prenom')?.touched || formPermanent.get('prenom')?.dirty)}"
-              
+                           'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('prenom')?.valid &&(formPermanent.get('prenom')?.touched || formPermanent.get('prenom')?.dirty)}"         
                            />
                            @if(formPermanent.get('prenom')?.invalid && formPermanent.get('prenom')?.touched){
-                              @if(formPermanent.get('prenom')?.hasError('required')){
-                                
+                              @if(formPermanent.get('prenom')?.hasError('required')){                             
                                     <div class="text-red-500 text-xs">Le prenom est obligatoire</div>
                             }
                           }
@@ -770,38 +768,7 @@
                <div class="max-w-screen-md w-full">
                   <label for="service" class="form-label">
                   </label>
-                  @if(commercialExiste){
-                     @if(!autreCommercial){
-                        <select id="commercial" formControlName="agence_commercial" (click)="selectedCommercial($event)" class="form-select" [compareWith]="compare"
-                        [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('agence_commercial')?.invalid &&(formPermanent.get('agence_commercial')?.touched || formPermanent.get('agence_commercial')?.dirty),
-                        'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('agence_commercial')?.valid &&(formPermanent.get('agence_commercial')?.touched || formPermanent.get('agence_commercial')?.dirty)}"
-                        >
-                           <option value="" selected disabled>Selectionner un service</option>
-                          @for(service of services;track service.id){
-                           <option [ngValue]="service">{{ service?.libelle }}</option>
-                          }
-                           <option value="Autre">Autre</option>
-                        </select> 
-                        @if(formPermanent.get('agence_commercial')?.invalid && formPermanent.get('agence_commercial')?.touched){
-                           @if(formPermanent.get('agence_commercial')?.hasError('required')){
-                             
-                                 <div class="text-red-500 text-xs">L'agence commercial est obligatoire</div>
-                         }
-                       }
-                     }@else{
-                        <input type="text"   formControlName="agence_commercial"  placeholder="ACAD " class="form-control" 
-                        [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('service')?.invalid &&(formPermanent.get('service')?.touched || formPermanent.get('service')?.dirty),
-                        'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('service')?.valid &&(formPermanent.get('service')?.touched || formPermanent.get('service')?.dirty)}"
-                        />
-                        @if(formPermanent.get('agence_commercial')?.invalid && formPermanent.get('agence_commercial')?.touched){
-                           @if(formPermanent.get('agence_commercial')?.hasError('required')){
-                             
-                                 <div class="text-red-500 text-xs">L'agence commercial est obligatoire</div>
-                         }
-                       }
-                     }
-                  }
-                 @else{
+                  
                      @if(!autreService){
                         <select id="service" formControlName="service" (click)="selectedService($event)" class="form-select" [compareWith]="compare"
                         [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('service')?.invalid &&(formPermanent.get('service')?.touched || formPermanent.get('service')?.dirty),
@@ -831,7 +798,7 @@
                          }
                        }
                      }
-                  }
+                  
                   
                </div>
             }@if(!notExistService){

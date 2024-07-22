@@ -25,4 +25,8 @@ export class PermanentService {
   {
     return this._http.post<Response<RequestPermanent>>(`${environment.apiUrl}permanent/${id}/${idProfile}/${upload}/${contrat_id}`,data)
   }
+  importer(data:any):Observable<Response<any>>
+  {
+    return this._http.post<Response<any>>(`${environment.apiUrl}import/employeur`,data)
+  }
 }

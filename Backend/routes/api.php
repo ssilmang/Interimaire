@@ -71,6 +71,7 @@ Route::middleware('auth:sanctum')->prefix('Interim')->group(function()
         Route::post('permanent/{id?}/{idProfile?}/{upload?}/{contrat_id?}','store');
         Route::get('index/permanents/{id}','index');
         Route::get('dv','getPermanent');
+        Route::post('import/employeur','import');
     });
     Route::controller(PrestataireController::class)->group(function()
     {

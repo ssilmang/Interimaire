@@ -98,4 +98,10 @@ export class DataPrestataireComponent {
     this.shared.changeInterim(permanent);
     this.router.navigateByUrl('/admin/elements/forms');
   }
+  getUserInitials(prenom:string,nom:string):string {
+    if (!prenom || !nom) return '';
+
+    const initials = prenom.charAt(0).toUpperCase() + nom.charAt(0).toUpperCase();
+    return initials;
+  }
 }
