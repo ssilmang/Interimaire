@@ -86,7 +86,7 @@ export class SigninComponent implements OnInit, AfterViewInit {
           this.isLoading = true;
           setTimeout(() => {
             this.isLoading = false;
-            this.router.navigate([AppRoutes.Admin, AdminRoutes.Dashboard]);
+            this.router.navigate([AppRoutes.Admin, AdminRoutes.Interimaire]);
           }, 3000);
        }else{
         this.message =response.message;

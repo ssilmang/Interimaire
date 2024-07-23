@@ -30,6 +30,8 @@ class ContratResource extends JsonResource
             'commentaire'=>$this->commentaire,
             'etat'=>$this->etat,
             'interim'=>$this->interim_id,
+            'date'=>$this->date,
+            'motif'=>$this->motif,
             
         ];;
     }

@@ -1,5 +1,5 @@
 export enum AdminRoutes {
-  Dashboard = 'dashboard',
+  Interimaire = 'interimaire',
   Events = 'events',
   Permanent = 'permanent',
   Prestataire = 'prestataire',
@@ -16,6 +16,7 @@ export enum ElementRoutes {
   Forms = 'forms',
   DataPrestataire='data-prestataire',
   Import = 'import-excel',
+  Dashboard= 'dashboard'
 }
 export enum ElementData{
   DataTable = 'data-table/1',

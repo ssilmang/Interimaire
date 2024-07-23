@@ -16,17 +16,18 @@ import { UsersComponent } from './views/settings/users/users.component';
 import { PermanentComponent } from './views/permanent/permanent.component';
 import { AdminDataPrestataireComponent } from './views/elements/data-prestataire/data-prestataire.component';
 import { ImportExcelComponent } from './views/elements/import-excel/import-excel.component';
+import { DashChartComponent } from './dash-chart/dash-chart.component';
 
 
 const routes: Routes = [
   {
     path: '',
-    redirectTo: AdminRoutes.Dashboard,
+    redirectTo: AdminRoutes.Interimaire,
     pathMatch: 'full',
   },
   {
-    title: 'Dashboard',
-    path: AdminRoutes.Dashboard,
+    title: 'Interimaire',
+    path: AdminRoutes.Interimaire,
     component: DashboardComponent,
   },
   {
@@ -83,6 +84,11 @@ const routes: Routes = [
         title: 'Forms',
         path: ElementRoutes.Forms,
         component: FormsComponent,
+      },
+      {
+        title: 'Dashboard',
+        path: ElementRoutes.Dashboard,
+        component: DashChartComponent,
       },
       {
         title: 'Importer',

@@ -1,0 +1,130 @@
+{
+    "products": [
+        {
+            "code": "202401",
+            "name": "Cricket Bat",
+            "price": 1000,
+            "category": "sports",
+            "status": true
+        },
+        {
+            "code": "202402",
+            "name": "Cricket Ball",
+            "price": 100,
+            "category": "sports",
+            "status": true
+        },
+        {
+            "code": "202403",
+            "name": "Cricket Pad",
+            "price": 800,
+            "category": "sports",
+            "status": true
+        },
+        {
+            "code": "202404",
+            "name": "Guard",
+            "price": 80,
+            "category": "sports",
+            "status": true
+        },
+        {
+            "code": "202405",
+            "name": "Batting cloves",
+            "price": 400,
+            "category": "sports",
+            "status": true
+        },
+        {
+            "code": "202406",
+            "name": "Keeping cloves",
+            "price": 800,
+            "category": "sports",
+            "status": true
+        },
+        {
+            "code": "202407",
+            "name": "Sticks",
+            "price": 240,
+            "category": "sports",
+            "status": true
+        },
+        {
+            "code": "202408",
+            "name": "Sticks",
+            "price": 240,
+            "category": "sports",
+            "status": true
+        },
+        {
+            "code": "202409",
+            "name": "Sticks",
+            "price": 240,
+            "category": "sports",
+            "status": true
+        },
+        {
+            "code": "202410",
+            "name": "Sticks",
+            "price": 240,
+            "category": "sports",
+            "status": true
+        },
+        {
+            "code": "202411",
+            "name": "Sticks",
+            "price": 240,
+            "category": "sports",
+            "status": true
+        },
+        {
+            "code": "202412",
+            "name": "Sticks",
+            "price": 240,
+            "category": "sports",
+            "status": true
+        }
+    ],
+    "sales": [
+        {
+          "year": 2015,
+          "amount": 5000,
+          "colorcode": "green"
+        },
+        {
+          "year": 2016,
+          "amount": 6000,
+          "colorcode": "yellow"
+        },
+        {
+          "year": 2017,
+          "amount": 2000,
+          "colorcode": "red"
+        },
+        {
+          "year": 2018,
+          "amount": 6500,
+          "colorcode": "blue"
+        },
+        {
+          "year": 2019,
+          "amount": 4000,
+          "colorcode": "grey"
+        },
+        {
+          "year": 2020,
+          "amount": 7000,
+          "colorcode": "orange"
+        },
+        {
+          "year": 2021,
+          "amount": 17000,
+          "colorcode": "pink"
+        },
+        {
+          "year": 2022,
+          "amount": 21000,
+          "colorcode": "pink"
+        }
+      ]
+}

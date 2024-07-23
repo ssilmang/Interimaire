@@ -34,10 +34,33 @@ use App\Http\Controllers\StatutController;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
+// routes/api.php
+
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Response;
+
+Route::get('/data', function () {
+    $filePath = storage_path('app/data.json');
+    
+    // Vérifie si le fichier existe
+    if (!File::exists($filePath)) {
+        abort(404, 'Le fichier de données n\'existe pas.');
+    }
+
+    // Lit le contenu du fichier JSON
+    $content = File::get($filePath);
+
+    // Convertit le contenu JSON en tableau associatif
+    $data = json_decode($content, true);
+
+    // Retourne les données en tant que réponse JSON
+    return Response::json($data);
+});
 
 
 Route::post('login',[UserController::class,'login']);
 Route::post('/user',[UserController::class,'store']);
+Route::get('/export',[UserController::class,'export']);
 
 Route::middleware('auth:sanctum')->prefix('Interim')->group(function()
 {
@@ -136,5 +159,6 @@ Route::middleware('auth:sanctum')->prefix('Interim')->group(function()
         Route::get('/interims',"contratsTermines");
         Route::get('/presence-time',"updatePresenceTime");
         Route::get('/logout',"logout");
+        Route::get('/export/all','export');
     });
 });
