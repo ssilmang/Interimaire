@@ -28,32 +28,34 @@ export class HeaderComponent implements AfterViewInit{
     this.profile = this.getUserInitials(`${this.dataUser?.prenom} ${this.dataUser?.nom}`)  
   }
   constructor(private element: ElementRef,
-     private renderer: Renderer2,
-    public readonly commonServices: CommonService,
-    private shared:LocalStorageService,
-    private router:Router,
+      private renderer: Renderer2,
+      public readonly commonServices: CommonService,
+      private shared:LocalStorageService,
+      private router:Router,
   ) {}
 
-  onClickProfile = () => {
+  onClickProfile = () =>
+  {
     const profileDropdownList = this.element.nativeElement.querySelector(
       '.profile-dropdown-list'
     );
     this.renderer.setAttribute(profileDropdownList, 'aria-expanded', 'true');
   };
-  getUser(){
-    this.dataUser= JSON.parse(this.shared.get('user'));
-    console.log(this.dataUser);
-    
+  getUser()
+  {
+    this.dataUser= JSON.parse(this.shared.get('user')); 
   }
   theme=()=>{
     this.themeBackground="bg-red"
   }
-  getUserInitials(name:string) {
+  getUserInitials(name:string)
+  {
     const words = name.split(' ');
     const initials = words.map(word => word.charAt(0)).join('');
     return initials.toUpperCase();
   }
-  deconnecter=()=>{
+  deconnecter=()=>
+  {
     this.shared.chargeLogout("oui");
     this.router.navigate([this.commonServices.prepareRoute(PublicRoutes.Signin)])
   }

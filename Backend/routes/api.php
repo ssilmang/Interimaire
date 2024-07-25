@@ -60,7 +60,6 @@ Route::get('/data', function () {
 
 Route::post('login',[UserController::class,'login']);
 Route::post('/user',[UserController::class,'store']);
-Route::get('/export',[UserController::class,'export']);
 
 Route::middleware('auth:sanctum')->prefix('Interim')->group(function()
 {
@@ -159,6 +158,6 @@ Route::middleware('auth:sanctum')->prefix('Interim')->group(function()
         Route::get('/interims',"contratsTermines");
         Route::get('/presence-time',"updatePresenceTime");
         Route::get('/logout',"logout");
-        Route::get('/export/all','export');
+        Route::get('/export/{permanents}/{prestataires}/{interims}','export');
     });
 });

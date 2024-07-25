@@ -45,7 +45,6 @@ export class AdminDataTableComponent  implements OnInit{
     this.service.indexPermanents(id).subscribe({
       next:(response=>{
         this.dataDV = response.data
-        console.log(response);
       })
     })
   }

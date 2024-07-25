@@ -31,4 +31,8 @@ export class InterimService {
   {
     return this._http.get<Response<DataInterim>>(`${environment.apiUrl}processusKangourou/${taille}?page=${page}`);
   }
+  export(permanent:string,prestataire:string,interim:string): Observable<Blob>
+  {
+    return this._http.get(`${environment.apiUrl}export/${permanent}/${prestataire}/${interim}`,{ responseType: 'blob' });
+  }
 }

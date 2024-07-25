@@ -41,6 +41,7 @@ export class DataTableComponent implements OnInit{
   readonly elementRoutes = ElementRoutes;
   id:string|null = null
   route = inject(ActivatedRoute)
+  hiddern: string='hidden';
   constructor(
     private service:InterimService ,
     private serve:PermanentService, 
@@ -50,10 +51,10 @@ export class DataTableComponent implements OnInit{
     ){
     this.modalCompnent = new ModalComponent();
   }
-  ngOnInit(): void {
+  ngOnInit(): void 
+  {
     this.route.paramMap.subscribe((params: ParamMap) => {
       this.id = params.get('id');
-      console.log(this.id);
       this.indexPermanent(this.id);
     });
   }
@@ -63,47 +64,43 @@ export class DataTableComponent implements OnInit{
       next:(response=>{
         this.rowData = response.data
         this.collaborateur  =response.data
-        console.log(response);
       })
     })
   }
   sortingUp() {
     this.shorting = !this.shorting;
   }
-  sortingDown() {
+  sortingDown()
+  {
     this.shorting = !this.shorting;
   }
-  afficherDetails(collab?: Permanent) {
-    console.log(collab);
-    
+  afficherDetails(collab?: Permanent)
+  {
     this.dataDetails= collab;
     this.showModal = !this.showModal;
     this.faireCommentaire = true
-   
   }
-  onModalCloseHandler(event: boolean) {
+  onModalCloseHandler(event: boolean)
+  {
     this.showModal = event;
     this.faireCommentaire = true
     this.annuler = true
     this.isCommentaire = false;
     this.couleur =  "bg-red-600  hover:bg-red-700"
   }
-
-  toggleDropdown() {
+  toggleDropdown()
+  {
     this.isDropdownOpen = !this.isDropdownOpen;
-    console.log(this.isDropdownOpen);
   }
-  toggleAccordion(permanent:Permanent,index: number) { 
+  toggleAccordion(permanent:Permanent,index: number) 
+  { 
     permanent.status = !permanent.status;
   }
   afficheChefService(collab?:Permanent)
   {
     this.collaborateur = collab;
     this.rowData = collab;
-
   }
- 
-
   clickCommentaire(event:string)
   {
     this.faireCommentaire = false;
@@ -136,8 +133,23 @@ export class DataTableComponent implements OnInit{
       this.commentaire = this.dataDetails?.profile.commentaire!
     }
   }
-  editer(permanent?:Permanent){
+  editer(permanent?:Permanent)
+  {
     this.shared.changeInterim(permanent);
     this.router.navigateByUrl('/admin/elements/forms');
+  }
+  export()
+  {
+    this.hiddern = 'block';
+    console.log("fvffd");    
+  }
+  valider()
+  {
+    this.shared.chargerExport('permanents','null','null');
+    this.hiddern = 'hidden';
+  }
+  close()
+  {
+    this.hiddern = 'hidden';
   }
 }

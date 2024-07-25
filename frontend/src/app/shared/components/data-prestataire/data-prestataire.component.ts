@@ -33,16 +33,14 @@ export class DataPrestataireComponent {
   couleur:string = "bg-red-600  hover:bg-red-700"
   commentaire:string = "";
   annuler: boolean = true;
+  hiddern:string = 'hidden';
   constructor(private service :InterimService,private shared:LocalStorageService,private router:Router){
     this.modalCompnent = new ModalComponent();
   }
   afficherDetails(collab?: Permanent) {
-    console.log(collab);
-    
     this.dataDetails= collab;
     this.showModal = !this.showModal;
     this.faireCommentaire = true
-   
   }
   onModalCloseHandler(event: boolean) {
     this.showModal = event;
@@ -103,5 +101,16 @@ export class DataPrestataireComponent {
 
     const initials = prenom.charAt(0).toUpperCase() + nom.charAt(0).toUpperCase();
     return initials;
+  }
+  export(){
+    this.hiddern = 'block';
+  }
+  valider(){
+    this.shared.chargerExport('null','prestataires','null');
+    this.hiddern = 'hidden';
+  }
+  close()
+  {
+    this.hiddern = 'hidden';
   }
 }

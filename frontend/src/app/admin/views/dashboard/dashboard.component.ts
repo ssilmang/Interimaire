@@ -15,6 +15,7 @@ import { LocalStorageService } from 'src/app/shared/services/localStorage.servic
 import { Router, RouterModule } from '@angular/router';
 import { PermanentService } from 'src/app/_core/services/permanent.service';
 import { TableData } from '../elements/data-table/table.data';
+import * as  XLSX from 'xlsx';
 Chart.register(...registerables);
 
 @Component({
@@ -27,6 +28,9 @@ Chart.register(...registerables);
     AlertComponent,
     ReactiveFormsModule,
     RouterModule,
+  
+    
+    
   ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
@@ -76,6 +80,8 @@ export class DashboardComponent implements OnInit, AfterViewInit
   taille:number=3;
   formRenouveler:FormGroup
   footer: boolean = true;
+  hiddern: string='hidden';
+  messageExport: string="";
   constructor(
     private sharedService: LocalStorageService,
     private serve:PermanentService, 
@@ -380,6 +386,9 @@ export class DashboardComponent implements OnInit, AfterViewInit
   }
   contratCours=()=>
   {
+    this.activeCours="contrat activé"
+    this.activeKangourou="";
+    this.activeFinContrat="";
     this.index(this.taille,this.currentPage);
   }
   Kangourou()
@@ -401,7 +410,6 @@ export class DashboardComponent implements OnInit, AfterViewInit
   }
   toggleDropdown() {
     this.isDropdownOpen = !this.isDropdownOpen;
-    console.log(this.isDropdownOpen);
   }
   get totalPages(): number[] 
   {
@@ -471,5 +479,88 @@ export class DashboardComponent implements OnInit, AfterViewInit
     if(this.activeFinContrat){
       this.finContrat();
     }
+  }
+  export()
+  {
+    this.hiddern = 'block';  
+    this.messageExport="Vous voulez  exporter  tous les interimaires via excel"
+    if(this.activeFinContrat)
+    { 
+      this.messageExport = "Vous voulez  exporter  tous les interimaires qui sont en fin de contrat "
+    }
+    if(this.activeKangourou)
+    {  
+      this.messageExport = 'Vous voulez  exporter  tous les interimaires qui sont dans le processus de kangourou'
+    }
+  }
+  valider()
+  {
+    this.hiddern = 'hidden';
+    if(this.activeFinContrat)
+    { 
+        this.exportContrat()
+    }
+    if(this.activeKangourou)
+    {  
+       this.exportContrat()
+    }
+    console.log(this.activeCours);
+    
+    if(this.activeCours){
+      this.exportContrat()
+    }
+    // this.sharedService.chargerExport('null','null','interimaires');
+
+  }
+  close()
+  {
+    this.hiddern = 'hidden';
+  }
+  exportContrat()
+  {
+    console.log(this.dataInterims);
+    
+    const data = this.dataInterims.map(interim=>({
+      
+          'Prenom':interim?.profile?.prenom ?? 'N/A',
+          'Nom':interim?.profile?.nom ?? 'N/A',
+          "Matricule":interim?.profile?.matricule?? 'N/A',
+          'Direction':interim?.responsable?.direction?.libelle??'N/A',
+          'Pole':interim?.responsable?.pole?.libelle ?? 'N/A',
+          'Departement':interim?.responsable?.departement?.libelle ?? 'N/A',
+          'Service':interim?.responsable?.service?.libelle ?? 'N/A',
+          'Lieu d\'execution':'N/A',
+          'Poste':interim?.poste?.libelle ?? 'N/A',
+          'Responsable Hierarchique':interim?.responsable?.profile?.prenom+' '+interim?.responsable?.profile?.nom ?? 'N/A',
+          'Canal':interim?.responsable?.canal?.libelle ?? 'N/A',
+          'Statut':interim?.statut?.libelle ?? 'N/A',
+          'Groupe':'N/A',
+          'Categorie':interim?.categorie?.libelle ?? 'N/A',
+          'Agence interim':interim?.categorie?.agence?.libelle ?? 'N/A',
+          'Telephone':interim?.profile?.telephone ?? 'N/A',
+          'Telephone pro':interim?.profile?.telephone_pro ?? 'N/A',
+          'Email':interim?.profile?.email ?? 'N/A',
+          'Commentaire':interim?.profile?.commentaire ?? 'N/A',
+          'DA':interim?.contrats?.DA ?? 'N/A',
+          'Date debut':interim?.contrats?.date_debut_contrat ?? 'N/A',
+          'Date fin':interim?.contrats?.date_fin_contrat ?? 'N/A',
+          'Temps presence structure actuelle':interim?.contrats?.temps_presence_structure_actuel ?? 'N/A',
+          'Temps presence autres structures sonatel':interim?.contrats?.temps_presence_autre_structure_sonatel ??'N/A',
+          'Cumul temps de presence sonatel':interim?.contrats?.cumul_presence_sonatel ?? 'N/A',
+          'Durée kangourou':interim?.poste?.duree_kangurou ?? 'N/A',
+          'Durée contrat':interim?.contrats?.duree_contrat ?? 'N/A',
+          'Durée contrat restante':interim?.contrats?.duree_contrat_restant ?? 'N/A',
+          'Coût unitaire(tarif journalier)':interim?.categorie?.cout_unitaire_journalier ?? 'N/A',
+          'Coût mensuel(tarif mensuel)':interim?.contrats?.cout_mensuel ?? 'N/A',
+          'DA kangourou':interim?.contrats?.DA_kangourou ?? 'N/A',
+          'Montant kangourou':interim?.poste?.montant_kangurou ?? 'N/A',
+          'Coût global':interim?.contrats?.cout_global ??'N/A',
+          'Etat':interim?.etat,
+      
+    }))
+    const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(data);
+    const wb: XLSX.WorkBook = { Sheets: { 'data': ws }, SheetNames: ['data'] };
+    // Save to file
+    XLSX.writeFile(wb, 'data.xlsx');
   }
 }

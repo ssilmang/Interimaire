@@ -26,9 +26,9 @@ class UserProfileResource extends JsonResource
             'adresse'=>$this->adresse,
             'status'=>$this->status,
             'commentaire'=>$this->commentaire,
-            'permanent'=>ProfilePermanentResource::collection($this->permanents),
-            'prestataire'=>PrestataireResource::collection($this->prestataires),
-            'interimaire'=>InterimResource::collection($this->interimaires)
+           'permanents' => ProfilePermanentResource::collection($this->whenLoaded('permanents')),
+            'prestataires' => PrestataireResource::collection($this->whenLoaded('prestataires')),
+            'interimaires' => InterimResource::collection($this->whenLoaded('interimaires'))
         ];
     }
 }
