@@ -42,6 +42,7 @@ class HeriteController extends Controller
             
         }
     }
+   
     public  function create($libelle,$cle,$cleEtrangere,$model,$message)
     {
         try{

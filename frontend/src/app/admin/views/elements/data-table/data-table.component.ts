@@ -4,7 +4,7 @@ import { DataTableComponent } from 'src/app/shared/components/data-table/data-ta
 import { IColumn, IProduct, TableData } from './table.data';
 import { PermanentService } from 'src/app/_core/services/permanent.service';
 import { ModalComponent } from 'src/app/shared/components/modal/modal.component';
-import { Permanent } from 'src/app/_core/interface/permanent';
+import { DataPermanent, Permanent } from 'src/app/_core/interface/permanent';
 import { environment } from 'src/environments/environment.development';
 import { ActivatedRoute } from '@angular/router';
 
@@ -19,7 +19,7 @@ import { ActivatedRoute } from '@angular/router';
 export class AdminDataTableComponent  implements OnInit{
   chefServiceVisible = false;
   collaborateurServiceVisible = false;
-  public dataDV?:Permanent;
+  public dataDV?:DataPermanent;
   dataDetails?:Permanent;
   apiImg=environment.apiImg;
   pole:boolean=true;
@@ -31,7 +31,9 @@ export class AdminDataTableComponent  implements OnInit{
   id:string |null= null;
   public products: IProduct[] = TableData.products;
   public pages: number[] = TableData.pageNumber;
-  public columnData:IColumn[] = TableData.columnData
+  public columnData:IColumn[] = TableData.columnData;
+  taille:number=4;
+  page:number = 1;
   route=inject(ActivatedRoute)
   constructor(private service:PermanentService){
     this.modalCompnent = new ModalComponent();
@@ -42,9 +44,9 @@ export class AdminDataTableComponent  implements OnInit{
   }
   indexPermanent(id:string|null)
   {
-    this.service.indexPermanents(id).subscribe({
+    this.service.indexPermanents(id,this.taille,this.page).subscribe({
       next:(response=>{
-        this.dataDV = response.data
+        this.dataDV = response.data;
       })
     })
   }

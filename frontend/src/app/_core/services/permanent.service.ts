@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment.development';
 import { Response } from '../interface/interim';
-import { DataALL, Permanent, RequestPermanent, ResponsePermanent } from '../interface/permanent';
+import { DataALL, DataPermanent, Permanent, RequestPermanent, ResponsePermanent } from '../interface/permanent';
 
 @Injectable({
   providedIn: 'root'
@@ -13,9 +13,9 @@ export class PermanentService {
   constructor( private _http:HttpClient) {
 
   }
-  indexPermanents(id:string|null):Observable<Response<Permanent>>
+  indexPermanents(id:string|null,index:number,page:number):Observable<Response<DataPermanent>>
   {
-    return this._http.get<Response<Permanent>>(`${environment.apiUrl}index/permanents/${id}`)
+    return this._http.get<Response<DataPermanent>>(`${environment.apiUrl}index/permanents/${id}/${index}?page=${page}`)
   }
   indexAll():Observable<Response<DataALL>>
   {

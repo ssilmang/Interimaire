@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { RequestUser, Response, User, dataUser,UserToken } from '../interface/interim';
-import { Permanent } from '../interface/permanent';
+import { DataPrestataire, Permanent } from '../interface/permanent';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -11,9 +11,9 @@ import { environment } from 'src/environments/environment';
 export class PrestataireService {
   _http=inject(HttpClient)
   constructor() { }
-  isPrestataire():Observable<Response<Permanent[]>>
+  isPrestataire(taille:number,page:number):Observable<Response<DataPrestataire>>
   {
-    return this._http.get<Response<Permanent[]>>(`${environment.apiUrl}index/prestataire`)
+    return this._http.get<Response<DataPrestataire>>(`${environment.apiUrl}index/prestataire/${taille}?page=${page}`)
   }
   registrer(data:RequestUser):Observable<Response<User>>
   {

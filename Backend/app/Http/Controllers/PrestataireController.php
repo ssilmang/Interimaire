@@ -9,13 +9,20 @@ use Symfony\Component\HttpFoundation\Response;
 
 class PrestataireController extends Controller
 {
-    public function index()
+    public function index(Request $request,$index=null,$page=null)
     {
-        $prestataire = Prestataire::all();
+        $prestataire = Prestataire::paginate($index);
         return response()->json([
             'statut'=>Response::HTTP_OK,
             'message'=>'all permanents',
-            'data'=>PrestataireResource::collection($prestataire)
+            'data'=>[
+                'prestataires'=>PrestataireResource::collection($prestataire),
+                'pagination'=>[
+                    'taille'=>$prestataire->perPage(),
+                    'page'=>$prestataire->currentPage(),
+                    'total'=>$prestataire->total(),
+                ]
+            ]
         ]);
     }
 }

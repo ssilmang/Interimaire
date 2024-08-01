@@ -10,7 +10,9 @@ import { DashboardComponent } from './views/dashboard/dashboard.component';
 import { EventsComponent } from './views/events/events.component';
 import { SettingsModule } from './views/settings/settings.module';
 import { ElementsModule } from './views/elements/elements.module';
-
+import { ReactiveFormsModule } from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 @NgModule({
   declarations: [
@@ -26,6 +28,9 @@ import { ElementsModule } from './views/elements/elements.module';
     LayoutsModule,
     SettingsModule,
     ElementsModule,
+    MatInputModule,
+    MatAutocompleteModule,
+    ReactiveFormsModule,
     
   ]
 })

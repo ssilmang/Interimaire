@@ -7,7 +7,9 @@ use App\Models\Categorie;
 use App\Models\Contrat;
 use App\Models\Image;
 use App\Models\Interim;
+use App\Models\Poste;
 use App\Models\Profile;
+use App\Models\Remplacer;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -20,15 +22,18 @@ use Symfony\Component\HttpFoundation\Response;
 class InterimController extends Controller
 {
     public $controller ;
-    public function __construct(HeriteController $controller) {
+    public function __construct(HeriteController $controller) 
+    {
         $this->controller = $controller;
     }
     public function index(Request $request,$index=null,$page=null)
     {
         try{
+            //  etat En cours
+            //  ETAT ROMPRE
+            //  ETAT TERMINER 
             $interim = Interim::whereIn('etat',['en cours','rompre'])->paginate($index);
-          
-                return response()->json([
+            return response()->json([
                 'statut'=>Response::HTTP_OK,
                 'message'=>'all interim',
                 'data'=>[
@@ -85,19 +90,32 @@ class InterimController extends Controller
     public function store(Request $request,$statut,$profile)
     {
         try{
-            return DB::transaction(function() use($request,$statut,$profile){
+            return DB::transaction(function() use($request,$statut,$profile)
+            {
                 Validator::make($request->all(),[
                     'categorieInterim' => 'required|exists:categories,id',
                     'responsable' => 'required|exists:permanents,id',
                     'poste' => 'required',
                 ])->validate();   
-                $poste = $this->controller->store($request->poste,"Poste","Poste");
-                if (isset($request->categorieInterim) && isset($request->responsable) && isset($request->poste)) {
+                if(!is_numeric($request->poste) && $request->poste != null)
+                {
+                    $poste = Poste::firstOrCreate([
+                        'libelle'=>$request->poste,
+                        'duree_kangurou'=>$request->duree_kangourou?$request->duree_kangourou:0,
+                        'montant_kangurou'=>$request->montant_kangourou?$request->montant_kangourou:0
+                    ]);
+                }else
+                {
+                    $poste = Poste::find($request->poste);
+                }
+                if (isset($request->categorieInterim) && isset($request->responsable) && isset($request->poste))
+                {
                     $date_debut = Carbon::createFromFormat('Y-m-d',$request->date_debut_contrat);
                     $date_fin = Carbon::createFromFormat('Y-m-d',$request->date_fin_contrat);
                     $duree_contrat =( $date_debut->diffInMonths($date_fin));
                     $contrat = $duree_contrat + $request->temps_presence_autre_structure_sonatel;
-                    if($contrat>24){
+                    if($contrat>24)
+                    {
                         return response()->json([
                             "statut"=>Response::HTTP_BAD_REQUEST,
                             "message"=>"le contrat est supérieur à deux ans; invalide!!!",
@@ -106,7 +124,6 @@ class InterimController extends Controller
                             $temps_presence_structure_actuel = 0;
                             $temps_presence_total = $request->temps_presence_autre_structure_sonatel;
                             $categorie = Categorie::where('id',$request->categorieInterim)->first();  
-                               
                             $interim = new Interim();
                             $interim->statut_id = $statut['id'];
                             $interim->profile_id = $profile->id;
@@ -115,7 +132,6 @@ class InterimController extends Controller
                             $interim->poste_id = $poste->id;
                             $interim->save();
                             $message ="Contrat ajouter avec succès";        
-                            
                             $cout_mensuel = $categorie->cout_unitaire_journalier *30;
                             $cout_global = $cout_mensuel * $duree_contrat;
                             $contrat = Contrat::createOrUpdate([
@@ -133,7 +149,6 @@ class InterimController extends Controller
                                 'DA_kangurou' => $request->DA_kangourou?$request->DA_kangourou:0,
                                 'commentaire' => $request->commentaire,
                             ]);
-                        
                             return response()->json([
                                 'statut'=>Response::HTTP_OK,
                                 'message'=>$message,
@@ -141,7 +156,8 @@ class InterimController extends Controller
                             ]);
                 }
             });
-        }catch(QueryException $e){
+        }catch(QueryException $e)
+        {
             return response()->json([
                 'statut'=>Response::HTTP_NO_CONTENT,
                 'message'=>'erreur lors du traitement',
@@ -313,19 +329,19 @@ class InterimController extends Controller
     {
         $interims = Interim::all();
         $dataInterims = [];
-        foreach($interims as $interim){
+        foreach($interims as $interim)
+        {
             $contrat = Contrat::where(['interim_id'=>$interim['id'],'etat'=>0])->orderBy('date_debut_contrat','desc')->first();
-           if($contrat){
-            $duree =  $contrat->duree_contrat* 30 - $contrat->temps_presence_structure_actuel;
-           
-            if($duree <= 60){
-                $dataInterims[]=$interim['id'];
-            }
+           if($contrat)
+           {
+                $duree =  $contrat->duree_contrat* 30 - $contrat->temps_presence_structure_actuel;
+                if($duree <= 60)
+                {
+                    $dataInterims[]=$interim['id'];
+                }
            }
         }
         $interimaires = Interim::whereIn('id',$dataInterims)->paginate($index);
-
-
         return response()->json([
             'statut'=>Response::HTTP_OK,
             'message'=>'all interim',
@@ -338,5 +354,58 @@ class InterimController extends Controller
                     ]
             ]
         ]);
+    }
+    public function remplacement(Request $request,$user)
+    {
+        try{
+            return DB::transaction(function() use($request,$user)
+            {
+                $userProfile = Profile::find($user);
+                if($userProfile->exists)
+                {
+                    $interimaire = Interim::where('interim_id',$userProfile->id)->first();
+                    if($interimaire->etat==="en cours")
+                    {
+                        $contrat = Contrat::where('interim_id',$interimaire->id)->where('etat',0)->orderBy('date_debut_contrat','desc')->first();
+                        if($contrat)
+                        {
+                            $processus = $contrat->duree_contrat* 30 - $contrat->temps_presence_structure_actuel;
+                            $photo = null;
+                            if($processus <= 60){
+                                if($request->hasfile('photo'))
+                                {
+                                    $file = $request->file('photo');
+                                    $extension = $file->getClientOriginalExtension();
+                                    $filename = time().'.'. $extension;
+                                    $photo = $filename;
+                                    $file->move('uploads/Interims/',$filename);
+                                }
+                                $profile =  $this->controller->UserProfile($request,$photo);
+                                $statut = $interimaire->statut_id;
+                                $int = $this->store($request,$statut,$profile);
+                                if($int)
+                                {
+                                    $interimaire->update(['etat'=>'remplacer']);
+                                    $remplace = Remplacer::createOrUpdate([
+                                        'remplacer_id'=>$userProfile->id,
+                                        'remplacement_id'=>$profile->id,
+                                    ]);
+                                    return $int;
+                                }
+                            }
+                            return $this->controller->responseController->response(Response::HTTP_ACCEPTED,'il n\'est pas dans le processus de kangourou',$interimaire); 
+                        }
+                        return $this->controller->responseController->response(Response::HTTP_ACCEPTED,'cet interimaire n\'a pas de contrat qu\'on peut remplacer',$interimaire);
+                    }else{
+                        return $this->controller->responseController->response(Response::HTTP_ACCEPTED,'cette interim est iremplacable car son contrat est en cours',$interimaire);
+                    }         
+                }
+                return $this->controller->responseController->response(Response::HTTP_ACCEPTED,'l\'interimaire n\'existe pas',"" );
+            });
+
+        }catch(QueryException $e)
+        {
+            $this->controller->responseController->response(Response::HTTP_BAD_REQUEST,"erreur lors du traitement",$e);
+        }
     }
 }

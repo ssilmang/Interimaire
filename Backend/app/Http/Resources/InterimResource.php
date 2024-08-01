@@ -14,13 +14,14 @@ class InterimResource extends JsonResource
      * @return array<string, mixed>
      */
     public function toArray(Request $request): array
-    {   
+    {  
+            // 0 ETAT EN COURS
+            // 1 ETAT ROMPRE
+            // -1 ETAT TERMINER  
         $contrat = Contrat::where('interim_id',$this->id)->whereIn('etat',[0,1,-1])->orderBy('date_debut_contrat','desc')->first();
         return [
             'id' => $this->id,
             'etat'=>$this->etat,
-            'date'=>$this->date,
-            'motif'=>$this->motif,
             'statut'=>RoleResource::make($this->statut),
             'profile'=>ProfileResource::make($this->profile),
             'contrats'=>$contrat ? ContratResource::make($contrat): null,

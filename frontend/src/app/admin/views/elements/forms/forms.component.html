@@ -336,9 +336,53 @@
                            <div class="text-red-500 text-xs">Le poste est obligatoire</div>
                    }
                  }
+                
                }
             </div>
          </div>
+         @if(interimaire && kangourou){
+            <div class="flex  justify-around">
+               <div class="card-title ml-[-105px]">
+                  <label for="statut" class="form-label  required"> Durée kangourou </label>
+               </div>
+               <div class="card-title">
+                  <label for="base-input" class="form-label required">Montant kangourou</label>
+               </div> 
+            </div>
+            <div class="mt-2 flex justify-around space-x-24">
+               <div class="max-w-screen-md w-96">
+                  <label for="statut" class="form-label">
+                  </label>
+                  
+                  <input type="number"   formControlName="duree_kangourou"  placeholder="30" class="form-control"
+                  [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('duree_kangourou')?.invalid &&(formPermanent.get('duree_kangourou')?.touched || formPermanent.get('duree_kangourou')?.dirty),
+                  'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('duree_kangourou')?.valid &&(formPermanent.get('duree_kangourou')?.touched || formPermanent.get('duree_kangourou')?.dirty)}"
+     
+                  />
+                     @if(formPermanent.get('duree_kangourou')?.invalid && formPermanent.get('duree_kangourou')?.touched){
+                        @if(formPermanent.get('duree_kangourou')?.hasError('required')){
+                          
+                              <div class="text-red-500 text-xs">Ce champs est obligatoire</div>
+                      }
+                    }
+               </div>
+               <div class="max-w-screen-md  w-full">
+                  <label for="poste" class="form-label">
+                  </label>
+                  <input type="number"   formControlName="montant_kangourou"  placeholder="30000" class="form-control"
+                  [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('montant_kangourou')?.invalid &&(formPermanent.get('montant_kangourou')?.touched || formPermanent.get('montant_kangourou')?.dirty),
+                  'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('montant_kangourou')?.valid &&(formPermanent.get('montant_kangourou')?.touched || formPermanent.get('montant_kangourou')?.dirty)}"
+     
+                  />
+                     @if(formPermanent.get('montant_kangourou')?.invalid && formPermanent.get('montant_kangourou')?.touched){
+                        @if(formPermanent.get('montant_kangourou')?.hasError('required')){
+                          
+                              <div class="text-red-500 text-xs">Ce champs est obligatoire</div>
+                      }
+                    }
+               </div>
+            </div>
+         }
          <div class="flex justify-around mt-5">
             @if(!interimaire){
                <div class="card-title">
@@ -663,7 +707,6 @@
                                     <div class="text-red-500 text-xs">Le pole est obligatoire</div>
                            }
                         }
-
                        </div>
                         @if(suitepole){
                            <button type="button" (click)="clickSuitepole()" class="btn px-2  py-1/2 btn-primary btn-icon ">
@@ -698,8 +741,7 @@
                   'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('pole')?.valid &&(formPermanent.get('pole')?.touched || formPermanent.get('pole')?.dirty)}"
                   />
                </div>
-            }
-            
+            }           
            @if(poles?.length && departements?.length){
             <div class="max-w-screen-md w-full">
                <label for="departement" class="form-label">
@@ -767,8 +809,7 @@
             @if(poles?.length && departements?.length && services?.length){
                <div class="max-w-screen-md w-full">
                   <label for="service" class="form-label">
-                  </label>
-                  
+                  </label>              
                      @if(!autreService){
                         <select id="service" formControlName="service" (click)="selectedService($event)" class="form-select" [compareWith]="compare"
                         [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('service')?.invalid &&(formPermanent.get('service')?.touched || formPermanent.get('service')?.dirty),

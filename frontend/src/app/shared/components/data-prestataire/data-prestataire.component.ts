@@ -1,26 +1,42 @@
 import {  CommonModule, NgClass, NgIf } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Permanent } from 'src/app/_core/interface/permanent';
 import { ModalModule } from '../modal/modal.module';
-import { FormsModule } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { environment } from 'src/environments/environment.development';
 import { ModalComponent } from '../modal/modal.component';
 import { PermanentService } from 'src/app/_core/services/permanent.service';
 import { InterimService } from 'src/app/_core/services/interim.service';
 import { LocalStorageService } from '../../services/localStorage.service';
+import { map, Observable, startWith } from 'rxjs';
+import { MatInputModule } from '@angular/material/input';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { RechercherLibellePipe } from 'src/app/admin/pipe/rechercher-libelle.pipe';
 
 @Component({
   selector: 'data-prestataire',
   standalone: true,
-  imports: [NgClass,CommonModule,NgIf,ModalModule,FormsModule,RouterLink],
+  imports: [
+    ReactiveFormsModule,
+    CommonModule,
+    ModalModule,
+    FormsModule,
+    RouterLink,
+    MatInputModule,
+    MatAutocompleteModule,
+    RechercherLibellePipe,
+  ],
   templateUrl: './data-prestataire.component.html',
   styleUrl: './data-prestataire.component.css'
 })
-export class DataPrestataireComponent {
+export class DataPrestataireComponent implements OnInit {
   @Input() columnData: any = [];
   @Input() rowData: Permanent[]=[];
   @Input() pageData: number[] = [];
+  @Input() currentPage!:number;
+  @Input() taille!:number;
+  @Input() total!:number;
   shorting: boolean = false;
   showModal:boolean = false;
   isDropdownOpen:boolean = true;
@@ -34,8 +50,22 @@ export class DataPrestataireComponent {
   commentaire:string = "";
   annuler: boolean = true;
   hiddern:string = 'hidden';
+  myControl=new FormControl('4');
+  options: string[] = ['4','9','15','20','30','40','50','60','70','80','90','100'];
+  filteredOptions!: Observable<string[]>;
+  libelle:string='';
   constructor(private service :InterimService,private shared:LocalStorageService,private router:Router){
     this.modalCompnent = new ModalComponent();
+  }
+  ngOnInit(): void {
+    this.filteredOptions = this.myControl.valueChanges.pipe(
+      startWith(''),
+      map(value => this._filter(value))
+    );
+  }
+  private _filter(value: any): string[] {
+    const filterValue = value.toLowerCase();
+    return this.options;
   }
   afficherDetails(collab?: Permanent) {
     this.dataDetails= collab;
@@ -113,4 +143,70 @@ export class DataPrestataireComponent {
   {
     this.hiddern = 'hidden';
   }
+  selectPage=(page:number):void=>
+    {
+      this.currentPage=page;
+      const data={
+        taille:this.taille,
+        currentPage:this.currentPage
+      } 
+      this.shared.chargePaginate(data);
+    }
+    PageTailleChange=(event: Event): void =>
+      { 
+        
+        let nmbre = (event.target as HTMLInputElement).value;
+         this.option(nmbre);
+      }
+      optionSelected(event: any): void 
+      {
+        const selectedValue = event.option.value;
+        this.myControl.setValue(selectedValue);
+        this.option(this.myControl.value)
+      }
+      option(nmbre:any):void
+      {
+       
+        
+        if(!isNaN(nmbre)){
+          if(nmbre <= this.total){
+            this.taille =nmbre;
+          }else{
+            this.taille= this.total
+            this.currentPage =0
+          }
+        }else{
+          this.taille = this.total;
+          this.currentPage=0
+        }
+      const data={
+        taille:this.taille,
+        currentPage:this.currentPage
+      }
+      this.shared.chargePaginate(data);
+      }
+      prevPage=(): void=>
+     {
+        if (this.currentPage > 1)
+       {
+          this.currentPage--;
+          const data={
+            taille:this.taille,
+            currentPage:this.currentPage
+          }
+          this.shared.chargePaginate(data);
+        }
+      }
+      nextPage=(): void=>
+     {
+        if (this.currentPage < this.pageData.length)
+        {
+          this.currentPage++;
+          const data={
+            taille:this.taille,
+            currentPage:this.currentPage
+          }
+          this.shared.chargePaginate(data);
+        }
+      }
 }

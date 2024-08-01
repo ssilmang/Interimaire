@@ -1,5 +1,5 @@
 import {Injectable, inject} from "@angular/core";
-import { HttpEvent, HttpHandler, HttpInterceptor, HttpInterceptorFn, HttpRequest} from "@angular/common/http";
+import { HttpEvent, HttpHandler, HttpInterceptor, HttpInterceptorFn, HttpRequest } from "@angular/common/http";
 import {LocalStorageService} from "../../shared/services/localStorage.service";
 import { Observable } from "rxjs";
 import { environment } from "src/environments/environment.development";

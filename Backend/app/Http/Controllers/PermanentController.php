@@ -29,13 +29,24 @@ class PermanentController extends Controller
         $this->controller = $controller;
         $this->interimaire = $interimaire;
     }
-    public function index(Request $request, $id)
+    public function index(Request $request, $id,$index=null,$page=null)
     {
-        $permanents = Permanent::where('id',$id)->first();
+        $permanents = Permanent::with(['profile', 'poste', 'canal', 'statut', 'groupe', 'categoriegroupe', 'agence', 'direction', 'locau', 'pole', 'departement', 'service', 'agence_commercial', 'responsable'])
+        ->findOrFail($id);
+        $collaborateurs = $permanents->collaborateurs()->paginate($index);
         return response()->json([
             'statut'=>Response::HTTP_OK,
             'message'=>'all permanents',
-            'data'=>PermanentResource::make($permanents)
+            'data'=>[
+                'permanent'=> PermanentResource::make($permanents),
+                'collaborateurs' => PermanentResource::collection($collaborateurs->items()),
+                'pagination'=>[
+                    'total' => $collaborateurs->total(),
+                    'taille' => $collaborateurs->perPage(),
+                    'page' => $collaborateurs->currentPage(),
+                    'derniere_page' => $collaborateurs->lastPage(),
+                ],
+            ],
         ]);
     }
     public function getPermanent()
@@ -81,18 +92,17 @@ class PermanentController extends Controller
                 }    
                if($statut->libelle === "Interimaire")
                {
-                if($upload == "null"){
-                    $file->move('uploads/Interims/',$filename);
-                }
+                    if($upload == "null"){
+                        $file->move('uploads/Interims/',$filename);
+                    }
 
-                if($id!=0){
-                   $int= $this->interimaire->update($request,$id,$statut,$profile,$contrat_id);
-                   return $int;
-                }else{
-                    $interim =$this->interimaire->store($request,$statut,$profile);
-                   return $interim;
-                }
-
+                    if($id!=0){
+                    $int= $this->interimaire->update($request,$id,$statut,$profile,$contrat_id);
+                    return $int;
+                    }else{
+                        $interim =$this->interimaire->store($request,$statut,$profile);
+                    return $interim;
+                    }
                }else
                {
                    $validate = $request->validate([

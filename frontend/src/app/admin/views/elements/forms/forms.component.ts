@@ -72,7 +72,8 @@ export class FormsComponent implements AfterViewInit,OnInit
   showModal:boolean = true;
   footer: boolean = false;
   close:boolean = false;
-  visible:boolean =false
+  visible:boolean =false;
+  kangourou:boolean = false;
   @ViewChild('checkboxRef',{static:false}) checkboxRef!:ElementRef<HTMLInputElement>;
   constructor(private sharedService:LocalStorageService,private cdRef:ChangeDetectorRef ){
     this.formPermanent = this.fb.group({
@@ -104,6 +105,8 @@ export class FormsComponent implements AfterViewInit,OnInit
       temps_presence_autre_structure_sonatel:['',[Validators.required]],
       DA:['',[Validators.required]],
       DA_kangourou:['',[Validators.required]],
+      duree_kangourou:['',[Validators.required]],
+      montant_kangourou:['',[Validators.required]],
     })
   }
   ngAfterViewInit(): void {
@@ -122,35 +125,32 @@ export class FormsComponent implements AfterViewInit,OnInit
         if(interim.statut.libelle ==="Interimaire"){
           this.contrat_id = interim.contrats.id;
           this.interimaire = true;
+          this.kangourou =true;
           this.formPermanent.get('date_debut_contrat')?.patchValue(interim.contrats.date_debut_contrat)
           this.interimCategorie =true;
           this.sharedService.currentAgence.subscribe(element=>{
-            this.dataAgence=element.find((ele:any)=>ele.id === interim.categorie.agence.id)
-            console.log(this.dataAgence);
-          
+            this.dataAgence=element.find((ele:any)=>ele.id === interim.categorie.agence.id) 
             this.formPermanent.get('agence')?.patchValue(interim.categorie.agence)
             this.formPermanent.get('categorieInterim')?.patchValue(interim.categorie)     
           })
-         
           this.formPermanent.get('date_fin_contrat')?.patchValue(interim.contrats.date_fin_contrat)
           this.formPermanent.get('temps_presence_autre_structure_sonatel')?.patchValue(interim.contrats.temps_presence_autre_structure_sonatel)
           this.formPermanent.get('DA')?.patchValue(interim.contrats.DA)
           this.formPermanent.get('DA_kangourou')?.patchValue(interim.contrats.DA_kangourou)
+          this.formPermanent.get('duree_kangourou')?.patchValue(interim.poste.duree_kangurou)
+          this.formPermanent.get('montant_kangourou')?.patchValue(interim.poste.montant_kangurou)
+          
           this.formPermanent.get('photo')?.patchValue( this.apiImag + interim.profile.photo)
         }
-        else if(interim.statut.libelle==="Permanent"){
-          
+        else if(interim.statut.libelle==="Permanent"){       
           this.formPermanent.get('photo')?.patchValue( this.apiImagPermanent + interim.profile.photo)
         }else if(interim.statut.libelle==="Prestataire"){
           this.formPermanent.get('photo')?.patchValue( this.apiImagPrestataire + interim.profile.photo)
         }
-        console.log(interim);
-        console.log(interim.statut);
         this.formPermanent.get('prenom')?.patchValue(interim.profile.prenom)
         this.formPermanent.get('nom')?.patchValue(interim.profile.nom)
         this.formPermanent.get('matricule')?.patchValue(interim.profile.matricule)
-        this.formPermanent.get('email')?.patchValue(interim.profile.email)
-        
+        this.formPermanent.get('email')?.patchValue(interim.profile.email)    
         this.imageUpdate=interim.profile.photo;
         this.formPermanent.get('telephone')?.patchValue(interim.profile.telephone)
         this.formPermanent.get('telephone_pro')?.patchValue(interim.profile.telephone_pro)
@@ -249,6 +249,7 @@ export class FormsComponent implements AfterViewInit,OnInit
     let autre = this.Autre(event,'poste');
     if(autre===true){
       this.autrePoste = true;
+      this.kangourou = true;
     }
   }
   selectedGroupe(event:Event)
@@ -428,7 +429,6 @@ export class FormsComponent implements AfterViewInit,OnInit
   }
   enregistrer()
   {
-    console.log(this.formPermanent.value);
     const formData :FormData = new FormData();
     let poste = this.formPermanent.get('poste')?.value;
     let statut = this.formPermanent.get('statut')?.value;
@@ -539,26 +539,17 @@ export class FormsComponent implements AfterViewInit,OnInit
     formData.append('date_fin_contrat',this.formPermanent.get('date_fin_contrat')?.value)
     formData.append('DA',this.formPermanent.get('DA')?.value)
     formData.append('DA_kangourou',this.formPermanent.get('DA_kangourou')?.value)
+    formData.append('duree_kangourou',this.formPermanent.get('duree_kangourou')?.value)
+    formData.append('montant_kangourou',this.formPermanent.get('montant_kangourou')?.value)
     formData.append('temps_presence_autre_structure_sonatel',this.formPermanent.get('temps_presence_autre_structure_sonatel')?.value)
     let categInterim = this.formPermanent.get('categorieInterim')?.value;
     if(categInterim!=null){
       formData.append('categorieInterim',this.formPermanent.get('categorieInterim')?.value.id)
     }
-    console.log(this.idInterim);
-    console.log(this.idProfile);
-    console.log(this.contrat_id);
-    console.log(this.upload);
-    
-    
-    
-    
     this.service.store(formData,this.idInterim,this.idProfile,this.upload,this.contrat_id).subscribe({
       next:(response=>{
-        console.log(response);
         if(response.statut===200)
-          {
-            console.log(response);
-            
+          {  
             this.message = response.message;
           setTimeout(()=>{
             this.message =""

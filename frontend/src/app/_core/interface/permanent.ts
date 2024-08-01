@@ -1,7 +1,12 @@
-import { Agence, DataDirection, Departement, Direction, Locau, Pole, Poste, Role, Service, User } from "./interim"
+import { Agence, DataDirection, Departement, Direction, Locau, pagination, Pole, Poste, Role, Service, User } from "./interim"
 
 export interface ResponsePermanent{
     dvs:Permanent
+}
+export interface DataPermanent{
+    permanent:Permanent
+    collaborateurs:Permanent[]
+    pagination:pagination
 }
 
 export interface Permanent{
@@ -20,7 +25,7 @@ export interface Permanent{
     departement:Departement
     service:Service
     responsable:Responsable
-    collaborateurs:Permanent[]
+    // collaborateurs:Permanent[]
 }
 export interface Responsable{
     id:number
@@ -73,4 +78,8 @@ export interface RequestPermanent{
     service_id:number|string
     responsable_id:number|string
 
+}
+export interface DataPrestataire{
+    prestataires:Permanent[]
+    pagination:pagination
 }

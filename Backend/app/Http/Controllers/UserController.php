@@ -39,7 +39,6 @@ class UserController extends Controller
     public function __construct( HeriteController $controller){
         $this->controller= $controller; 
     }
-    
     public function store(Request $request)
     {
         try {
@@ -187,42 +186,45 @@ class UserController extends Controller
        $dataDonnee = $data->map(function($item) use($permanents,$prestataires,$interims)
        {
         $profileData= [            
+            "Matricule"=>$item['matricule'],
             'Prenom'=>  $item['prenom'],
             'Nom'=> $item['nom'],
-            "Matricule"=>$item['matricule'],
+            'Poste'=>'N/A',
+            'Canal'=>'N/A',
             'Direction'=>'N/A',
             'Pole'=>'N/A',
-            'Departement'=>'N/A',
+            'Département'=>'N/A',
             'Service'=>'N/A',
-            'Lieu d\'execution'=>'N/A',
-            'Poste'=>'N/A',
-            'Responsable Hierarchique'=>'N/A',
-            'Canal'=>'N/A',
+            'Lieu d\'exécution'=>'N/A',
+            'Responsable Hiérarchique'=>'N/A',
             'Statut'=>'N/A',
-            'Groupe'=>'N/A',
-            'Categorie'=>'N/A',
             'Agence interim'=>'N/A',
-            'Telephone'=>$item['telephone'],
-            'Telephone pro'=>$item['telephone_pro'],
-            'Email'=>$item['email'],
+            'Groupe'=>'N/A',
+            'Catégorie'=>'N/A',
+            'MOUVEMENT /Avancement/Promotion'=>'N/A',
+            'DATE DERNIER(E) : Avancement/Promotion'=>'N/A',
+            'Téléphone'=>$item['telephone'],
+            'Téléphone pro'=>$item['telephone_pro'],
+            'Courriel'=>$item['email'],
             'Commentaire'=>$item['commentaire'],
         ];   
         if ($interims!='null' ||($interims!='null' && $prestataires!='null' && $permanents!='null'))
         {
             $profileData['DA']='N/A';
-            $profileData['Date debut']='N/A';
+            $profileData['Date début']='N/A';
             $profileData['Date fin']='N/A';
-            $profileData['Temps presence structure actuelle']='N/A';
-            $profileData ['Temps presence autres structures sonatel']='N/A';
-            $profileData['Cumul temps de presence sonatel']='N/A';
+            $profileData['Temps présence structure actuelle']='N/A';
+            $profileData ['Temps présence autres structures Sonatel']='N/A';
+            $profileData['Cumul temps de présence Sonatel']='N/A';
             $profileData['Durée kangourou']='N/A';
             $profileData['Durée contrat']='N/A';
             $profileData['Durée contrat restante']='N/A';
-            $profileData ['Coût unitaire(tarif journalier)']='N/A';
-            $profileData['Coût mensuel(tarif mensuel)']='N/A';
-            $profileData ['DA kangourou']='N/A';
-            $profileData['Montant kangourou']='N/A';
-            $profileData['Coût global']='N/A';
+            $profileData ['Coût unitaire (tarif journalier)']='N/A';
+            $profileData['Coût mensuel (tarif mensuel)']='N/A';
+            $profileData ['DA kangourou']=0;
+            $profileData['Montant kangourou']=0;
+            $profileData['Coût global']=0;
+            $profileData['Etat']='N/A';
         }
         if ($item[$permanents]!==null && $item[$permanents]->isNotEmpty()) 
         {
@@ -240,17 +242,17 @@ class UserController extends Controller
             }
             if($permanentData['locau']!==null)
             {
-                $profileData['Lieu d\'execution'] = $permanentData['locau']['libelle'];
+                $profileData['Lieu d\'exécution'] = $permanentData['locau']['libelle'];
             }
             if($permanentData['departement']!=null)
             {
-                $profileData['Departement'] = $permanentData['departement']['libelle'];     
+                $profileData['Département'] = $permanentData['departement']['libelle'];     
             }
             if($permanentData['service']!=null){
                 $profileData['Service'] = $permanentData['service']['libelle'];
             }
             if($permanentData['responsable']!=null && $permanentData['responsable']['profile']!==null){
-                $profileData['Responsable Hierarchique'] = $permanentData['responsable']['profile']['prenom'].' '.$permanentData['responsable']['profile']['nom'];
+                $profileData['Responsable Hiérarchique'] = $permanentData['responsable']['profile']['prenom'].' '.$permanentData['responsable']['profile']['nom'];
             }
             if($permanentData['cananl']!==null)
             {
@@ -266,7 +268,7 @@ class UserController extends Controller
            }
            if($permanentData['categoriegroupe']!==null)
            {
-            $profileData['Categorie'] = $permanentData['categoriegroupe']['libelle'];
+            $profileData['Catégorie'] = $permanentData['categoriegroupe']['libelle'];
            }
             if($permanentData['agence'])
             {
@@ -289,11 +291,11 @@ class UserController extends Controller
             }
             if($prestataireData['locau']!=null)
             {
-                $profileData['Lieu d\'execution'] = $prestataireData['locau']['libelle'];
+                $profileData['Lieu d\'exécution'] = $prestataireData['locau']['libelle'];
             }
             if($prestataireData['departement']!=null)
             {
-                $profileData['Departement'] = $prestataireData['departement']['libelle'];
+                $profileData['Département'] = $prestataireData['departement']['libelle'];
             }
             if($prestataireData['service'])
             {
@@ -301,7 +303,7 @@ class UserController extends Controller
             }
             if($prestataireData['responsable']!=null && $prestataireData['responsable']['profile']!==null)
             {
-                $profileData['Responsable Hierarchique'] = $prestataireData['responsable']['profile']['prenom'].' '.$prestataireData['responsable']['profile']['nom'];
+                $profileData['Responsable Hiérarchique'] = $prestataireData['responsable']['profile']['prenom'].' '.$prestataireData['responsable']['profile']['nom'];
             }
             if($prestataireData['canal']!=null)
             {
@@ -317,7 +319,7 @@ class UserController extends Controller
             }
             if($prestataireData['categoriegroupe']!=null)
             {
-                $profileData['Categorie'] = $prestataireData['categoriegroupe']['libelle'];
+                $profileData['Catégorie'] = $prestataireData['categoriegroupe']['libelle'];
             }
             if($prestataireData['agence'])
             {
@@ -326,12 +328,14 @@ class UserController extends Controller
         }elseif($item[$interims]!=null && $item[$interims]->isNotEmpty())
         {
             $interimaireData = $item['interimaires']->first();
+            if($interimaireData['etat']!=null){
+                $profileData['Etat']=$interimaireData['etat'];
+            }
             if($interimaireData['poste']!=null)
             {
                 $profileData['Poste'] = $interimaireData['poste']['libelle'];
-                $profileData['Montant kangourou'] = $interimaireData['poste']['montant_kangourou'];
-                $profileData['Coût global'] = $interimaireData['poste']['cout_global'];
-                $profileData['Durée kangourou'] = $interimaireData['poste']['duree_kangourou'];
+                $profileData['Montant kangourou'] = $interimaireData['poste']['montant_kangurou']?$interimaireData['poste']['montant_kangurou']:0;
+                $profileData['Durée kangourou'] = $interimaireData['poste']['duree_kangurou']?$interimaireData['poste']['duree_kangurou']:0;
             }
             if($interimaireData['statut']!=null)
             {
@@ -339,7 +343,7 @@ class UserController extends Controller
             }
             if($interimaireData['locau']!=null)
             {
-                $profileData['Lieu d\'execution'] = $interimaireData['locau']['libelle'];
+                $profileData['Lieu d\'exécution'] = $interimaireData['locau']['libelle'];
             }
             if($interimaireData['responsable']!=null)
             {
@@ -353,7 +357,7 @@ class UserController extends Controller
                 }
                 if($interimaireData['responsable']['departement']!=null)
                 {
-                    $profileData['Departement'] = $interimaireData['responsable']['departement']['libelle'];
+                    $profileData['Département'] = $interimaireData['responsable']['departement']['libelle'];
                 }
                 if($interimaireData['responsable']['service']!=null)
                 {
@@ -361,7 +365,7 @@ class UserController extends Controller
                 }
                 if($interimaireData['responsable']['profile']!=null)
                 {
-                    $profileData['Responsable Hierarchique'] = $interimaireData['responsable']['profile']['prenom'].' '.$interimaireData['responsable']['profile']['nom'];
+                    $profileData['Responsable Hiérarchique'] = $interimaireData['responsable']['profile']['prenom'].' '.$interimaireData['responsable']['profile']['nom'];
                 }
                 if($interimaireData['responsable']['canal']!=null)
                 {
@@ -370,23 +374,24 @@ class UserController extends Controller
             }
             if($interimaireData['categorie']!=null)
             {
-                $profileData['Categorie'] = $interimaireData['categorie']['libelle'];
+                $profileData['Catégorie'] = $interimaireData['categorie']['libelle'];
                 $profileData['Agence interim'] = $interimaireData['categorie']['agence']['libelle'];
-                $profileData['Coût unitaire(tarif journalier)'] = $interimaireData['categorie']['cout_unitaire_journalier'];
+                $profileData['Coût unitaire (tarif journalier)'] = $interimaireData['categorie']['cout_unitaire_journalier'];
             }
             if($interimaireData['contrats'] && $interimaireData['contrats']->isNotEmpty())
             {
                 $contrat = $interimaireData['contrats']->first();
-                $profileData['Date debut'] = $contrat['date_debut_contrat'];
+                $profileData['Date début'] = $contrat['date_debut_contrat'];
                 $profileData['Date fin'] = $contrat['date_debut_contrat'];
-                $profileData['Temps presence structure actuelle'] = $contrat['temps_presence_structure_actuel'];
-                $profileData['Temps presence autres structures sonatel'] = $contrat['temps_presence_structure_actuel'];
-                $profileData['Cumul temps de presence sonatel'] = $contrat['cumul_presence_sonatel'];
+                $profileData['Temps présence structure actuelle'] = $contrat['temps_presence_structure_actuel'];
+                $profileData['Temps présence autres structures Sonatel'] = $contrat['temps_presence_structure_actuel'];
+                $profileData['Cumul temps de présence Sonatel'] = $contrat['cumul_presence_sonatel'];
                 $profileData['Durée contrat'] = $contrat['duree_contrat'];
                 $profileData['Durée contrat restante'] = $contrat['duree_contrat_restant'];
-                $profileData['Coût mensuel(tarif mensuel)'] = $contrat['cout_mensuel'];
+                $profileData['Coût mensuel (tarif mensuel)'] = $contrat['cout_mensuel'];
+                $profileData['Coût global'] = $contrat['cout_global'];
                 $profileData['DA'] = $contrat['DA'];
-                $profileData['DA kangourou'] = $contrat['DA_kangourou'];
+                $profileData['DA kangourou'] = $contrat['DA_kangurou'];
             }   
             if($interimaireData['groupe']!=null)
             {
@@ -411,5 +416,3 @@ class UserController extends Controller
         return ( new FastExcel($dataDonnee))->headerStyle($header_style)->rowsStyle($rows_style)->download($fichier);
     }
 }
-
-

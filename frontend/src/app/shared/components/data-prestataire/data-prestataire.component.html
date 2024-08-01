@@ -22,7 +22,7 @@
             </select>
           </div>
           <div class=" form-group  relative mx-auto ">
-            <input  class="border-2 border-gray-300 bg-gray-100 h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none"
+            <input [(ngModel)]="libelle" class="border-2 border-gray-300 bg-gray-100 h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none"
             type="search"   placeholder="Rechercher">
             <button type="submit" class="absolute right-0 top-0 mt-5 mr-4">
               <svg  class="text-gray-600 h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg"
@@ -58,7 +58,7 @@
               </thead>
   
               <tbody *ngIf="rowData.length > 0">
-                <tr *ngFor="let collob of rowData" class="border-b bg-white hover:bg-gray-50">
+                <tr *ngFor="let collob of rowData|rechercherLibelle:libelle" class="border-b text-black bg-white hover:bg-gray-50">
                   <td class="ng-wind-data-item whitespace-nowrap font-medium text-gray-800 px-4 py-2">
                    @if(collob?.profile?.photo){
                     <a
@@ -123,30 +123,36 @@
           <div class="ng-wind-table-page-view flex items-center">
             Lignes par page:
             <div class="mx-2">
-              <select id="states" class="block w-full rounded-sm bg-gray-100 p-1 text-xs text-gray-900">
+              <select (click)="PageTailleChange($event)" id="states" class="block w-full rounded-sm bg-gray-100 p-1 text-xs text-gray-900">
+                <option value="4">4</option>
+                <option value="6">6</option>
+                <option value="9">9</option>
                 <option value="10">10</option>
                 <option value="20">20</option>
                 <option value="50">50</option>
                 <option value="100">100</option>
-                <option value="200">200</option>
-                <option value="300">300</option>
-                <option value="400">400</option>
-              </select>
+                <option value="tous">all</option>
+             </select>
             </div>
-            <span class="me-1 ms-4 font-semibold text-gray-900">1-10</span> of
-            <span class="ms-1 font-semibold text-gray-900">1000</span>
+            <span class="me-1 ms-4 font-semibold text-gray-900">{{ currentPage }}-{{ pageData.length }}</span> sur
+            <span class="ms-1 font-semibold text-gray-900">{{ total }}</span>
           </div>
   
           <ul class="inline-flex h-8 -space-x-px mt-2 text-xs rtl:space-x-reverse">
             <li>
-              <a href="#" class="ng-wind-page-prev bg-gray-200 px-3 py-1 rounded-l-md">Prev</a>
+              <a (click)="prevPage()" class="ng-wind-page-prev bg-gray-200 px-3 py-1 rounded-l-md">Précédent</a>
             </li>
             <!-- Loop through pages dynamically -->
-            <li *ngFor="let page of pageData">
-              <a href="#" class="ng-wind-page bg-gray-200 px-3 py-1">{{ page }}</a>
-            </li>
+            @for ( page of pageData;track page){
+              <li  [class.activate]="page==currentPage">
+                 <a (click)="selectPage(page)" aria-current="page" [ngClass]="page == currentPage ? 'active-page' : 'bg-white hover:bg-gray-100' "
+                    class="page-number cursor-pointer">
+                    {{page}}
+                 </a>
+              </li>
+              }
             <li>
-              <a href="#" class="ng-wind-page-next bg-gray-200 px-3 py-1 rounded-r-md">Next</a>
+              <a (click)="nextPage()" class="ng-wind-page-next bg-gray-200 px-3 py-1 rounded-r-md">Suivant</a>
             </li>
           </ul>
         </nav>

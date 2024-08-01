@@ -1,4 +1,4 @@
-import {HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from "@angular/common/http";
+import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from "@angular/common/http";
 import {Inject, Injectable} from "@angular/core";
 import {catchError, Observable, retry, throwError, timer} from "rxjs";
 import {NOTYF} from "../../shared/utils/notyf.token";

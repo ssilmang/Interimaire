@@ -1,24 +1,24 @@
 <div  class="overflow-x-hidden">
     <section class="grid grid-cols-1 gap-2 md:grid-cols-2 xl:grid-cols-4">
-        <mat-form-field class="example-full-width">
+       
+          <!-- <mat-form-field class="example-full-width">
             <input type="text"
                    placeholder="Saisir ou sélectionner une option"
                    aria-label="Number"
                    matInput
-                   [formControl]="myControl"
-                   [matAutocomplete]="auto">
-            <mat-autocomplete #auto="matAutocomplete">
+                  >
+            <mat-autocomplete >
               <mat-option>
-             
+             DBDH
               </mat-option>
             </mat-autocomplete>
-          </mat-form-field>
-        <div class="card flex items-center cursor-pointer hover:shadow-md hover:border-y-4 hover:border-b-emerald-700 gap-1">
+          </mat-form-field> -->
+        <div (click)="remplacerContrat()" class="{{ remplacement }} card flex items-center cursor-pointer hover:shadow-md hover:border-y-4 hover:border-b-emerald-700 gap-1">
             <div class="rounded-lg bg-gradient-to-br from-emerald-500 to-emerald-700 px-3 py-2 text-white">
                 <span class="bi bi-clock-history text-3xl"></span>
             </div>
             <div>
-                <p class="text-md text-gray-400">Cumul Temps de Presence</p>
+                <p class="text-md text-gray-400">Remplacement</p>
             </div>
         </div>
         <div (click)="contratCours()" class="{{ activeCours }} card flex items-center gap-3 cursor-pointer hover:shadow-md hover:border-y-4 hover:border-b-orange-600">
@@ -70,7 +70,7 @@
             </select>
           </div>
           <div class=" form-group  relative mx-auto ">
-            <input  class="border-2 border-gray-300 bg-gray-100 h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none"
+            <input [(ngModel)]="libelle" class="border-2 border-gray-300 bg-gray-100 h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none"
             type="search"   placeholder="Rechercher">
             <button type="submit" class="absolute right-0 top-0 mt-5 mr-4">
               <svg  class="text-gray-600 h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg"
@@ -87,202 +87,229 @@
         </div>
         </div>
     </div>
-   <section class=" mx-auto mt-5 w-full rounded-lg bg-white p-4 shadow-lg">
-        <div class="mt-1">
-            <div class="sm:rounded-lg">
-               <div class="data-table">
-                  <div class="table-container">
-                     <table class="ng-wind-table w-full relative">
-                        <thead class="ng-wind-table-header {{ backg }} text-white border rounded-b-md">
-                           <tr>
-                              <th scope="col" class="ng-wind-header-item">
-                                
-                                 <!-- <button (click)="sortingUp()" *ngIf="shorting === false" class="ml-2 text-lg">
-                                    <i class="bi bi-arrow-down-short"></i>
-                                 </button>
-                                 <button (click)="sortingDown()" *ngIf="shorting === true" class="ml-2 text-lg">
-                                    <i class="bi bi-arrow-up-short"></i>
-                                 </button> -->
-                              </th>
-                              <th scope="col" class="ng-wind-header-item">
-                                 Prenom
-                              </th>
-                              <th scope="col" class="ng-wind-header-item">
-                                 Nom
-                              </th>
-                              <th scope="col" class="ng-wind-header-item">
-                                 Poste
-                              </th>
-                              <th scope="col" class="ng-wind-header-item">
-                                Matricule
-                             </th>
-                             <th scope="col" class="ng-wind-header-item">
-                                Structure
-                             </th>
-                             <th scope="col" class="ng-wind-header-item text-center">
-                               Statut
-                            </th>
-                              <th scope="col" class="ng-wind-header-item text-center">
-                                 Action
-                              </th>
-                           </tr>
-                        </thead>
-      
-                        @if( dataInterims.length == 0 || dataInterims.length == undefined){
-                        <div class="absolute top-52 w-full text-center">
-                           <button disabled type="button"
-                              class="me-2 inline-flex items-center rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:text-blue-700 focus:ring-2 focus:ring-blue-700">
-                              <svg aria-hidden="true" role="status"
-                                 class="me-3 inline h-4 w-4 animate-spin text-gray-200 dark:text-gray-600"
-                                 viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                 <path
-                                    d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-                                    fill="currentColor" />
-                                 <path
-                                    d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-                                    fill="#1C64F2" />
-                              </svg>
-                              Loading...
-                           </button>
-                        </div>
-                        } @else {
-                        <tbody>
-                           @for (interim of dataInterims; track interim.id){
-                           <tr class="border-b mt-5 bg-white hover:bg-gray-50">
-                              <td class="ng-wind-data-item whitespace-nowrap font-medium text-gray-800">
-                                <div
-                                    class="w-9 h-9 ml-5 rounded-full flex items-center justify-center overflow-hidden  border-2 border-gray-500">
-                                    <img class="w-full object-cover" [src]="apiImag +interim?.profile?.photo " alt="Profile">
-                                </div>
-                              </td>
-                              <td class="ng-wind-data-item text-center">
-                                 {{interim?.profile?.prenom}}
-                              </td>
-                              <td class="ng-wind-data-item text-center">
-                                 {{interim?.profile?.nom}}
-                              </td>
-                              <td class="ng-wind-data-item text-center">
-                                 {{interim?.poste?.libelle}}
-                              </td>
-                                <td class="ng-wind-data-item text-center">
-                                    {{interim?.profile?.matricule}}
-                                </td>
-                                <td class="ng-wind-data-item text-center">
-                                    @if(interim?.responsable?.service!=null){
-                                        @if(interim?.responsable?.service?.departement?.pole?.libelle == 'N/A'){
-                                            <button  class="cursor-default">{{ interim?.responsable?.service?.departement?.pole?.direction?.libelle}}/{{ interim?.responsable?.service?.departement?.libelle }}/{{ interim?.responsable?.service?.libelle }}</button>
-                                        }@else{
-                                        <button  class="cursor-default">{{ interim?.responsable?.service?.departement?.pole?.direction?.libelle}}/{{ interim?.responsable?.service?.departement?.pole?.libelle }}/{{ interim?.responsable?.service?.departement?.libelle }}/{{ interim?.responsable?.service?.libelle }}</button>
+    @if(remplacement==''){
+        <section class=" mx-auto mt-5 w-full rounded-lg bg-white p-4 shadow-lg">
+            <div class="mt-1">
+                <div class="sm:rounded-lg">
+                   <div class="data-table">
+                      <div class="table-container">
+                         <table class="ng-wind-table w-full relative">
+                            <thead class="ng-wind-table-header {{ backg }} text-white border rounded-b-md">
+                               <tr>
+                                  <th scope="col" class="">
+                                    
+                                     <!-- <button (click)="sortingUp()" *ngIf="shorting === false" class="ml-2 text-lg">
+                                        <i class="bi bi-arrow-down-short"></i>
+                                     </button>
+                                     <button (click)="sortingDown()" *ngIf="shorting === true" class="ml-2 text-lg">
+                                        <i class="bi bi-arrow-up-short"></i>
+                                     </button> -->
+                                  </th>
+                                  <th scope="col" class=" ng-wind-header-item text-center">
+                                     Prenom
+                                  </th>
+                                  <th scope="col" class="ng-wind-header-item text-center">
+                                     Nom
+                                  </th>
+                                  <th scope="col" class="ng-wind-header-item text-center">
+                                     Poste
+                                  </th>
+                                  <th scope="col" class="ng-wind-header-item text-center">
+                                    Matricule
+                                 </th>
+                                 <th scope="col" class="ng-wind-header-item text-center">
+                                    Structure
+                                 </th>
+                                 <th scope="col" class="ng-wind-header-item text-center">
+                                   Statut
+                                </th>
+                                  <th scope="col" class="ng-wind-header-item text-center">
+                                     Action
+                                  </th>
+                               </tr>
+                            </thead>
+          
+                            @if( dataInterims.length == 0 || dataInterims.length == undefined){
+                            <div class="absolute top-52 w-full text-center">
+                               <button disabled type="button"
+                                  class="me-2 inline-flex items-center rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:text-blue-700 focus:ring-2 focus:ring-blue-700">
+                                  <svg aria-hidden="true" role="status"
+                                     class="me-3 inline h-4 w-4 animate-spin text-gray-200 dark:text-gray-600"
+                                     viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                     <path
+                                        d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                                        fill="currentColor" />
+                                     <path
+                                        d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                                        fill="#1C64F2" />
+                                  </svg>
+                                  Loading...
+                               </button>
+                            </div>
+                            } @else {
+                            <tbody>
+                               @for (interim of dataInterims |rechercherLibelle:libelle; track interim.id){
+                               <tr class="border-b mt-5 bg-white hover:bg-gray-50">
+                                  <td class="ng-wind-data-item whitespace-nowrap font-medium text-gray-800">
+                                    <div
+                                        class="w-9 h-9 ml-5 rounded-full flex items-center justify-center overflow-hidden  border-2 border-gray-500">
+                                        <img class="w-full object-cover" [src]="apiImag +interim?.profile?.photo " alt="Profile">
+                                    </div>
+                                  </td>
+                                  <td class="ng-wind-data-item text-center">
+                                     {{interim?.profile?.prenom}}
+                                  </td>
+                                  <td class="ng-wind-data-item text-center">
+                                     {{interim?.profile?.nom}}
+                                  </td>
+                                  <td class="ng-wind-data-item text-center">
+                                     {{interim?.poste?.libelle}}
+                                  </td>
+                                    <td class="ng-wind-data-item text-center">
+                                        {{interim?.profile?.matricule}}
+                                    </td>
+                                    <td class="ng-wind-data-item text-center">
+                                        @if(interim?.responsable?.service!=null){
+                                            @if(interim?.responsable?.service?.departement?.pole?.libelle == 'N/A'){
+                                                <button  class="cursor-default">{{ interim?.responsable?.service?.departement?.pole?.direction?.libelle}}/{{ interim?.responsable?.service?.departement?.libelle }}/{{ interim?.responsable?.service?.libelle }}</button>
+                                            }@else{
+                                            <button  class="cursor-default">{{ interim?.responsable?.service?.departement?.pole?.direction?.libelle}}/{{ interim?.responsable?.service?.departement?.pole?.libelle }}/{{ interim?.responsable?.service?.departement?.libelle }}/{{ interim?.responsable?.service?.libelle }}</button>
+                                            }
                                         }
-                                    }
-                                    @else if(interim?.responsable?.departement!=null){
-                                        @if(interim?.responsable?.departement?.pole?.libelle == 'N/A'){
-                                            <button  class="cursor-default">{{ interim?.responsable?.departement?.pole?.direction?.libelle}}/{{ interim?.responsable?.departement?.libelle }}</button>
-                                        }@else{
-                                        <button  class="cursor-default">{{ interim?.responsable?.departement?.pole?.direction?.libelle}}/{{ interim?.responsable?.departement?.pole?.libelle }}/{{ interim?.responsable?.departement?.libelle }}</button>
+                                        @else if(interim?.responsable?.departement!=null){
+                                            @if(interim?.responsable?.departement?.pole?.libelle == 'N/A'){
+                                                <button  class="cursor-default">{{ interim?.responsable?.departement?.pole?.direction?.libelle}}/{{ interim?.responsable?.departement?.libelle }}</button>
+                                            }@else{
+                                            <button  class="cursor-default">{{ interim?.responsable?.departement?.pole?.direction?.libelle}}/{{ interim?.responsable?.departement?.pole?.libelle }}/{{ interim?.responsable?.departement?.libelle }}</button>
+                                            }
                                         }
-                                    }
-                                    @else if(interim?.responsable?.pole!=null){
-                                        @if(interim?.responsable?.pole?.libelle == 'N/A'){
-                                            <button  class="cursor-default">{{ interim?.responsable?.pole?.direction?.libelle}}</button>
-                                        }@else{
-                                        <button  class="cursor-default">{{ interim?.responsable?.pole?.direction?.libelle}}/{{ interim?.responsable?.pole?.libelle }}</button>
-                                        } 
-                                    }
-                                    @else if(interim?.responsable?.direction!=null){                     
-                                            <button  class="cursor-default" >{{ interim?.responsable?.direction?.libelle}}</button>        
-                                    }  
-                                </td>
-                                <td class="ng-wind-data-item text-center ">
-                                    @if(interim?.etat=="en cours"){
-                                        <button class ="tooltip relative w-5 h-5 cursor-default ">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="text-green-600" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="currentColor" d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>
-                                            <span class="bg-green-600 tooltip-text ">En cours</span>
-                                        </button>                   
-                                    }
-                                    @if(interim?.etat==="terminer"){
-                                        <button class="tooltip relative w-5 h-5 cursor-default" >
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path  d="M432 256c0 17.7-14.3 32-32 32L48 288c-17.7 0-32-14.3-32-32s14.3-32 32-32l352 0c17.7 0 32 14.3 32 32z"/></svg>
-                                            <span class="tooltip-text">Terminer</span>
-                                        </button>
-                                    }
-                                    @if(interim?.etat == "rompre"){
-                                        <button class="tooltip relative w-5 h-5 cursor-default" >
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="text-red-500"  viewBox="0 0 384 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="currentColor" d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/></svg>
-                                            <span class="tooltip-text">Rompu</span>
-                                        </button>
-                                    }
-                                </td>
-                              <td class="ng-wind-data-item  text-center space-x-7">
-                                <button class="tooltip relative w-7 h-7 " >
-                                    <svg xmlns="http://www.w3.org/2000/svg"   (click)="openModal(interim)" class="  text-info hover:text-info-800" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="currentColor" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM216 336h24V272H216c-13.3 0-24-10.7-24-24s10.7-24 24-24h48c13.3 0 24 10.7 24 24v88h8c13.3 0 24 10.7 24 24s-10.7 24-24 24H216c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-208a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"/>
-                                    </svg>
-                                <span class="tooltip-text">Détails</span>
-                                </button>
-                               @if(activeKangourou==""){
-                                @if(interim?.etat =="en cours"){
+                                        @else if(interim?.responsable?.pole!=null){
+                                            @if(interim?.responsable?.pole?.libelle == 'N/A'){
+                                                <button  class="cursor-default">{{ interim?.responsable?.pole?.direction?.libelle}}</button>
+                                            }@else{
+                                            <button  class="cursor-default">{{ interim?.responsable?.pole?.direction?.libelle}}/{{ interim?.responsable?.pole?.libelle }}</button>
+                                            } 
+                                        }
+                                        @else if(interim?.responsable?.direction!=null){                     
+                                                <button  class="cursor-default" >{{ interim?.responsable?.direction?.libelle}}</button>        
+                                        }  
+                                    </td>
+                                    <td class="ng-wind-data-item text-center ">
+                                        @if(interim?.etat=="en cours"){
+                                            <button class ="tooltip relative w-5 h-5 cursor-default ">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="text-green-600" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="currentColor" d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>
+                                                <span class="bg-green-600 tooltip-text ">En cours</span>
+                                            </button>                   
+                                        }
+                                        @if(interim?.etat==="terminer"){
+                                            <button class="tooltip relative w-5 h-5 cursor-default" >
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path  d="M432 256c0 17.7-14.3 32-32 32L48 288c-17.7 0-32-14.3-32-32s14.3-32 32-32l352 0c17.7 0 32 14.3 32 32z"/></svg>
+                                                <span class="tooltip-text">Terminer</span>
+                                            </button>
+                                        }
+                                        @if(interim?.etat == "rompre"){
+                                            <button class="tooltip relative w-5 h-5 cursor-default" >
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="text-red-500"  viewBox="0 0 384 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="currentColor" d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/></svg>
+                                                <span class="tooltip-text">Rompu</span>
+                                            </button>
+                                        }
+                                    </td>
+                                  <td class="ng-wind-data-item  text-center space-x-7">
                                     <button class="tooltip relative w-7 h-7 " >
-                                        <svg xmlns="http://www.w3.org/2000/svg" (click)="rompre(interim)" class=" text-red-600 hover:text-red-700" viewBox="0 0 384 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="currentColor" d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/></svg>
-                                        <!-- <svg xmlns="http://www.w3.org/2000/svg"  (click)="rompre(interim)" class=" text-red-600 hover:text-red-900" viewBox="0 0 384 512">!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.<path fill="currentColor" d="M376.6 84.5c11.3-13.6 9.5-33.8-4.1-45.1s-33.8-9.5-45.1 4.1L192 206 56.6 43.5C45.3 29.9 25.1 28.1 11.5 39.4S-3.9 70.9 7.4 84.5L150.3 256 7.4 427.5c-11.3 13.6-9.5 33.8 4.1 45.1s33.8 9.5 45.1-4.1L192 306 327.4 468.5c11.3 13.6 31.5 15.4 45.1 4.1s15.4-31.5 4.1-45.1L233.7 256 376.6 84.5z"/></svg> -->
-                                        <span class="tooltip-text">Rompre</span>
+                                        <svg xmlns="http://www.w3.org/2000/svg"   (click)="openModal(interim)" class="  text-info hover:text-info-800" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="currentColor" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM216 336h24V272H216c-13.3 0-24-10.7-24-24s10.7-24 24-24h48c13.3 0 24 10.7 24 24v88h8c13.3 0 24 10.7 24 24s-10.7 24-24 24H216c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-208a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"/>
+                                        </svg>
+                                    <span class="tooltip-text">Détails</span>
                                     </button>
-                                }
-                                @if(interim?.etat === "rompre" || interim?.etat === "terminer")
-                                {
-                                    <button class ="tooltip relative w-7 h-7  ">
-                                        <svg xmlns="http://www.w3.org/2000/svg" (click)="renouveler(interim)" class="text-green-600" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="currentColor" d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>
-                                        <span class="tooltip-text">Renouveler</span>
+                                    @if(activeKangourou){
+                                        <button class="tooltip relative w-7 h-7 ">
+                                            <svg xmlns="http://www.w3.org/2000/svg" (click)="remplacer()" class="text-cyan-700" viewBox="0 0 512 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="currentColor" d="M32 96l320 0 0-64c0-12.9 7.8-24.6 19.8-29.6s25.7-2.2 34.9 6.9l96 96c6 6 9.4 14.1 9.4 22.6s-3.4 16.6-9.4 22.6l-96 96c-9.2 9.2-22.9 11.9-34.9 6.9s-19.8-16.6-19.8-29.6l0-64L32 160c-17.7 0-32-14.3-32-32s14.3-32 32-32zM480 352c17.7 0 32 14.3 32 32s-14.3 32-32 32l-320 0 0 64c0 12.9-7.8 24.6-19.8 29.6s-25.7 2.2-34.9-6.9l-96-96c-6-6-9.4-14.1-9.4-22.6s3.4-16.6 9.4-22.6l96-96c9.2-9.2 22.9-11.9 34.9-6.9s19.8 16.6 19.8 29.6l0 64 320 0z"/></svg>
+                                            <span class="tooltip-text">Remplacer</span>
+                                        </button>
+                                        <!-- <button  type="button" class="focus:outline-none text-white bg-cyan-700 hover:bg-cyan-800 focus:ring-4 focus:ring-cyan-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-cyan-600 dark:hover:bg-cyan-700 dark:focus:ring-cyan-900">Remplacer</button> -->
+                                    }
+                                   @if(activeKangourou==""){
+                                    @if(interim?.etat =="en cours"){
+                                        <button class="tooltip relative w-7 h-7 " >
+                                            <svg xmlns="http://www.w3.org/2000/svg" (click)="rompre(interim)" class=" text-red-600 hover:text-red-700" viewBox="0 0 384 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="currentColor" d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/></svg>
+                                            <!-- <svg xmlns="http://www.w3.org/2000/svg"  (click)="rompre(interim)" class=" text-red-600 hover:text-red-900" viewBox="0 0 384 512">!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.<path fill="currentColor" d="M376.6 84.5c11.3-13.6 9.5-33.8-4.1-45.1s-33.8-9.5-45.1 4.1L192 206 56.6 43.5C45.3 29.9 25.1 28.1 11.5 39.4S-3.9 70.9 7.4 84.5L150.3 256 7.4 427.5c-11.3 13.6-9.5 33.8 4.1 45.1s33.8 9.5 45.1-4.1L192 306 327.4 468.5c11.3 13.6 31.5 15.4 45.1 4.1s15.4-31.5 4.1-45.1L233.7 256 376.6 84.5z"/></svg> -->
+                                            <span class="tooltip-text">Rompre</span>
+                                        </button>
+                                    }
+                                    @if(interim?.etat === "rompre" || interim?.etat === "terminer")
+                                    {
+                                        <button class ="tooltip relative w-7 h-7  ">
+                                            <svg xmlns="http://www.w3.org/2000/svg" (click)="renouveler(interim)" class="text-green-600" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="currentColor" d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>
+                                            <span class="tooltip-text">Renouveler</span>
+                                        </button>
+                                    }
+                                    <button  class="tooltip relative w-7 h-7 " >
+                                        <svg xmlns="http://www.w3.org/2000/svg" (click)="editer(interim)" class=" text-blue-700 hover:text-blue-800" viewBox="0 0 640 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="currentColor" d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512H322.8c-3.1-8.8-3.7-18.4-1.4-27.8l15-60.1c2.8-11.3 8.6-21.5 16.8-29.7l40.3-40.3c-32.1-31-75.7-50.1-123.9-50.1H178.3zm435.5-68.3c-15.6-15.6-40.9-15.6-56.6 0l-29.4 29.4 71 71 29.4-29.4c15.6-15.6 15.6-40.9 0-56.6l-14.4-14.4zM375.9 417c-4.1 4.1-7 9.2-8.4 14.9l-15 60.1c-1.4 5.5 .2 11.2 4.2 15.2s9.7 5.6 15.2 4.2l60.1-15c5.6-1.4 10.8-4.3 14.9-8.4L576.1 358.7l-71-71L375.9 417z"/></svg>
+                                        <span class="tooltip-text">Editer</span>
                                     </button>
-                                }
-                                <button  class="tooltip relative w-7 h-7 " >
-                                    <svg xmlns="http://www.w3.org/2000/svg" (click)="editer(interim)" class=" text-blue-700 hover:text-blue-800" viewBox="0 0 640 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="currentColor" d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512H322.8c-3.1-8.8-3.7-18.4-1.4-27.8l15-60.1c2.8-11.3 8.6-21.5 16.8-29.7l40.3-40.3c-32.1-31-75.7-50.1-123.9-50.1H178.3zm435.5-68.3c-15.6-15.6-40.9-15.6-56.6 0l-29.4 29.4 71 71 29.4-29.4c15.6-15.6 15.6-40.9 0-56.6l-14.4-14.4zM375.9 417c-4.1 4.1-7 9.2-8.4 14.9l-15 60.1c-1.4 5.5 .2 11.2 4.2 15.2s9.7 5.6 15.2 4.2l60.1-15c5.6-1.4 10.8-4.3 14.9-8.4L576.1 358.7l-71-71L375.9 417z"/></svg>
-                                    <span class="tooltip-text">Editer</span>
-                                </button>
+                                   }
+                                  </td>
+                               </tr>
                                }
-                              </td>
-                           </tr>
-                           }
-                        </tbody>
+                            </tbody>
+                            }
+                         </table>
+                      </div>
+                   </div>
+                   <nav class="ng-wind-table-pagination mt-5 flex justify-between items-center" aria-label="Table navigation">
+                    <div class="ng-wind-table-page-view flex items-center">
+                      Lignes par page:
+                       <div class="mx-2">
+                            <select (click)="PageTailleChange($event)" id="states" class="block w-full rounded-sm bg-gray-100 p-1 text-xs text-gray-900">
+                                <option value="3">3</option>
+                                <option value="6">6</option>
+                                <option value="9">9</option>
+                                <option value="10">10</option>
+                                <option value="20">20</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                                <option value="tous">all</option>
+                            </select>
+                        </div>
+                      <!-- <div class="mx-2">
+                        <select  id="states" class="block w-full rounded-sm bg-gray-100 p-1 text-xs text-gray-900">
+                        <option value="3">3</option>
+                        <option value="6">6</option>
+                        <option value="8">8</option>
+                        <option value="10">10</option>
+                        <option value="20">20</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                        <option value="200">200</option>
+                        <option value="300">300</option>
+                        <option value="400">400</option>
+                        </select>
+                      </div> -->
+                      <span class="me-1 ms-4 font-semibold text-gray-900">{{ currentPage }}</span> /
+                      <span class="ms-1 font-semibold text-gray-900">{{ totalPages.length }}</span>&nbsp; sur <span class="text-gray-900">&nbsp; {{ total }}</span>
+                    </div>
+                    <ul class="inline-flex h-8 -space-x-px text-xs rtl:space-x-reverse">
+                        <li>
+                           <a (click)="prevPage()" class="cursor-pointer ng-wind-page-prev">
+                              Précédent
+                           </a>
+                        </li>
+                        @for ( page of totalPages;track page){
+                        <li  [class.activate]="page==currentPage">
+                           <a (click)="selectPage(page)" aria-current="page" [ngClass]="page == currentPage ? 'active-page' : 'bg-white hover:bg-gray-100' "
+                              class="page-number cursor-pointer">
+                              {{page}}
+                           </a>
+                        </li>
                         }
-                     </table>
-                  </div>
-               </div>
-               <nav class="ng-wind-table-pagination mt-5 flex justify-between items-center" aria-label="Table navigation">
-                <div class="ng-wind-table-page-view flex items-center">
-                  Lignes par page:
-                  <div class="mx-2">
-                    <select  (change)="PageTailleChange($event)" id="states" class="block w-full rounded-sm bg-gray-100 p-1 text-xs text-gray-900">
-                    <option value="3">3</option>
-                    <option value="6">6</option>
-                    <option value="8">8</option>
-                    <option value="10">10</option>
-                    <option value="20">20</option>
-                    <option value="50">50</option>
-                    <option value="100">100</option>
-                    <option value="200">200</option>
-                    <option value="300">300</option>
-                    <option value="400">400</option>
-                    </select>
-                  </div>
-                  <span class="me-1 ms-4 font-semibold text-gray-900">{{ currentPage }}</span> /
-                  <span class="ms-1 font-semibold text-gray-900">{{ totalPages.length }}</span>
+                        <li>
+                           <a (click)="nextPage()" class="ng-wind-page-next cursor-pointer">Suivant</a>
+                        </li>
+                     </ul>
+                  </nav>
                 </div>
-                <ul class="inline-flex h-8 -space-x-px mt-2 text-xs rtl:space-x-reverse">
-                  <li>
-                    <a  (click)="prevPage()" class="ng-wind-page-prev cursor-pointer bg-gray-200 px-3 py-1 rounded-l-md">Précédent</a>
-                  </li>
-                  <!-- Loop through pages dynamically -->
-                  <li *ngFor="let page of totalPages" [class.activate]="page===currentPage">
-                    <a (click)="selectPage(page)" class="ng-wind-page cursor-pointer  bg-gray-200 px-3 py-1">{{ page }}</a>
-                  </li>
-                  <li>
-                    <a   (click)="nextPage()" id="aziz"  class="ng-wind-page-next cursor-pointer bg-gray-200 px-3 py-1 rounded-r-md">Suivant</a>
-                  </li>
-                </ul>
-              </nav>
-            </div>
-         </div>
-    </section>
+             </div>
+        </section>
+    }
  
     <!-- Example Modal -->
 </div>

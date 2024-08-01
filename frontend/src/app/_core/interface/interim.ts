@@ -20,6 +20,7 @@ export interface Interim{
     poste:Poste
     statut:Role
     responsable:Permanent
+    locau:Role
 }
 export interface Contrat{
     id:number
@@ -65,6 +66,7 @@ export interface pagination{
     page:number
     taille:number
     total:number
+    derniere_page:number
 }
 export interface Service{
     id:number

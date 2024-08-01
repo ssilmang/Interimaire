@@ -60,7 +60,7 @@ Route::get('/data', function () {
 
 Route::post('login',[UserController::class,'login']);
 Route::post('/user',[UserController::class,'store']);
-
+// Route::get('/export/{permanent}/{prestataire}/{interim}',[UserController::class,'export']);
 Route::middleware('auth:sanctum')->prefix('Interim')->group(function()
 {
     Route::get('/user', function (Request $request) 
@@ -91,13 +91,13 @@ Route::middleware('auth:sanctum')->prefix('Interim')->group(function()
     Route::controller(PermanentController::class)->group(function()
     {
         Route::post('permanent/{id?}/{idProfile?}/{upload?}/{contrat_id?}','store');
-        Route::get('index/permanents/{id}','index');
+        Route::get('index/permanents/{id}/{index?}/{page?}','index');
         Route::get('dv','getPermanent');
         Route::post('import/employeur','import');
     });
     Route::controller(PrestataireController::class)->group(function()
     {
-        Route::get('index/prestataire','index');
+        Route::get('index/prestataire/{index?}/{page?}','index');
     }); 
     Route::controller(DepartementController::class)->group(function()
     {
@@ -130,6 +130,7 @@ Route::middleware('auth:sanctum')->prefix('Interim')->group(function()
         Route::put('contratRompre/{id}','rompreAnnuler');
         Route::get('interim/finContrat/{index?}/{page?}','finContrat');
         Route::get('processusKangourou/{index?}/{page?}','processusKangourou');
+        Route::post('interim/remplacer/{user}','remplacement');
     });   
     Route::controller(RemplacementsController::class)->group(function()
     {

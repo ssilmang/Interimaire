@@ -1,5 +1,5 @@
 import {Injectable, OnInit} from "@angular/core";
-import { BehaviorSubject } from "rxjs";
+import { BehaviorSubject, Subject } from "rxjs";
 import { InterimService } from "src/app/_core/services/interim.service";
 import { PermanentService } from "src/app/_core/services/permanent.service";
 
@@ -15,6 +15,10 @@ export class LocalStorageService implements OnInit{
   currentLogout = this.Logout.asObservable();
   private Export = new BehaviorSubject<any>(null)
   currentExport = this.Export.asObservable();
+  private openModal = new Subject<string>();
+  openModal$ = this.openModal.asObservable();
+  private paginate = new BehaviorSubject<any>(null);
+  currentPaginate = this.paginate.asObservable();
 
   ngOnInit(): void {
     
@@ -76,6 +80,12 @@ export class LocalStorageService implements OnInit{
         console.error('Error downloading the file', err);
       }
      });
+  }
+  clickIci(value:string){
+    this.openModal.next(value);
+  }
+  chargePaginate(value:any){
+    this.paginate.next(value);
   }
 }
 

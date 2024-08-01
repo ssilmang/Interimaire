@@ -5,12 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class remplacement extends Model
+class Remplacer extends Model
 {
     use HasFactory;
-
-    protected $fillable = [
-        'contrat_id',
-        'statut'
-        ];
+    protected $guarded = [];
+    public function profile()
+    {
+        return $this->belongsTo(Profile::class);
+    }
 }

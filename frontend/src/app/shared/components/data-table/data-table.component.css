@@ -1,7 +1,7 @@
 /* sticky table */
 .data-table {
   & .table-container {
-    height: 355px;
+    
     max-height: 412px;
     overflow: auto;
     overflow-x: hidden;
@@ -47,10 +47,10 @@
   @apply text-xs text-gray-700 uppercase bg-gray-50 z-50;
 }
 .ng-wind-header-item {
-  @apply px-4 py-3;
+  @apply px-4 py-2;
 }
 .ng-wind-data-item {
-  @apply px-4 py-3;
+  @apply px-4 py-2;
 }
 
 /* pagination */
@@ -110,4 +110,26 @@
 .tooltip:hover .tooltip-text {
   visibility: visible;
   opacity: 1;
+}
+.active{
+  border-bottom: 4px solid rgb(120, 25, 187);
+  color: #f97316;
+  
+}
+.activate{
+  border-bottom: 4px solid #f97316;
+  color: #f97316;
+  
+}
+.activate:hover{
+  transition-duration: 300ms;
+}
+
+.activate:hover {
+  transform: scale(1.1);
+ 
+}
+.custom-mat-field{
+  width: 90px;
+  height: 60px;
 }

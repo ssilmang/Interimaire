@@ -13,7 +13,7 @@ import { EventsComponent } from './views/events/events.component';
 import { TestComponent } from './views/events/test/test.component';
 import { ProfileComponent } from './views/settings/profile/profile.component';
 import { UsersComponent } from './views/settings/users/users.component';
-import { PermanentComponent } from './views/permanent/permanent.component';
+
 import { AdminDataPrestataireComponent } from './views/elements/data-prestataire/data-prestataire.component';
 import { ImportExcelComponent } from './views/elements/import-excel/import-excel.component';
 import { DashChartComponent } from './dash-chart/dash-chart.component';
@@ -30,11 +30,7 @@ const routes: Routes = [
     path: AdminRoutes.Interimaire,
     component: DashboardComponent,
   },
-  {
-    title: 'Permanent',
-    path: AdminRoutes.Permanent,
-    component: PermanentComponent,
-  },
+ 
   {
     title: 'Events',
     path: AdminRoutes.Events,

@@ -11,9 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('postes', function (Blueprint $table) {
-            $table->string('date_debut')->nullable();
-            $table->string('date_fin')->nullable();
+        Schema::create('remplacers', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('remplacer_id')->constrained('profiles')->cascadeOnDelete();
+            $table->foreignId('remplacant')->constrained('profiles')->cascadeOnDelete();
+            $table->timestamps();
         });
     }
 
@@ -22,8 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('postes', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('remplacers');
     }
 };
