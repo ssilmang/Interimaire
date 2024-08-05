@@ -9,8 +9,12 @@ class Remplacer extends Model
 {
     use HasFactory;
     protected $guarded = [];
-    public function profile()
+    public function profileRemplacer()
     {
-        return $this->belongsTo(Profile::class);
+        return $this->belongsTo(Profile::class,"remplacer_id");
+    }
+    public function profileRemplacant()
+    {
+        return $this->belongsTo(Profile::class,"remplacant");
     }
 }

@@ -1,9 +1,9 @@
 import { CommonModule, formatDate } from '@angular/common';
-import { AfterViewInit, ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, OnInit, ViewChild, inject } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
 import { Chart, registerables } from 'chart.js';
 import { Images } from 'docs/assets/data/images';
-import { Agence, Interim, RequestRompre } from 'src/app/_core/interface/interim';
+import { Agence, DataRemplacer, ELEMENT_DATA, Interim, PeriodicElement, RequestRompre } from 'src/app/_core/interface/interim';
 import { InterimService } from 'src/app/_core/services/interim.service';
 import { AlertComponent } from 'src/app/shared/components/alert/alert.component';
 import { ModalComponent } from 'src/app/shared/components/modal/modal.component';
@@ -19,12 +19,15 @@ import * as  XLSX from 'xlsx';
 import * as XLSXStyle from 'xlsx-style';
 import { MatInputModule } from '@angular/material/input';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { map, Observable, startWith } from 'rxjs';
+import { from, map, Observable, startWith } from 'rxjs';
 import {Dialog,DialogModule,DialogRef} from '@angular/cdk/dialog';
 import { DialogExprtComponent } from '../dialog/dialog-exprt/dialog-exprt.component';
 import { RechercherLibellePipe } from '../../pipe/rechercher-libelle.pipe';
 import { MatDialog } from '@angular/material/dialog';
 import { DiolagRemplacementComponent } from '../dialog/diolag-remplacement/diolag-remplacement.component';
+import {CdkDragDrop,CdkDropList ,CdkDrag, moveItemInArray} from '@angular/cdk/drag-drop'
+import { MatTableModule,MatTable} from '@angular/material/table'
+import {MatIconModule} from '@angular/material/icon'
 // import { ExcelService } from 'src/app/excel-service';
 Chart.register(...registerables);
 
@@ -42,7 +45,10 @@ Chart.register(...registerables);
     MatInputModule,
     DialogModule,
     RechercherLibellePipe,
-    
+    CdkDropList,
+     CdkDrag,
+      MatTableModule,
+       MatIconModule
     
   ],
   templateUrl: './dashboard.component.html',
@@ -101,6 +107,13 @@ export class DashboardComponent implements OnInit, AfterViewInit
   event:string="";
   libelle:string=''
   remplacement:string=''
+  numeroTelephone:string=""
+  numeroTelephonePro:string="";
+  dataRemplacer:DataRemplacer[]=[]
+  @ViewChild('table', {static: true}) table!: MatTable<DataRemplacer>;
+
+  displayedColumns: string[] = ['Prenom', 'Nom', 'Action', 'Prénom', 'nom'];
+  dataSource:DataRemplacer[] =[];
   constructor(
     private sharedService: LocalStorageService,
     private serve:PermanentService, 
@@ -150,7 +163,6 @@ export class DashboardComponent implements OnInit, AfterViewInit
         this.cdRef.detectChanges();
       }
     })
-    
    
     // var myChart = new Chart("areaWiseSale", {
     //   type: 'doughnut',
@@ -186,6 +198,14 @@ export class DashboardComponent implements OnInit, AfterViewInit
     // });
     this.index(this.taille,this.currentPage);
     this.allAgence();
+    this.indexRemplacer()
+    console.log(this.dataSource);
+  }
+  drop(event: CdkDragDrop<string>) {
+    const previousIndex = this.dataSource.findIndex(d => d === event.item.data);
+
+    moveItemInArray(this.dataSource, previousIndex, event.currentIndex);
+    this.table.renderRows();
   }
   private _filter(value: any): string[] {
     const filterValue = value.toLowerCase();
@@ -193,6 +213,7 @@ export class DashboardComponent implements OnInit, AfterViewInit
   }
   ngAfterViewInit=(): void=>
   {    
+console.log(this.activeFinContrat);
 
     if(this.activeFinContrat)
     { 
@@ -203,8 +224,14 @@ export class DashboardComponent implements OnInit, AfterViewInit
       this.Kangourou();
     }
     console.log(this.sharedService.openModal$);
+    console.log(this.remplacement);
     
-    
+    if(this.remplacement){
+      this.indexRemplacer();
+      this.dataSource= this.dataRemplacer
+    console.log(this.dataSource);
+     }
+    this.cdRef.detectChanges()
   }
   checkFormValidity() {
     if (this.formRompre.valid) {
@@ -288,6 +315,16 @@ export class DashboardComponent implements OnInit, AfterViewInit
         this.activeKangourou="";
         this.activeCours = "border-y-4 border-b-orange-600"
       })
+    })
+  }
+  indexRemplacer()
+  {
+    this.service.indexRemplacer().subscribe({
+      next:(response)=>{
+        this.dataRemplacer = response.data;
+        console.log(this.dataRemplacer);
+        
+      }
     })
   }
   allAgence()
@@ -792,10 +829,19 @@ export class DashboardComponent implements OnInit, AfterViewInit
 //   //   // Save to file
 //   //   XLSX.writeFile(wb, nomFichier +'.xlsx');
 // }
-  remplacer=()=>{
-      const dialogRef = this.dialogg.open(DiolagRemplacementComponent);
+  remplacer=(interim:Interim)=>{
+
+      const dialogRef = this.dialogg.open(DiolagRemplacementComponent,{
+        data:interim
+      });
       dialogRef.afterClosed().subscribe(result=>{
-        console.log(result);
+        const index = this.dataInterims.findIndex(ele => ele.id === this.id);
+        if (index !== -1) 
+        {                  
+          // this.dataInterims[index] = this.formRompre.value.date;
+          // this.dataInterims[index].motif = this.formRompre.value.motif;
+          this.dataInterims[index].etat = result.data.etat;           
+        } 
       })
   }
   remplacerContrat=()=>{
@@ -804,4 +850,29 @@ export class DashboardComponent implements OnInit, AfterViewInit
     this.activeKangourou=""
     this.remplacement='border-y-4 border-b-emerald-700'
   }
+  formatSpaces(number: number): string {
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+  }
+  numberSpace(event:Event):void
+  {
+    let value = (event.target as HTMLInputElement).value.trim().replace(/\s/g,'');
+    if(isNaN(parseInt(value))){
+      (event.target as HTMLInputElement).value =""
+    }else{
+      let formattedValue = this.formatSpaces(parseInt(value));
+      (event.target as HTMLInputElement).value = formattedValue;
+    }
+  }
+  getNumber(value: number|undefined): string 
+  {
+    if(value===undefined){
+      return '0'
+    }
+    if(value==null)
+      return '0'
+    return this.formatSpaces(value);
+  }
+ 
+
+
 }

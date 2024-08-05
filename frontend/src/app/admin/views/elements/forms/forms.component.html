@@ -220,7 +220,7 @@
                <div class="grid grid-cols-3 gap-x-5 col-span-1 mb-3">
                   <div class="form-group ">
                      <label for="telephone" class="form-label required"> Téléphone </label>
-                     <input type="text" formControlName="telephone" id="telephone" placeholder="772314567" class="form-control form-control-lg"
+                     <input type="text" (input)="getnum($event)" formControlName="telephone" id="telephone" placeholder="772314567" class="form-control form-control-lg"
                      [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('telephone')?.invalid &&(formPermanent.get('telephone')?.touched || formPermanent.get('telephone')?.dirty),
                      'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('telephone')?.valid &&(formPermanent.get('telephone')?.touched || formPermanent.get('telephone')?.dirty)}"
         
@@ -239,7 +239,7 @@
                   </div>
                   <div class="form-group">
                      <label for="telephone_pro" class="form-label "> Téléphone Pro </label>
-                     <input type="text" formControlName="telephone_pro" id="telephone_pro" placeholder="339865432" class="form-control form-control-lg" />
+                     <input type="text" (input)="getPro($event)" formControlName="telephone_pro" id="telephone_pro" placeholder="339865432" class="form-control form-control-lg" />
                   </div>       
                   <div class="form-group ">
                      <label for="adresse" class="form-label required"> Adresse </label>
@@ -923,7 +923,7 @@
                <div class="max-w-screen-md ">
                   <label for="statut" class="form-label">
                   </label>
-                  <input type="number" min="0" formControlName="temps_presence_autre_structure_sonatel" id="telepe_pro" placeholder="3" class="form-control form-control-lg w-32"
+                  <input type="text" min="0" (input)="numberSpace($event)" formControlName="temps_presence_autre_structure_sonatel" id="telepe_pro" placeholder="3" class="form-control form-control-lg w-32"
                   [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('temps_presence_autre_structure_sonatel')?.invalid &&(formPermanent.get('temps_presence_autre_structure_sonatel')?.touched || formPermanent.get('temps_presence_autre_structure_sonatel')?.dirty),
                   'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('temps_presence_autre_structure_sonatel')?.valid &&(formPermanent.get('temps_presence_autre_structure_sonatel')?.touched || formPermanent.get('temps_presence_autre_structure_sonatel')?.dirty)}"  
                   />
@@ -937,7 +937,7 @@
                <div class="max-w-screen-md">
                   <label for="statut" class="form-label">
                   </label>
-                  <input type="number" min="0" formControlName="DA" id="DA" placeholder="65432" class="form-control form-control-lg px-2"
+                  <input type="text" min="0"  (input)="numberSpace($event)" formControlName="DA" id="DA" placeholder="65432" class="form-control form-control-lg px-2"
                   [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('DA')?.invalid &&(formPermanent.get('DA')?.touched || formPermanent.get('DA')?.dirty),
                   'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('DA')?.valid &&(formPermanent.get('DA')?.touched || formPermanent.get('DA')?.dirty)}"  
                   />
@@ -945,7 +945,7 @@
                <div class="max-w-screen-md">
                   <label for="statut" class="form-label">
                   </label>
-                  <input type="number" min="0" formControlName="DA_kangourou" id="DA_kangourou" placeholder="65432" class="form-control form-control-lg" 
+                  <input type="text"  (input)="numberSpace($event)" min="0" formControlName="DA_kangourou" id="DA_kangourou" placeholder="65432" class="form-control form-control-lg" 
                   [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('DA_kangourou')?.invalid &&(formPermanent.get('DA_kangourou')?.touched || formPermanent.get('DA_kangourou')?.dirty),
                   'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('DA_kangourou')?.valid &&(formPermanent.get('DA_kangourou')?.touched || formPermanent.get('DA_kangourou')?.dirty)}"  
                   />

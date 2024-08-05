@@ -21,6 +21,7 @@ use App\Http\Controllers\PoleController;
 use App\Http\Controllers\PosteController;
 use App\Http\Controllers\PrestataireController;
 use App\Http\Controllers\RemplacementsController;
+use App\Http\Controllers\RemplacerController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\StatutController;
 
@@ -132,9 +133,9 @@ Route::middleware('auth:sanctum')->prefix('Interim')->group(function()
         Route::get('processusKangourou/{index?}/{page?}','processusKangourou');
         Route::post('interim/remplacer/{user}','remplacement');
     });   
-    Route::controller(RemplacementsController::class)->group(function()
+    Route::controller(RemplacerController::class)->group(function()
     {
-        Route::post('/remplacements',"store");
+        Route::get('/remplacements',"index");
     });
     Route::controller(StatutController::class)->group(function()
     {

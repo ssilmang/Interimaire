@@ -82,7 +82,7 @@ class HeriteController extends Controller
                       'nom'=>'required|string',
                       'matricule'=>'required|string|unique:profiles,matricule',
                       'email'=>'required|unique:profiles,email',
-                      'telephone'=>['required','string','regex:/^(77|76|78|70|75)\d{7}$/','unique:profiles,telephone'],
+                      'telephone'=>['required','regex:/^(77|76|78|70|75)\d{7}$/','unique:profiles,telephone'],
                   ]);
                   $profile = Profile::firstOrCreate([
                       'nom'=>$request->nom,

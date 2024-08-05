@@ -10,6 +10,7 @@ use App\Models\Interim;
 use App\Models\Poste;
 use App\Models\Profile;
 use App\Models\Remplacer;
+use App\Models\Statut;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -120,40 +121,40 @@ class InterimController extends Controller
                             "statut"=>Response::HTTP_BAD_REQUEST,
                             "message"=>"le contrat est supérieur à deux ans; invalide!!!",
                             ]);
-                            }
-                            $temps_presence_structure_actuel = 0;
-                            $temps_presence_total = $request->temps_presence_autre_structure_sonatel;
-                            $categorie = Categorie::where('id',$request->categorieInterim)->first();  
-                            $interim = new Interim();
-                            $interim->statut_id = $statut['id'];
-                            $interim->profile_id = $profile->id;
-                            $interim->categorie_id = $categorie->id;
-                            $interim->responsable_id = $request->responsable;
-                            $interim->poste_id = $poste->id;
-                            $interim->save();
-                            $message ="Contrat ajouter avec succès";        
-                            $cout_mensuel = $categorie->cout_unitaire_journalier *30;
-                            $cout_global = $cout_mensuel * $duree_contrat;
-                            $contrat = Contrat::createOrUpdate([
-                                'interim_id' => $interim->id,
-                                'date_debut_contrat' => $request->date_debut_contrat,
-                                'date_fin_contrat' => $request->date_fin_contrat,
-                                'temps_presence_autre_structure_sonatel' => $request->temps_presence_autre_structure_sonatel,
-                                'temps_presence_structure_actuel'=>$temps_presence_structure_actuel,
-                                'cumul_presence_sonatel' => $temps_presence_total,
-                                'duree_contrat' => $duree_contrat,
-                                'duree_contrat_restant' => $duree_contrat,
-                                'cout_mensuel' => $cout_mensuel,
-                                'cout_global' => $cout_global,
-                                'DA' => $request->DA?$request->DA:0,
-                                'DA_kangurou' => $request->DA_kangourou?$request->DA_kangourou:0,
-                                'commentaire' => $request->commentaire,
-                            ]);
-                            return response()->json([
-                                'statut'=>Response::HTTP_OK,
-                                'message'=>$message,
-                                'data'=>$contrat,
-                            ]);
+                    }
+                    $temps_presence_structure_actuel = 0;
+                    $temps_presence_total = $request->temps_presence_autre_structure_sonatel;
+                    $categorie = Categorie::where('id',$request->categorieInterim)->first();  
+                    $interim = new Interim();
+                    $interim->statut_id = $statut['id'];
+                    $interim->profile_id = $profile->id;
+                    $interim->categorie_id = $categorie->id;
+                    $interim->responsable_id = $request->responsable;
+                    $interim->poste_id = $poste->id;
+                    $interim->save();
+                    $message ="Contrat ajouter avec succès";        
+                    $cout_mensuel = $categorie->cout_unitaire_journalier *30;
+                    $cout_global = $cout_mensuel * $duree_contrat;
+                    $contrat = Contrat::createOrUpdate([
+                        'interim_id' => $interim->id,
+                        'date_debut_contrat' => $request->date_debut_contrat,
+                        'date_fin_contrat' => $request->date_fin_contrat,
+                        'temps_presence_autre_structure_sonatel' => $request->temps_presence_autre_structure_sonatel,
+                        'temps_presence_structure_actuel'=>$temps_presence_structure_actuel,
+                        'cumul_presence_sonatel' => $temps_presence_total,
+                        'duree_contrat' => $duree_contrat,
+                        'duree_contrat_restant' => $duree_contrat,
+                        'cout_mensuel' => $cout_mensuel,
+                        'cout_global' => $cout_global,
+                        'DA' => $request->DA?$request->DA:0,
+                        'DA_kangurou' => $request->DA_kangourou?$request->DA_kangourou:0,
+                        'commentaire' => $request->commentaire,
+                    ]);
+                    return response()->json([
+                        'statut'=>Response::HTTP_OK,
+                        'message'=>$message,
+                        'data'=>$contrat,
+                    ]);
                 }
             });
         }catch(QueryException $e)
@@ -361,9 +362,9 @@ class InterimController extends Controller
             return DB::transaction(function() use($request,$user)
             {
                 $userProfile = Profile::find($user);
-                if($userProfile->exists)
+                if($userProfile)
                 {
-                    $interimaire = Interim::where('interim_id',$userProfile->id)->first();
+                    $interimaire = Interim::where('profile_id',$userProfile->id)->first();
                     if($interimaire->etat==="en cours")
                     {
                         $contrat = Contrat::where('interim_id',$interimaire->id)->where('etat',0)->orderBy('date_debut_contrat','desc')->first();
@@ -381,16 +382,16 @@ class InterimController extends Controller
                                     $file->move('uploads/Interims/',$filename);
                                 }
                                 $profile =  $this->controller->UserProfile($request,$photo);
-                                $statut = $interimaire->statut_id;
+                                $statut = Statut::find($interimaire->statut_id);
                                 $int = $this->store($request,$statut,$profile);
                                 if($int)
                                 {
-                                    $interimaire->update(['etat'=>'remplacer']);
-                                    $remplace = Remplacer::createOrUpdate([
+                                    Interim::find($interimaire->id)->update(['etat'=>'remplacer']);
+                                    $remplace = Remplacer::create([
                                         'remplacer_id'=>$userProfile->id,
-                                        'remplacement_id'=>$profile->id,
+                                        'remplacant'=>$profile->id,
                                     ]);
-                                    return $int;
+                                    return $this->controller->responseController->response(Response::HTTP_OK,'Vous avez remplacer l\'interimaire avec succès',$remplace);
                                 }
                             }
                             return $this->controller->responseController->response(Response::HTTP_ACCEPTED,'il n\'est pas dans le processus de kangourou',$interimaire); 

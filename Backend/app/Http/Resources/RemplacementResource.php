@@ -16,8 +16,8 @@ class RemplacementResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'contrat_id' => $this->contrat_id,
-            'statut' => $this->statut,
+            'remplacer'=>ProfileResource::make($this->profileRemplacer),
+            'remplacant'=>ProfileResource::make($this->profileRemplacant)
         ];
     }
 }

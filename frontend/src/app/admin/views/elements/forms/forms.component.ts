@@ -74,6 +74,8 @@ export class FormsComponent implements AfterViewInit,OnInit
   close:boolean = false;
   visible:boolean =false;
   kangourou:boolean = false;
+  numeroTelephone:string="";
+  numeroTelephonePro:string='';
   @ViewChild('checkboxRef',{static:false}) checkboxRef!:ElementRef<HTMLInputElement>;
   constructor(private sharedService:LocalStorageService,private cdRef:ChangeDetectorRef ){
     this.formPermanent = this.fb.group({
@@ -426,6 +428,68 @@ export class FormsComponent implements AfterViewInit,OnInit
       }
       reader.readAsDataURL(image.files[0]);
     }
+  }
+  formatSpaces(number: number): string {
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+  }
+  numberSpace(event:Event):void
+  {
+    let value = (event.target as HTMLInputElement).value.trim().replace(/\s/g,'');
+    if(isNaN(parseInt(value))){
+      (event.target as HTMLInputElement).value =""
+    }else{
+      let formattedValue = this.formatSpaces(parseInt(value));
+      (event.target as HTMLInputElement).value = formattedValue;
+    }
+  }
+  getNumber(value: number|undefined): string 
+  {
+    if(value===undefined){
+      return '0'
+    }
+    if(value==null)
+      return '0'
+    return this.formatSpaces(value);
+  }
+  getPro(event:Event)
+  {
+    let inputElement = (event.target as HTMLInputElement);
+    let value = inputElement.value.replace(/[\s.-]/g, '');
+    value = value.replace(/\D/g,'');
+    this.format(value,/^(33)\d{7}$/,inputElement,this.numeroTelephonePro);
+  }
+  getnum(event: Event): void 
+  {
+    let inputElement = (event.target as HTMLInputElement);
+    let value = inputElement.value.replace(/[\s.-]/g, '');
+    value = value.replace(/\D/g, '');
+   this.format(value,/^(77|78|76|70|75)\d{7}$/,inputElement,this.numeroTelephone);
+  }
+  format(value:string,caract:RegExp,inputElement:HTMLInputElement,numeroTelephone:string)
+  {
+    if(isNaN(parseInt(value)))
+    {
+      inputElement.value =""
+      return
+    }  
+      if(value.length<=9)
+      {
+        if (caract.test(value))
+        {
+          const formattedNumber = value.replace(/(\d{2})(\d{3})(\d{2})(\d{2})/, '$1 $2 $3 $4');
+          inputElement.value = formattedNumber;
+        }else 
+        {  
+           inputElement.value =value  
+        }
+      }else
+      {
+        inputElement.value = value.slice(0,9).replace(/(\d{2})(\d{3})(\d{2})(\d{2})/, '$1 $2 $3 $4');
+      }
+      if(value.length===9)
+      {
+      numeroTelephone=value;
+      }
   }
   enregistrer()
   {

@@ -1,9 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { DataInterim, Interim, RequestRompre, Response } from '../interface/interim';
+import { DataInterim, DataRemplacer, Interim, RequestRompre, Response } from '../interface/interim';
 import { environment } from 'src/environments/environment';
 import { Observable } from 'rxjs';
-import { Profile } from '../interface/permanent';
+import { Profile, RequestPermanent } from '../interface/permanent';
 
 @Injectable({
   providedIn: 'root'
@@ -34,5 +34,13 @@ export class InterimService {
   export(permanent:string,prestataire:string,interim:string): Observable<Blob>
   {
     return this._http.get(`${environment.apiUrl}export/${permanent}/${prestataire}/${interim}`,{ responseType: 'blob' });
+  }
+  remplacer(data:FormData,user:number):Observable<Response<RequestPermanent>>
+  {
+    return this._http.post<Response<RequestPermanent>>(`${environment.apiUrl}interim/remplacer/${user}`,data)
+  }
+  indexRemplacer():Observable<Response<DataRemplacer[]>>
+  {
+    return this._http.get<Response<DataRemplacer[]>>(`${environment.apiUrl}remplacements`);
   }
 }

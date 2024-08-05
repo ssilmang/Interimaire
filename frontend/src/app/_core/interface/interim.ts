@@ -155,3 +155,24 @@ export interface UserToken{
     token:string
     user:User
 }
+
+export interface PeriodicElement {
+    name: string;
+    position: number;
+    weight: number;
+    symbol: string;
+    quantity: number;
+  }
+
+ export const ELEMENT_DATA: PeriodicElement[] = [
+    {position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H', quantity: 100},
+    {position: 2, name: 'Helium', weight: 4.0026, symbol: 'He', quantity: 100},
+    {position: 3, name: 'Lithium', weight: 6.941, symbol: 'Li', quantity: 100},
+    {position: 4, name: 'Beryllium', weight: 9.0122, symbol: 'Be', quantity: 100},
+  ];
+
+export interface DataRemplacer{
+    id:number
+    remplacer:Profile
+    remplacant:Profile
+}
