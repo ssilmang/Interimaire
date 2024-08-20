@@ -12,7 +12,7 @@ export interface DataPermanent{
 export interface Permanent{
     id:number
     profile:Profile
-    status:boolean
+    etat:boolean
     poste:Poste
     canal:Role
     statut:Role
@@ -82,4 +82,9 @@ export interface RequestPermanent{
 export interface DataPrestataire{
     prestataires:Permanent[]
     pagination:pagination
+}
+export interface RequestSupprimer{
+    date:string
+    motif:string
+    commentaire:string
 }

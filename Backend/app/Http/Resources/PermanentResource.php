@@ -18,6 +18,7 @@ class PermanentResource extends JsonResource
             'id'=>$this->id,
             'profile'=>ProfileResource::make($this->profile),
             'poste'=>PosteResource::make($this->poste),
+            'etat'=>$this->etat?true:false,
             'canal'=>RoleResource::make($this->canal),
             'statut'=>RoleResource::make($this->statut),
             'groupe'=>RoleResource::make($this->groupe),

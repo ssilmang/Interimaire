@@ -1,10 +1,10 @@
 import { CommonModule, NgClass, NgIf } from '@angular/common';
-import { Component, Input, OnInit, inject } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, computed, inject, signal } from '@angular/core';
 import { DataPermanent, Permanent } from 'src/app/_core/interface/permanent';
 import { environment } from 'src/environments/environment.development';
 import { ModalComponent } from '../modal/modal.component';
 import { ModalModule } from '../modal/modal.module';
-import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { InterimService } from 'src/app/_core/services/interim.service';
 import { CommonService } from 'src/app/_core/services/common.service';
 import { AppRoutes } from 'src/app/app.routes';
@@ -14,9 +14,14 @@ import { PermanentService } from 'src/app/_core/services/permanent.service';
 import { LocalStorageService } from '../../services/localStorage.service';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatInputModule } from '@angular/material/input';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { map, Observable, startWith } from 'rxjs';
 import { RechercherLibellePipe } from 'src/app/admin/pipe/rechercher-libelle.pipe';
 import * as  XLSX from 'xlsx';
+import {  TaskPermanent } from 'src/app/_core/interface/interim';
+import {MatButtonToggleChange, MatButtonToggleModule} from '@angular/material/button-toggle';
+import { AlertComponent } from '../alert/alert.component';
+import { AlertType } from '../alert/alert.type';
 @Component({
   selector: 'data-table',
   standalone: true,
@@ -29,14 +34,18 @@ import * as  XLSX from 'xlsx';
      MatInputModule,
      ReactiveFormsModule,
      RechercherLibellePipe,
+     MatCheckboxModule,
+     MatButtonToggleModule,
+     AlertComponent,
     ],
   templateUrl: './data-table.component.html',
   styleUrl: './data-table.component.css',
 })
-export class DataTableComponent implements OnInit{
+export class DataTableComponent implements OnInit,AfterViewInit{
   @Input() columnData: any = [];
   @Input() rowData?: DataPermanent;
   @Input() pageData: number[] = [];
+  @Output() supprimerEvent = new EventEmitter<any>();
   libelle:string=''
   apiImg=environment.apiImg;
   showModal:boolean = false;
@@ -50,6 +59,7 @@ export class DataTableComponent implements OnInit{
   couleur:string = "bg-red-600  hover:bg-red-700"
   commentaire:string = "";
   annuler: boolean = true;
+  footer:boolean = true;
   readonly appRoutes = AppRoutes;
   readonly adminRoutes = AdminRoutes;
   readonly settingRoutes = SettingRoutes;
@@ -65,15 +75,90 @@ export class DataTableComponent implements OnInit{
   filteredOptions!: Observable<string[]>;
   optionselect:string = '';
   messageHidden:string='';
+  arretPermt :boolean=false
+  formSupprimer:FormGroup
+  autre:boolean = false;
+  ajoutComm:boolean = true;
+  activeEnregistre:boolean =true;
+  idProfile!:number
+  @Input() message:string =''
+  closed:boolean = false;
+  readonly alertType = AlertType
+  readonly taskPermanent = signal<TaskPermanent>({
+    name:'parent',
+    completed:false,
+    permanents:[]
+    })
+    hideSelectionIndicator = signal(false);
+  readonly partiallyComplete = computed(() => {
+    const task_permanent= this.taskPermanent()
+    if(!task_permanent){
+      return false;
+    }
+    return task_permanent.permanents?.some(t=>(this.toBoolean(t.etat))) && !task_permanent.permanents.every(t=>this.toBoolean(t.etat));
+    
+  });
   constructor(
     private service:InterimService ,
     private serve:PermanentService, 
      public readonly commonService:CommonService,
      private shared:LocalStorageService,
      private router:Router,
+     private fb:FormBuilder
     ){
     this.modalCompnent = new ModalComponent();
+      this.formSupprimer = this.fb.group({
+        date:['',[Validators.required]],
+        motif:['',[Validators.required]],
+        commentaire:['']
+      })
   }
+  toBoolean(etat:boolean):boolean{
+
+     return etat
+  }
+  update(completed: boolean, index?: number) {
+    console.log(completed)
+    console.log(index);
+    
+   this.taskPermanent.update((task)=>{
+    if(index === undefined){
+      task.completed = completed;
+      task.permanents?.forEach(t=>
+        (t.etat  = completed))
+        this.rowData?.collaborateurs.forEach(t=>t.etat=completed);
+    }else{
+      console.log(task.permanents![index].etat);
+      
+      task.permanents![index].etat = completed;
+      task.completed = task.permanents?.every(t=>this.toBoolean(t.etat))?? true
+    }
+    
+    return {...task};
+   })
+    // this.task.update(task => {
+    //   if (index === undefined) {
+    //     task.completed = completed;
+    //     task.subtasks?.forEach(t => (t.completed = completed));
+    //   } else {
+    //     task.subtasks![index].completed = completed;
+    //     task.completed = task.subtasks?.every(t => t.completed) ?? true;
+    //   }
+    //   return {...task};
+    // });
+  }
+  // update(completed: boolean, index?: number) {
+  //   this.task.update(task => {
+  //     if (index === undefined) {
+  //       task.completed = completed;
+  //       task.subtasks?.forEach(t => (t.completed = completed));
+  //     } else {
+  //       task.subtasks![index].completed = completed;
+  //       task.completed = task.subtasks?.every(t => t.completed) ?? true;
+  //     }
+  //     return {...task};
+  //   });
+  // }
   ngOnInit(): void 
   {
     this.route.paramMap.subscribe((params: ParamMap) => {
@@ -85,6 +170,20 @@ export class DataTableComponent implements OnInit{
       startWith(''),
       map(value => this._filter(value))
     );
+   
+    this.activeEnregistre = !this.formSupprimer.valid
+  }
+  ngAfterViewInit(){}
+  ngOnChanges(){
+  
+    if (this.rowData) 
+    {
+      this.taskPermanent.update((task) => ({
+        ...task,
+        permanents: this.rowData?.collaborateurs || []
+      }));
+    }
+    
   }
   private _filter(value: any): string[] {
     const filterValue = value.toLowerCase();
@@ -112,6 +211,7 @@ export class DataTableComponent implements OnInit{
   }
   afficherDetails(collab?: Permanent)
   {
+    this.ajoutComm = true;
     this.dataDetails= collab;
     this.showModal = !this.showModal;
     this.faireCommentaire = true
@@ -119,9 +219,11 @@ export class DataTableComponent implements OnInit{
   onModalCloseHandler(event: boolean)
   {
     this.showModal = event;
-    this.faireCommentaire = true
+    this.faireCommentaire = false
     this.annuler = true
     this.isCommentaire = false;
+    this.arretPermt=false;
+    this.footer = true;
     this.couleur =  "bg-red-600  hover:bg-red-700"
   }
   toggleDropdown()
@@ -130,13 +232,16 @@ export class DataTableComponent implements OnInit{
   }
   toggleAccordion(permanent:Permanent,index: number) 
   { 
-    permanent.status = !permanent.status;
+    permanent.etat = !permanent.etat;
   }
   // afficheChefService(collab?:Permanent)
   // {
   //   this.collaborateur = collab;
   //   this.rowData = collab;
   // }
+  toggleSelectionIndicator() {
+    this.hideSelectionIndicator.update(value => !value);
+  }
   clickCommentaire(event:string)
   {
     this.faireCommentaire = false;
@@ -312,5 +417,57 @@ export class DataTableComponent implements OnInit{
     const wb: XLSX.WorkBook = { Sheets: { 'data': ws }, SheetNames: ['data'] };
     // Save to file
     XLSX.writeFile(wb, nomFichier+'.xlsx');
+  }
+  getUserInitials(prenom:string,nom:string):string {
+    if (!prenom || !nom) return '';
+
+    const initials = prenom.charAt(0).toUpperCase() + nom.charAt(0).toUpperCase();
+    return initials;
+  }
+  supprimer=(interim:Permanent)=>{
+    this.commentaire =""
+    this.faireCommentaire = false
+    this.ajoutComm = false;
+    this.arretPermt = true;
+    this.dataDetails= interim;
+    this.footer = false;
+    this.idProfile = interim.profile.id;
+    this.showModal = !this.showModal;  
+  }
+  AutreMotif=()=>{
+    this.autre= true;
+  }
+  selectMotif=(event:MatButtonToggleChange)=>{
+    let select = event.value
+    
+    this.autre = select ==='autre'  
+  }
+  ajoutCommentaire(){
+    this.ajoutComm = !this.ajoutComm
+    this.faireCommentaire = false
+  }
+  onSubmit=()=>{
+    this.formSupprimer.get('commentaire')?.setValue(this.commentaire);
+    const data={
+      form:this.formSupprimer.value,
+      id:this.idProfile
+    }
+   
+    this.supprimerEvent.emit(data);
+    this.showModal = false;
+    this.faireCommentaire = false
+    this.annuler = true
+    this.isCommentaire = false;
+    this.arretPermt=false;
+    this.footer = true;
+    this.couleur =  "bg-red-600  hover:bg-red-700"
+    const index = this.rowData?.collaborateurs.findIndex(ele=>ele.profile.id===this.idProfile);
+    if(index!=-1 && index!=undefined){
+      console.log(this.message);
+      
+      setTimeout(()=>{
+        this.rowData?.collaborateurs.splice(index,1)
+      },6000)
+    }
   }
 }

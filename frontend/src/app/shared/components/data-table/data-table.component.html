@@ -1,4 +1,21 @@
 <div class="card p-5">
+   @if(message){
+      <app-modal
+      [show]="true"
+      [footer]="false"
+      [close]="closed"
+       >
+       <app-alert [show]="true"  [dismissible]="true"  [type]="alertType.Success">
+        <h6 class="text-lg font-semibold">
+            <i class="bi bi-check2-circle"></i>
+            Succés
+        </h6>
+        <p>
+          {{ message }}
+        </p>
+     </app-alert>
+     </app-modal>
+   }
    <div class="card-title ">
       <div class=" flex justify-around border-b-2 border-orange-600" >
         <div class="  form-group mx-auto  relative">
@@ -46,6 +63,29 @@
       </div>
       </div>
   </div>
+  <!-- @if(taskPermanent().permanents?.length == 2 || taskPermanent().completed ==true){
+  <span class="example-list-section">
+   <mat-checkbox
+     class="example-margin"
+     [checked]="taskPermanent().completed"
+     [indeterminate]="partiallyComplete()"
+     (change)="update($event.checked)"
+   >
+     
+   </mat-checkbox>
+ </span>
+ <button   class="btn btn-danger mt-1 py-1">supprimer</button>
+} -->
+ <!-- <span class="example-list-section">
+   <mat-checkbox
+     class="example-margin"
+     [checked]="task().completed"
+     [indeterminate]="partiallyComplete()"
+     (change)="update($event.checked)"
+   >
+     {{task().name}}
+   </mat-checkbox>
+ </span> -->
    <div class="">
       <div class="sm:rounded-lg">
          <div class="data-table mt-2">
@@ -54,9 +94,21 @@
          <table class="ng-wind-table relative  shadow-2xl  rounded-xl">
             <tbody>
                <tr class="border-b-2 border-green-700 rounded-2xl bg-white font-bold hover:bg-gray-50">
+
                   <td class="ng-wind-data-item whitespace-nowrap font-bold text-gray-800">
                      <div  class="flex  rounded-full h-8 w-8 overflow-hidden border-2 border-gray-500">
-                        <img class="w-full h-full object-contain" [src]="apiImg + rowData?.permanent?.profile?.photo" alt="Profile">
+                        @if(rowData?.permanent?.profile?.photo){
+                             <img class="w-full h-full object-contain" [src]="apiImg + rowData?.permanent?.profile?.photo" alt="Profile">
+                         }@else{
+                           <div
+                                   class="w-32 h-32 flex items-center justify-center overflow-hidden rounded-full border-2 border-emerald-600">
+                                   <span  class="rounded-2xl w-10 h-10 bg-gray-400 flex items-center justify-center text-white font-semibold">
+                                      {{   getUserInitials( rowData?.permanent?.profile?.prenom || '', rowData?.permanent?.profile?.nom || '')}} 
+                                     </span>
+                                   <!-- <img class="w-full object-cover" src={{userOne}} alt="Profile"> -->
+                               </div>
+                         }
+                         
                     </div>
                   </td>
                   <td class="ng-wind-data-item">
@@ -68,19 +120,20 @@
                   <td class="ng-wind-data-item">
                      {{rowData?.permanent?.poste?.libelle}}
                   </td>
-                  <td class="ng-wind-data-item text-center space-x-2">
-                     <button type="button" (click)="afficherDetails(rowData?.permanent)" class="btn btn-success py-1 btn-icon ">
-                        Détails
-                        <svg class="rtl:rotate-180 w-2.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                           fill="none" viewBox="0 0 14 10">
-                           <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M1 5h12m0 0L9 1m4 4L9 9" />
+                  <td class="ng-wind-data-item text-center space-x-4">
+                     <button class="tooltip relative w-7 h-7 " >
+                        <svg xmlns="http://www.w3.org/2000/svg"   (click)="afficherDetails(rowData?.permanent)" class="mt-2  text-green-700 hover:text-text-800" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="currentColor" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM216 336h24V272H216c-13.3 0-24-10.7-24-24s10.7-24 24-24h48c13.3 0 24 10.7 24 24v88h8c13.3 0 24 10.7 24 24s-10.7 24-24 24H216c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-208a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"/>
                         </svg>
+                        <span class="tooltip-text">Détails</span>
                      </button>
                      <button  class="tooltip relative w-7 h-7 " >
-                        <svg xmlns="http://www.w3.org/2000/svg" (click)="editer(rowData?.permanent)" class="mt-3 text-blue-700 hover:text-blue-800" viewBox="0 0 640 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="currentColor" d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512H322.8c-3.1-8.8-3.7-18.4-1.4-27.8l15-60.1c2.8-11.3 8.6-21.5 16.8-29.7l40.3-40.3c-32.1-31-75.7-50.1-123.9-50.1H178.3zm435.5-68.3c-15.6-15.6-40.9-15.6-56.6 0l-29.4 29.4 71 71 29.4-29.4c15.6-15.6 15.6-40.9 0-56.6l-14.4-14.4zM375.9 417c-4.1 4.1-7 9.2-8.4 14.9l-15 60.1c-1.4 5.5 .2 11.2 4.2 15.2s9.7 5.6 15.2 4.2l60.1-15c5.6-1.4 10.8-4.3 14.9-8.4L576.1 358.7l-71-71L375.9 417z"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" (click)="editer(rowData?.permanent)" class="mt-2 text-blue-700 hover:text-blue-800" viewBox="0 0 640 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="currentColor" d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512H322.8c-3.1-8.8-3.7-18.4-1.4-27.8l15-60.1c2.8-11.3 8.6-21.5 16.8-29.7l40.3-40.3c-32.1-31-75.7-50.1-123.9-50.1H178.3zm435.5-68.3c-15.6-15.6-40.9-15.6-56.6 0l-29.4 29.4 71 71 29.4-29.4c15.6-15.6 15.6-40.9 0-56.6l-14.4-14.4zM375.9 417c-4.1 4.1-7 9.2-8.4 14.9l-15 60.1c-1.4 5.5 .2 11.2 4.2 15.2s9.7 5.6 15.2 4.2l60.1-15c5.6-1.4 10.8-4.3 14.9-8.4L576.1 358.7l-71-71L375.9 417z"/></svg>
                         <span class="tooltip-text">Editer</span>
                     </button>
+                    <button class="relative tooltip w-4 h-4">
+                     <svg xmlns="http://www.w3.org/2000/svg" (click)="supprimer(rowData?.permanent!)" class="text-red-600 hover:text-red-700" viewBox="0 0 448 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="currentColor" d="M135.2 17.7L128 32 32 32C14.3 32 0 46.3 0 64S14.3 96 32 96l384 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-96 0-7.2-14.3C307.4 6.8 296.3 0 284.2 0L163.8 0c-12.1 0-23.2 6.8-28.6 17.7zM416 128L32 128 53.2 467c1.6 25.3 22.6 45 47.9 45l245.8 0c25.3 0 46.3-19.7 47.9-45L416 128z"/></svg>
+                     <span class="tooltip-text">Supprimer</span>
+                  </button>
                   </td>
                </tr>
             </tbody>
@@ -91,6 +144,9 @@
                <table class="ng-wind-table relative">
                   <thead class="ng-wind-table-header">
                      <tr>
+                        <!-- <th scope="col" class="ng-wind-header-item">
+                          coché
+                        </th> -->
                         <th scope="col" class="ng-wind-header-item">
                            
                            
@@ -129,12 +185,27 @@
                   </div> -->
                   
                   <tbody>
-                     @for (collob of rowData?.collaborateurs|rechercherLibelle:libelle; track collob?.id){
+                     @for (collob of rowData?.collaborateurs|rechercherLibelle:libelle; track collob?.id;let i = $index){
                      <tr class="border-b text-black  bg-white hover:bg-gray-50">
-                        <td class="ng-wind-data-item whitespace-nowrap font-medium text-gray-800">
-                           <a   [routerLink]="commonService.prepareRouteId(collob.id,appRoutes.Admin, adminRoutes.Elements, elementRoutes.DataTable)"  class="flex cursor-pointer rounded-full h-8 w-8 overflow-hidden border-2 border-gray-500">
-                              <img class="w-full h-full object-contain" [src]="apiImg + collob?.profile?.photo" alt="Profile">
-                           </a>
+                        <!-- <td>
+                           <mat-checkbox [checked]="collob?.etat"  (change)="update($event.checked, i)">
+                              
+                           </mat-checkbox>
+                        </td> -->
+                        <td class=" ng-wind-data-item whitespace-nowrap font-medium text-gray-800">      
+                           @if(collob?.profile?.photo){
+                              <a   [routerLink]="commonService.prepareRouteId(collob.id,appRoutes.Admin, adminRoutes.Elements, elementRoutes.DataTable)"  class=" tooltip relative flex  cursor-pointer rounded-full h-8 w-8 overflow-hidden border-2 border-gray-500">
+                                 <img class="w-full h-full object-contain" [src]="apiImg + collob?.profile?.photo" alt="Profile"/>
+                                 <span class="tooltip-text w-full">Clic pour voir ces collaborateures</span>
+                              </a>
+                          }@else{
+                            <div class="w-8 h-8 flex items-center justify-center overflow-hidden rounded-full border-2 border-emerald-600">
+                                    <a  [routerLink]="commonService.prepareRouteId(collob.id,appRoutes.Admin, adminRoutes.Elements, elementRoutes.DataTable)" class="rounded-2xl w-10 h-10 bg-gray-400 flex items-center justify-center text-white font-semibold">
+                                       {{   getUserInitials( collob?.profile?.prenom || '', collob?.profile?.nom || '')}} 
+                                      </a>
+                                    <!-- <img class="w-full object-cover" src={{userOne}} alt="Profile"> -->
+                                </div>
+                          }
                         </td>
                         <td class="ng-wind-data-item">
                            {{collob?.profile?.prenom}}
@@ -142,22 +213,23 @@
                         <td class="ng-wind-data-item">
                            {{collob?.profile?.nom}}
                         </td>
-                        <td class="ng-wind-data-item">
+                        <td class="ng-wind-data-item text-center">
                            {{collob?.poste?.libelle}}
                         </td>
-                        <td class="ng-wind-data-item text-center space-x-2 whitespace-nowrap">
-                           <button type="button" (click)="afficherDetails(collob)" class="btn btn-success py-1 btn-icon ">
-                              Détails
-                              <svg class="rtl:rotate-180 w-2.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                 fill="none" viewBox="0 0 14 10">
-                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M1 5h12m0 0L9 1m4 4L9 9" />
+                        <td class="ng-wind-data-item text-center space-x-4 whitespace-nowrap">
+                           <button class="tooltip relative w-7 h-7 " >
+                              <svg xmlns="http://www.w3.org/2000/svg"   (click)="afficherDetails(collob)" class="mt-2  text-green-700 hover:text-green-800" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="currentColor" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM216 336h24V272H216c-13.3 0-24-10.7-24-24s10.7-24 24-24h48c13.3 0 24 10.7 24 24v88h8c13.3 0 24 10.7 24 24s-10.7 24-24 24H216c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-208a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"/>
                               </svg>
+                              <span class="tooltip-text">Détails</span>
                            </button>
                            <button  class="tooltip relative w-7 h-7 " >
-                              <svg xmlns="http://www.w3.org/2000/svg" (click)="editer(collob)" class="mt-3 text-blue-700 hover:text-blue-800" viewBox="0 0 640 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="currentColor" d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512H322.8c-3.1-8.8-3.7-18.4-1.4-27.8l15-60.1c2.8-11.3 8.6-21.5 16.8-29.7l40.3-40.3c-32.1-31-75.7-50.1-123.9-50.1H178.3zm435.5-68.3c-15.6-15.6-40.9-15.6-56.6 0l-29.4 29.4 71 71 29.4-29.4c15.6-15.6 15.6-40.9 0-56.6l-14.4-14.4zM375.9 417c-4.1 4.1-7 9.2-8.4 14.9l-15 60.1c-1.4 5.5 .2 11.2 4.2 15.2s9.7 5.6 15.2 4.2l60.1-15c5.6-1.4 10.8-4.3 14.9-8.4L576.1 358.7l-71-71L375.9 417z"/></svg>
+                              <svg xmlns="http://www.w3.org/2000/svg" (click)="editer(collob)" class="mt-2 text-blue-700 hover:text-blue-800" viewBox="0 0 640 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="currentColor" d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512H322.8c-3.1-8.8-3.7-18.4-1.4-27.8l15-60.1c2.8-11.3 8.6-21.5 16.8-29.7l40.3-40.3c-32.1-31-75.7-50.1-123.9-50.1H178.3zm435.5-68.3c-15.6-15.6-40.9-15.6-56.6 0l-29.4 29.4 71 71 29.4-29.4c15.6-15.6 15.6-40.9 0-56.6l-14.4-14.4zM375.9 417c-4.1 4.1-7 9.2-8.4 14.9l-15 60.1c-1.4 5.5 .2 11.2 4.2 15.2s9.7 5.6 15.2 4.2l60.1-15c5.6-1.4 10.8-4.3 14.9-8.4L576.1 358.7l-71-71L375.9 417z"/></svg>
                               <span class="tooltip-text">Editer</span>
                           </button>
+                          <button class="relative tooltip w-4 h-4">
+                           <svg xmlns="http://www.w3.org/2000/svg" (click)="supprimer(collob)" class="text-red-600 hover:text-red-800" viewBox="0 0 448 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="currentColor" d="M135.2 17.7L128 32 32 32C14.3 32 0 46.3 0 64S14.3 96 32 96l384 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-96 0-7.2-14.3C307.4 6.8 296.3 0 284.2 0L163.8 0c-12.1 0-23.2 6.8-28.6 17.7zM416 128L32 128 53.2 467c1.6 25.3 22.6 45 47.9 45l245.8 0c25.3 0 46.3-19.7 47.9-45L416 128z"/></svg>
+                           <span class="tooltip-text">Supprimer</span>
+                        </button>
                         </td>
                      </tr>
                      }
@@ -228,13 +300,22 @@
   [premierButtonText]="isCommentaire ? 'Enregistrer':'Commentaire'"
   [deuxiemeButtonText]="annuler ? 'Fermer' : 'Annuler'"
   [couleur]="couleur"
+  [footer]="footer"
   >
    <div class="sm:flex sm:items-start">
       <div class="flex justify-between space-x-12">
           <div class="flex items-center gap-3 sticky top-0 bg-white px-8 py-3 shadow-[0_5px_5px_-5px] shadow-gray-600">
            <div class="bg-gray-800 rounded-lg p-1">
                <div  class="flex  w-34 h-32 overflow-hidden border-2 border-gray-500">
-                   <img class="w-full h-full object-contain" [src]="apiImg + dataDetails?.profile?.photo" alt="Profile">
+                     @if(rowData?.permanent?.profile?.photo){
+                          <img class="w-full h-full object-contain" [src]="apiImg + dataDetails?.profile?.photo" alt="Profile">
+                      }@else{
+                        <div class="w-32 h-32 flex items-center justify-center overflow-hidden rounded-full border-2 border-emerald-600">
+                                 <span  class="rounded-2xl w-10 h-10 bg-gray-400 flex items-center justify-center text-white font-semibold">
+                                   {{   getUserInitials( dataDetails?.profile?.prenom || '', dataDetails?.profile?.nom || '')}} 
+                                 </span>
+                        </div>
+                      }
                </div>
            </div>
           </div>
@@ -301,60 +382,111 @@
      <div> Poste &nbsp;:&nbsp; </div>
       <button type="button" class="btn btn-outline-secondary py-1  ">  {{dataDetails?.poste?.libelle}}</button>
   </div>
- @if(faireCommentaire){
-   <div class="flex space-x-3 mt-5">
-      <div>
-           <div>Statut : </div>
-           <button type="button" class="btn btn-outline-secondary me-2">{{dataDetails?.statut?.libelle }}</button>
-      </div>
-      <div  class="flex flex-col">
-           <div class="">Groupe :</div>
-           <button type="button" class="btn btn-outline-secondary me-2 tooltip relative">{{dataDetails?.groupe?.libelle }}
-              
-           </button>
-       </div>
-       <div  class="flex flex-col">
-           <div class=" tooltip relative">Categorie : </div>
-           <button type="button" class="btn btn-outline-secondary me-2">{{dataDetails?.categorie?.libelle }}
-           </button>
-       </div>
-       <div  class="flex flex-col">
-            <div class=" tooltip relative">Agence : </div>
-            <button type="button" class="btn btn-outline-secondary me-2">{{dataDetails?.agence?.libelle }}</button>
-        </div>
-   
-   </div> 
-     <div class=" flex space-x-3 mt-5">
+
+   @if(faireCommentaire){
+      <div class="flex space-x-3 mt-5">
          <div>
-             <div  class="tooltip relative">Lieu :
-                 <span class="tooltip-text absolute bg-green-600 py-1 px-5 text-white text-xs rounded  whitespace-nowrap  bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
-                     lieu d'execution
-                 </span>
-             </div>
-             @if(dataDetails?.locau!=null){
-                 <button type="button" class="btn btn-outline-secondary me-2">{{dataDetails?.locau?.libelle}}</button>
-              }
+              <div>Statut : </div>
+              <button type="button" class="btn btn-outline-secondary me-2">{{dataDetails?.statut?.libelle }}</button>
          </div>
-         @if(dataDetails?.responsable !=null){
-             <div>
-                <div >Responsable :</div>
-                <button type="button" class="btn btn-outline-secondary me-2">{{dataDetails?.responsable?.profile?.prenom }} {{dataDetails?.responsable?.profile?.nom}}</button>
+         <div  class="flex flex-col">
+              <div class="">Groupe :</div>
+              <button type="button" class="btn btn-outline-secondary me-2 tooltip relative">{{dataDetails?.groupe?.libelle }}
+                 
+              </button>
+          </div>
+          <div  class="flex flex-col">
+              <div class=" tooltip relative">Categorie : </div>
+              <button type="button" class="btn btn-outline-secondary me-2">{{dataDetails?.categorie?.libelle }}
+              </button>
+          </div>
+          <div  class="flex flex-col">
+               <div class=" tooltip relative">Agence : </div>
+               <button type="button" class="btn btn-outline-secondary me-2">{{dataDetails?.agence?.libelle }}</button>
+           </div>
+      
+      </div> 
+        <div class=" flex space-x-3 mt-5">
+            <div>
+                <div  class="tooltip relative">Lieu :
+                    <span class="tooltip-text absolute bg-green-600 py-1 px-5 text-white text-xs rounded  whitespace-nowrap  bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                        lieu d'execution
+                    </span>
+                </div>
+                @if(dataDetails?.locau!=null){
+                    <button type="button" class="btn btn-outline-secondary me-2">{{dataDetails?.locau?.libelle}}</button>
+                 }
             </div>
-         }
-         <div>
-             <div>Canal :</div>
-             <button type="button" class="btn btn-outline-secondary me-2">{{dataDetails?.canal?.libelle }}</button>
+            @if(dataDetails?.responsable !=null){
+                <div>
+                   <div >Responsable :</div>
+                   <button type="button" class="btn btn-outline-secondary me-2">{{dataDetails?.responsable?.profile?.prenom }} {{dataDetails?.responsable?.profile?.nom}}</button>
+               </div>
+            }
+            <div>
+                <div>Canal :</div>
+                <button type="button" class="btn btn-outline-secondary me-2">{{dataDetails?.canal?.libelle }}</button>
+            </div>
+        </div>
+        @if(dataDetails?.profile?.commentaire !== null){
+         <div class="flex w-full mt-3 flex-col">
+             <button class="" > Commentaire :</button> 
+             <textarea name="" readonly  class="border w-full border-gray-600 bg-gray-100">{{ dataDetails?.profile?.commentaire }}</textarea>
+         </div>
+     }
+    }@else{
+      @if(arretPermt){
+         <form action="" [formGroup]="formSupprimer" >
+            <div class="form-group mt-3">
+                <label for="date" class="form-label required"> Date</label>
+                <input type="date" formControlName="date" name="" class="form-control" id=""
+                [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formSupprimer.get('date')?.invalid &&(formSupprimer.get('date')?.touched || formSupprimer.get('date')?.dirty),
+                'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formSupprimer.get('date')?.valid &&(formSupprimer.get('date')?.touched || formSupprimer.get('date')?.dirty)}"
+                >
+            </div>
+            <div class="form-group mt-3 flex">
+                <label for="prenom" class="form-label required"> Motif</label>
+                 <section class=""> 
+                     <mat-button-toggle-group (change)="selectMotif($event)"  formControlName="motif" [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formSupprimer.get('motif')?.invalid &&(formSupprimer.get('motif')?.touched || formSupprimer.get('motif')?.dirty),
+                     'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formSupprimer.get('motif')?.valid &&(formSupprimer.get('motif')?.touched || formSupprimer.get('motif')?.dirty)}"
+                     
+                     name="motif"
+                     aria-label="motif"
+                     [hideMultipleSelectionIndicator]="hideSelectionIndicator()"
+                  >
+                     <mat-button-toggle value="demission">Demission</mat-button-toggle>
+                     <mat-button-toggle value="Retraite">Retraite</mat-button-toggle>
+                     <mat-button-toggle  value="autre">Autre</mat-button-toggle>
+                  </mat-button-toggle-group>
+                  <div class="flex justify-end -mt-10">
+                     <button (click)="ajoutCommentaire()"  type="button" class="btn border-gray-400 hover:text-white hover:btn-primary">Commentaire</button>
+                  </div>
+                  @if(autre){
+                     <input type="text" formControlName="motif" value="" class="border-2 border-gray-400 form-control bg-gray-100 mt-2 rounded-md "
+                     [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formSupprimer.get('motif')?.invalid &&(formSupprimer.get('motif')?.touched || formSupprimer.get('motif')?.dirty),
+                     'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formSupprimer.get('motif')?.valid &&(formSupprimer.get('motif')?.touched || formSupprimer.get('motif')?.dirty)}"
+                     >
+                  }
+                 </section>
+            </div>
+        </form>
+      }
+      @if( faireCommentaire || ajoutComm){
+      <div class="w-full mb-4 border mt-2 border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600">
+         <div class="px-4 py-2 bg-white rounded-t-lg dark:bg-gray-800">
+            <label for="comment" class="sr-only">Commentaire</label>
+            <textarea id="comment" [(ngModel)]="commentaire" rows="4" class="w-full px-0 text-sm text-gray-900 border border-gray-200 bg-white dark:bg-gray-300 focus:ring-0 dark:text-white dark:placeholder-gray-400" placeholder="Ecrire votre commentaire..." required ></textarea>
          </div>
      </div>
-     @if(dataDetails?.profile?.commentaire !== null){
-      <div class="flex w-full mt-3 flex-col">
-          <button class="" > Commentaire :</button> 
-          <textarea name="" readonly  class="border w-full border-gray-600 bg-gray-100">{{ dataDetails?.profile?.commentaire }}</textarea>
+   }
+   @defer(when arretPermt){
+      <div class="space-x-3 flex justify-end">
+            <button type="button"  (click)="onModalCloseHandler(false)" class="btn btn-danger ">Annuler</button>
+            <button type="button"  (click)="onSubmit()" class="btn btn-success">Enregistrer</button>
       </div>
-  }
- }@else{
-   <textarea [(ngModel)]="commentaire"  class="m-3 w-full h-32 border border-gray-600" name="" id=""></textarea>
- }
+   }
+      <!-- <textarea [(ngModel)]="commentaire"  class="m-3 w-full h-32 border border-gray-600" name="" id=""></textarea> -->
+}
 </app-modal>
 
 

@@ -164,4 +164,5 @@ export class DiolagRemplacementComponent implements OnInit,AfterViewInit{
       numeroTelephone=value;
       }
   }
+  
 }

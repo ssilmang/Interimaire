@@ -16,7 +16,14 @@ import { RouterLink } from '@angular/router';
 @Component({
   selector: 'app-forms',
   standalone: true,
-  imports: [ReactiveFormsModule,FormsModule,ModalModule,AlertComponent,CommonModule,RouterLink],
+  imports: [
+    ReactiveFormsModule,
+    FormsModule,
+    ModalModule,
+    AlertComponent,
+    CommonModule,
+    RouterLink
+  ],
   templateUrl: './forms.component.html',
   styleUrl: './forms.component.css'
 })
@@ -33,10 +40,10 @@ export class FormsComponent implements AfterViewInit,OnInit
   responsable:boolean = true;
   formPermanent:FormGroup;
   fb = inject(FormBuilder);
-  apiImag=environment.apiInterim;
-  apiImagPermanent=environment.apiImg;
-  apiImagPrestataire=environment.apiPrestataire;
-  message:string="";
+  apiImag = environment.apiInterim;
+  apiImagPermanent = environment.apiImg;
+  apiImagPrestataire = environment.apiPrestataire;
+  message:string ="";
   autreStatut:boolean = false;
   autrePoste:boolean = false;
   autreGroupe:boolean = false;
@@ -51,34 +58,39 @@ export class FormsComponent implements AfterViewInit,OnInit
   notExistPole:boolean = true;
   notExistDepartement:boolean = true;
   notExistService:boolean = true;
-  suitedirection :boolean =false;
-  suitepole :boolean =false;
-  suiteservice :boolean =false;
-  image:File|null=null; 
+  suitedirection :boolean = false;
+  suitepole :boolean = false;
+  suiteservice :boolean = false;
+  image:File|null = null; 
   interimaire:boolean = false;
   messageError:string = ""
   messageAttention:string = "";
   messageInfo:string = "";
   commercialExiste:boolean = false;
   autreCommercial:boolean = true;
-  interimCategorie:boolean=false
-  enregistre:boolean=true;
+  interimCategorie:boolean = false
+  enregistre:boolean = true;
   color:string = 'btn-primary';
-  idInterim:number=0;
-  idProfile:number=0;
-  contrat_id:number=0;
+  idInterim:number = 0;
+  idProfile:number = 0;
+  contrat_id:number = 0;
   imageUpdate:string = "";
   upload:string = "";
   showModal:boolean = true;
   footer: boolean = false;
   close:boolean = false;
-  visible:boolean =false;
+  visible:boolean = false;
   kangourou:boolean = false;
-  numeroTelephone:string="";
-  numeroTelephonePro:string='';
+  numeroTelephone:string = "";
+  numeroTelephonePro:string ='';
   @ViewChild('checkboxRef',{static:false}) checkboxRef!:ElementRef<HTMLInputElement>;
-  constructor(private sharedService:LocalStorageService,private cdRef:ChangeDetectorRef ){
-    this.formPermanent = this.fb.group({
+  constructor(
+    private sharedService:LocalStorageService,
+    private cdRef:ChangeDetectorRef
+   )
+  {
+     this.formPermanent = this.fb.group(
+    {
       prenom:['',[Validators.required,Validators.minLength(2),Validators.maxLength(100),Validators.pattern("^[A-Za-z\\sé^']*$")]],
       nom:['',[Validators.required,Validators.minLength(2),Validators.maxLength(50),Validators.pattern("^[A-Za-z\\sé^']*$")]],
       email:['',[Validators.required,Validators.email]],
@@ -109,6 +121,8 @@ export class FormsComponent implements AfterViewInit,OnInit
       DA_kangourou:['',[Validators.required]],
       duree_kangourou:['',[Validators.required]],
       montant_kangourou:['',[Validators.required]],
+      interimaireCategorie:['',Validators.required],
+      cout_unitaire:['',Validators.required],
     })
   }
   ngAfterViewInit(): void {
@@ -279,6 +293,8 @@ export class FormsComponent implements AfterViewInit,OnInit
       this.dataAgence=this.dataAll?.agences.find(element=>element.libelle.toLowerCase() === select.libelle.toLowerCase()) 
       if(this.dataAgence?.categories.length!==0){
         this.interimCategorie = true
+      }else{
+        this.interimCategorie =false
       }
     }
    }
@@ -444,10 +460,7 @@ export class FormsComponent implements AfterViewInit,OnInit
   }
   getNumber(value: number|undefined): string 
   {
-    if(value===undefined){
-      return '0'
-    }
-    if(value==null)
+    if(value===undefined || value==null)
       return '0'
     return this.formatSpaces(value);
   }
@@ -491,7 +504,7 @@ export class FormsComponent implements AfterViewInit,OnInit
       numeroTelephone=value;
       }
   }
-  enregistrer()
+  enregistrer=()=>
   {
     const formData :FormData = new FormData();
     let poste = this.formPermanent.get('poste')?.value;
@@ -597,15 +610,17 @@ export class FormsComponent implements AfterViewInit,OnInit
     formData.append('email',this.formPermanent.get('email')?.value);
     formData.append('contrat',this.formPermanent.get('contrat')?.value);
     formData.append('adresse',this.formPermanent.get('adresse')?.value);
-    formData.append('telephone',this.formPermanent.get('telephone')?.value);
-    formData.append('telephone_pro',this.formPermanent.get('telephone_pro')?.value);
+    formData.append('telephone',this.formPermanent.get('telephone')?.value.trim().replace(/\s/g,''));
+    formData.append('telephone_pro',this.formPermanent.get('telephone_pro')?.value.trim().replace(/\s/g,''));
     formData.append('date_debut_contrat',this.formPermanent.get('date_debut_contrat')?.value)
     formData.append('date_fin_contrat',this.formPermanent.get('date_fin_contrat')?.value)
-    formData.append('DA',this.formPermanent.get('DA')?.value)
-    formData.append('DA_kangourou',this.formPermanent.get('DA_kangourou')?.value)
-    formData.append('duree_kangourou',this.formPermanent.get('duree_kangourou')?.value)
-    formData.append('montant_kangourou',this.formPermanent.get('montant_kangourou')?.value)
+    formData.append('DA',this.formPermanent.get('DA')?.value.trim().replace(/\s/g,''))
+    formData.append('DA_kangourou',this.formPermanent.get('DA_kangourou')?.value.trim().replace(/\s/g,''))
+    formData.append('duree_kangourou',this.formPermanent.get('duree_kangourou')?.value.trim().replace(/\s/g,''))
+    formData.append('montant_kangourou',this.formPermanent.get('montant_kangourou')?.value.trim().replace(/\s/g,''))
     formData.append('temps_presence_autre_structure_sonatel',this.formPermanent.get('temps_presence_autre_structure_sonatel')?.value)
+    formData.append('interimaireCategorie',this.formPermanent.get('interimaireCategorie')?.value)
+    formData.append('cout_unitaire',this.formPermanent.get('cout_unitaire')?.value.trim().replace(/\s/g,''))
     let categInterim = this.formPermanent.get('categorieInterim')?.value;
     if(categInterim!=null){
       formData.append('categorieInterim',this.formPermanent.get('categorieInterim')?.value.id)

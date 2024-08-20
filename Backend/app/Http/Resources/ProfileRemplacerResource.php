@@ -4,8 +4,9 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Symfony\Component\HttpKernel\Profiler\Profiler;
 
-class RemplacementResource extends JsonResource
+class ProfileRemplacerResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,9 +16,7 @@ class RemplacementResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
-            'remplacer'=>ProfileRemplacerResource::make($this->profileRemplacer),
-            'remplacant'=>ProfileRemplacerResource::make($this->profileRemplacant),
+            'interimaires'=>InterimResource::collection($this->interimaires),
         ];
     }
 }

@@ -22,6 +22,7 @@ use App\Http\Controllers\PosteController;
 use App\Http\Controllers\PrestataireController;
 use App\Http\Controllers\RemplacementsController;
 use App\Http\Controllers\RemplacerController;
+use App\Http\Controllers\ReportingController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\StatutController;
 
@@ -95,6 +96,7 @@ Route::middleware('auth:sanctum')->prefix('Interim')->group(function()
         Route::get('index/permanents/{id}/{index?}/{page?}','index');
         Route::get('dv','getPermanent');
         Route::post('import/employeur','import');
+        Route::post('supprimer/{id}','supprimer');
     });
     Route::controller(PrestataireController::class)->group(function()
     {
@@ -161,5 +163,13 @@ Route::middleware('auth:sanctum')->prefix('Interim')->group(function()
         Route::get('/presence-time',"updatePresenceTime");
         Route::get('/logout',"logout");
         Route::get('/export/{permanents}/{prestataires}/{interims}','export');
+        Route::get('/reporting','reporting');
+    });
+    Route::controller(ReportingController::class)->group(function(){
+        Route::get('/reporting','reporting');
+        Route::get('/getAgence','getAgence');
+        Route::get('/getdrv/support','getDRV');
+        Route::get('/getCanal','getCanal');
+        Route::get('/getCategorieGroupe','getCategorieGroupe');
     });
 });

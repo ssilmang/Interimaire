@@ -17,6 +17,8 @@ import { UsersComponent } from './views/settings/users/users.component';
 import { AdminDataPrestataireComponent } from './views/elements/data-prestataire/data-prestataire.component';
 import { ImportExcelComponent } from './views/elements/import-excel/import-excel.component';
 import { DashChartComponent } from './dash-chart/dash-chart.component';
+import { DataRemplacerComponent } from '../shared/components/data-remplacer/data-remplacer.component';
+import { ReportingRhComponent } from './views/reporting-rh/reporting-rh.component';
 
 
 const routes: Routes = [
@@ -29,6 +31,11 @@ const routes: Routes = [
     title: 'Interimaire',
     path: AdminRoutes.Interimaire,
     component: DashboardComponent,
+  },
+  {
+    title: 'dashboard',
+    path: AdminRoutes.Dashboard,
+    component: ReportingRhComponent,
   },
  
   {
@@ -70,6 +77,11 @@ const routes: Routes = [
         title: 'Data Table',
         path: ElementRoutes.DataTable,
         component: AdminDataTableComponent,
+      },
+      {
+        title: 'Data Remplacer',
+        path: ElementRoutes.DataRemplacer,
+        component: DataRemplacerComponent,
       },
       {
         title: 'Data Prestataire',

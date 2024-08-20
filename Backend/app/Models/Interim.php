@@ -4,16 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Interim extends Model
 {
-    use HasFactory;
-    protected $fillable = [
-        'user_id',
-        'categorie_id',
-        'responsable_id',
-        'poste_id',
-        ];
+    use HasFactory,SoftDeletes;
+    protected $guarded = ['id'];
     public function categorie()
     {
         return $this->belongsTo(Categorie::class);

@@ -12,10 +12,13 @@ use App\Models\Departement;
 use App\Models\Direction;
 use App\Models\interim;
 use App\Models\Locau;
+use App\Models\Permanent;
 use App\Models\Pole;
+use App\Models\Prestataire;
 use App\Models\Profile;
 use App\Models\Responsable;
 use App\Models\Role;
+use App\Models\Statut;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\QueryException;
 use App\Models\User;
@@ -384,7 +387,7 @@ class UserController extends Controller
                 $profileData['Date début'] = $contrat['date_debut_contrat'];
                 $profileData['Date fin'] = $contrat['date_debut_contrat'];
                 $profileData['Temps présence structure actuelle'] = $contrat['temps_presence_structure_actuel'];
-                $profileData['Temps présence autres structures Sonatel'] = $contrat['temps_presence_structure_actuel'];
+                $profileData['Temps présence autres structures Sonatel'] = $contrat['temps_presence_autre_structure_sonatel'];
                 $profileData['Cumul temps de présence Sonatel'] = $contrat['cumul_presence_sonatel'];
                 $profileData['Durée contrat'] = $contrat['duree_contrat'];
                 $profileData['Durée contrat restante'] = $contrat['duree_contrat_restant'];
@@ -415,4 +418,5 @@ class UserController extends Controller
            ->setShouldWrapText(true);
         return ( new FastExcel($dataDonnee))->headerStyle($header_style)->rowsStyle($rows_style)->download($fichier);
     }
+   
 }

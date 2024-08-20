@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\InterimResource;
+use App\Models\Agence;
 use App\Models\Categorie;
 use App\Models\Contrat;
 use App\Models\Image;
@@ -98,6 +99,9 @@ class InterimController extends Controller
                     'responsable' => 'required|exists:permanents,id',
                     'poste' => 'required',
                 ])->validate();   
+                $poste=null;
+                $agence=null;
+                $categorieInterim=null;
                 if(!is_numeric($request->poste) && $request->poste != null)
                 {
                     $poste = Poste::firstOrCreate([
@@ -109,7 +113,21 @@ class InterimController extends Controller
                 {
                     $poste = Poste::find($request->poste);
                 }
-                if (isset($request->categorieInterim) && isset($request->responsable) && isset($request->poste))
+                if(!is_numeric($request->agence) && $request->agence != null)
+                {
+                    $agence = Agence::firstOrCreate([
+                        'libelle'=>$request->agence,                
+                    ]);
+                    $categorieInterim = Categorie::firstOrCreate([
+                        'libelle'=>$request->interimaireCategorie?$request->interimaireCategorie:null,
+                        'cout_unitaire_journalier'=>$request->cout_unitaire?$request->cout_unitaire:0,
+                        'agence_id'=>$agence->id
+                    ]);
+                }else
+                {
+                    $categorieInterim = Categorie::find($request->categorieInterim);
+                }
+                if ($categorieInterim && isset($request->responsable) && isset($request->poste))
                 {
                     $date_debut = Carbon::createFromFormat('Y-m-d',$request->date_debut_contrat);
                     $date_fin = Carbon::createFromFormat('Y-m-d',$request->date_fin_contrat);
@@ -124,7 +142,7 @@ class InterimController extends Controller
                     }
                     $temps_presence_structure_actuel = 0;
                     $temps_presence_total = $request->temps_presence_autre_structure_sonatel;
-                    $categorie = Categorie::where('id',$request->categorieInterim)->first();  
+                    $categorie = Categorie::where('id',$categorieInterim->id)->first();  
                     $interim = new Interim();
                     $interim->statut_id = $statut['id'];
                     $interim->profile_id = $profile->id;
@@ -263,7 +281,7 @@ class InterimController extends Controller
             $inter = Interim::findOrFail($id);
             $contrats = Contrat::where(['interim_id'=>$inter->id])->whereIn('etat',[0,1,-1])->orderBy('date_debut_contrat','desc')->first();           
                 if($request->date > $contrats['date_debut_contrat'] && $request->date < $contrats['date_fin_contrat']){                                  
-                    if($contrats["etat"] === 0)
+                    if($inter->etat==="en cours" && $contrats["etat"] === 0)
                     { 
                        return  DB::transaction(function() use($request,$contrats,$inter)
                        {
@@ -278,7 +296,7 @@ class InterimController extends Controller
                             $interim = Interim::findOrFail($inter->id);
                             return  $this->controller->responseController->response(Response::HTTP_OK,"le contrat à été rompu avec succès",InterimResource::make($interim)); 
                         });                                         
-                    }elseif($contrats['etat'] === 1)
+                    }elseif($inter->etat==="rompre" && $contrats['etat'] === 1)
                     {                    
                        return DB::transaction(function() use($request,$contrats,$inter)
                        {

@@ -13,7 +13,7 @@ import { ElementsModule } from './views/elements/elements.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-
+import  {NgApexchartsModule}  from 'ng-apexcharts';
 @NgModule({
   declarations: [
     AdminComponent,
@@ -31,6 +31,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
     MatInputModule,
     MatAutocompleteModule,
     ReactiveFormsModule,
+    NgApexchartsModule
     
   ]
 })

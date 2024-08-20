@@ -13,6 +13,7 @@ import { map, Observable, startWith } from 'rxjs';
 import { MatInputModule } from '@angular/material/input';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { RechercherLibellePipe } from 'src/app/admin/pipe/rechercher-libelle.pipe';
+import { Interim } from 'src/app/_core/interface/interim';
 
 @Component({
   selector: 'data-prestataire',
@@ -84,7 +85,7 @@ export class DataPrestataireComponent implements OnInit {
     console.log(this.isDropdownOpen);
   }
   toggleAccordion(permanent:Permanent,index: number) { 
-    permanent.status = !permanent.status;
+    permanent.etat = !permanent.etat;
   }
   afficheChefService(collab?:Permanent)
   {
@@ -151,62 +152,65 @@ export class DataPrestataireComponent implements OnInit {
         currentPage:this.currentPage
       } 
       this.shared.chargePaginate(data);
+  }
+  PageTailleChange=(event: Event): void =>
+    { 
+      
+      let nmbre = (event.target as HTMLInputElement).value;
+        this.option(nmbre);
+  }
+  optionSelected(event: any): void 
+  {
+    const selectedValue = event.option.value;
+    this.myControl.setValue(selectedValue);
+    this.option(this.myControl.value)
+  }
+  option(nmbre:any):void
+  {
+    
+    
+    if(!isNaN(nmbre)){
+      if(nmbre <= this.total){
+        this.taille =nmbre;
+      }else{
+        this.taille= this.total
+        this.currentPage =0
+      }
+    }else{
+      this.taille = this.total;
+      this.currentPage=0
     }
-    PageTailleChange=(event: Event): void =>
-      { 
-        
-        let nmbre = (event.target as HTMLInputElement).value;
-         this.option(nmbre);
-      }
-      optionSelected(event: any): void 
-      {
-        const selectedValue = event.option.value;
-        this.myControl.setValue(selectedValue);
-        this.option(this.myControl.value)
-      }
-      option(nmbre:any):void
-      {
-       
-        
-        if(!isNaN(nmbre)){
-          if(nmbre <= this.total){
-            this.taille =nmbre;
-          }else{
-            this.taille= this.total
-            this.currentPage =0
-          }
-        }else{
-          this.taille = this.total;
-          this.currentPage=0
-        }
+  const data={
+    taille:this.taille,
+    currentPage:this.currentPage
+  }
+  this.shared.chargePaginate(data);
+  }
+  prevPage=(): void=>
+  {
+    if (this.currentPage > 1)
+    {
+      this.currentPage--;
       const data={
         taille:this.taille,
         currentPage:this.currentPage
       }
       this.shared.chargePaginate(data);
+    }
+  }
+  nextPage=(): void=>
+  {
+    if (this.currentPage < this.pageData.length)
+    {
+      this.currentPage++;
+      const data={
+        taille:this.taille,
+        currentPage:this.currentPage
       }
-      prevPage=(): void=>
-     {
-        if (this.currentPage > 1)
-       {
-          this.currentPage--;
-          const data={
-            taille:this.taille,
-            currentPage:this.currentPage
-          }
-          this.shared.chargePaginate(data);
-        }
-      }
-      nextPage=(): void=>
-     {
-        if (this.currentPage < this.pageData.length)
-        {
-          this.currentPage++;
-          const data={
-            taille:this.taille,
-            currentPage:this.currentPage
-          }
-          this.shared.chargePaginate(data);
-        }
-      }
+      this.shared.chargePaginate(data);
+    }
+  }
+  supprimer=(interim:Interim)=>{
+
+  }
 }

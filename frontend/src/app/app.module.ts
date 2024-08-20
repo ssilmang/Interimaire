@@ -14,7 +14,7 @@ import {UtilsProviders} from "./shared/utils/utils.providers";
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { LoadingBarRouterModule } from '@ngx-loading-bar/router';
 import { LoadingBarModule } from '@ngx-loading-bar/core';
-
+import { NgxChartsModule } from '@swimlane/ngx-charts';
 @NgModule({ declarations: [
         AppComponent,
     ],
@@ -25,7 +25,8 @@ import { LoadingBarModule } from '@ngx-loading-bar/core';
         AdminModule,
         PublicModule,
         LoadingBarRouterModule,
-        LoadingBarModule
+        LoadingBarModule,
+        NgxChartsModule
     ], providers: [
         httpInterceptorProviders,
         provideHttpClient(withInterceptorsFromDi()),

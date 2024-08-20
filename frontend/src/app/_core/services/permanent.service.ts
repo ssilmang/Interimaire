@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment.development';
 import { Response } from '../interface/interim';
-import { DataALL, DataPermanent, Permanent, RequestPermanent, ResponsePermanent } from '../interface/permanent';
+import { DataALL, DataPermanent, Permanent, RequestPermanent, RequestSupprimer, ResponsePermanent } from '../interface/permanent';
 
 @Injectable({
   providedIn: 'root'
@@ -29,4 +29,9 @@ export class PermanentService {
   {
     return this._http.post<Response<any>>(`${environment.apiUrl}import/employeur`,data)
   }
+  supprimerPersonne(data:RequestSupprimer,id:number):Observable<Response<Permanent>>
+  {
+    return this._http.post<Response<Permanent>>(`${environment.apiUrl}supprimer/${id}`,data);
+  }
+  
 }

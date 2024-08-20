@@ -9,9 +9,8 @@ class Categorie extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'libelle',
-        'agence_id'
+    protected $guarded = [
+        'id',
     ];
     public function agence()
     {

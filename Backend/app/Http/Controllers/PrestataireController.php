@@ -11,7 +11,7 @@ class PrestataireController extends Controller
 {
     public function index(Request $request,$index=null,$page=null)
     {
-        $prestataire = Prestataire::paginate($index);
+        $prestataire = Prestataire::where('etat',0)->paginate($index);
         return response()->json([
             'statut'=>Response::HTTP_OK,
             'message'=>'all permanents',

@@ -1,18 +1,21 @@
 <div  class="overflow-x-hidden">
-    <section class="grid grid-cols-1 gap-2 md:grid-cols-2 xl:grid-cols-4">
-       
-          <!-- <mat-form-field class="example-full-width">
-            <input type="text"
-                   placeholder="Saisir ou sélectionner une option"
-                   aria-label="Number"
-                   matInput
-                  >
-            <mat-autocomplete >
-              <mat-option>
-             DBDH
-              </mat-option>
-            </mat-autocomplete>
-          </mat-form-field> -->
+    <section class="grid grid-cols-1 gap-2 md:grid-cols-2 xl:grid-cols-4"> 
+        <div (click)="contratCours()" class="{{ activeCours }} card flex items-center gap-3 cursor-pointer hover:shadow-md hover:border-y-4 hover:border-b-orange-600">
+            <div class="rounded-lg bg-gradient-to-br from-orange-500 to-orange-700 px-3 py-2 text-white">
+                <span class="bi bi-folder2-open text-3xl"></span>
+            </div>
+            <div>
+                <p class="text-md text-gray-400 text-nowrap">Contrat en Cours</p>
+            </div>
+        </div>     
+        <div (click)="Kangourou()" class="{{ activeKangourou }} card flex items-center gap-3 cursor-pointer hover:shadow-md hover:border-y-4 hover:border-b-cyan-700">
+            <div class="rounded-lg bg-gradient-to-br from-cyan-500 to-cyan-700 px-3 py-2 text-white">
+                <span class="bi bi-hourglass-split text-3xl"></span>
+            </div>
+            <div>
+                <p class="text-md text-gray-400">Kangourou</p>
+            </div>
+        </div>
         <div (click)="remplacerContrat()" class="{{ remplacement }} card flex items-center cursor-pointer hover:shadow-md hover:border-y-4 hover:border-b-emerald-700 gap-1">
             <div class="rounded-lg bg-gradient-to-br from-emerald-500 to-emerald-700 px-3 py-2 text-white">
                 <span class="bi bi-clock-history text-3xl"></span>
@@ -21,28 +24,12 @@
                 <p class="text-md text-gray-400">Remplacement</p>
             </div>
         </div>
-        <div (click)="contratCours()" class="{{ activeCours }} card flex items-center gap-3 cursor-pointer hover:shadow-md hover:border-y-4 hover:border-b-orange-600">
-            <div class="rounded-lg bg-gradient-to-br from-orange-500 to-orange-700 px-3 py-2 text-white">
-                <span class="bi bi-folder2-open text-3xl"></span>
-            </div>
-            <div>
-                <p class="text-md text-gray-400">Contrat en Cours</p>
-            </div>
-        </div>
         <div   (click)="finContrat()" class="{{ activeFinContrat }} card flex items-center gap-3 cursor-pointer hover:shadow-md hover:border-y-4  hover:border-b-violet-700">
             <div class="rounded-lg bg-gradient-to-br from-violet-500 to-violet-700 px-3 py-2 text-white">
                 <span class="bi bi-folder-x text-3xl"></span>
             </div>
             <div>
                 <p class="text-md text-gray-400">Fin de Contrat</p>
-            </div>
-        </div>
-        <div (click)="Kangourou()" class="{{ activeKangourou }} card flex items-center gap-3 cursor-pointer hover:shadow-md hover:border-y-4 hover:border-b-cyan-700">
-            <div class="rounded-lg bg-gradient-to-br from-cyan-500 to-cyan-700 px-3 py-2 text-white">
-                <span class="bi bi-hourglass-split text-3xl"></span>
-            </div>
-            <div>
-                <p class="text-md text-gray-400">Kangouru</p>
             </div>
         </div>
     </section>
@@ -87,7 +74,7 @@
         </div>
         </div>
     </div>
-    @if(remplacement==''){
+    @if(isVisible){
         <section class=" mx-auto mt-5 w-full rounded-lg bg-white p-4 shadow-lg">
             <div class="mt-1">
                 <div class="sm:rounded-lg">
@@ -153,7 +140,19 @@
                                   <td class="ng-wind-data-item whitespace-nowrap font-medium text-gray-800">
                                     <div
                                         class="w-9 h-9 ml-5 rounded-full flex items-center justify-center overflow-hidden  border-2 border-gray-500">
-                                        <img class="w-full object-cover" [src]="apiImag +interim?.profile?.photo " alt="Profile">
+                                        @if(interim?.profile?.photo){
+                                            <div  class="flex  w-34 h-32 overflow-hidden border-2 border-gray-500">
+                                              <img class="w-full h-full object-contain" [src]="apiImag +interim?.profile?.photo " alt="Profile">
+                                          </div>
+                                          }@else{
+                                            <div
+                                                    class="w-32 h-32 flex items-center justify-center overflow-hidden rounded-full border-2 border-emerald-600">
+                                                    <span  class="rounded-2xl w-10 h-10 bg-gray-400 flex items-center justify-center text-white font-semibold">
+                                                       {{   getUserInitials( interim?.profile?.prenom || '', interim?.profile?.nom || '')}} 
+                                                      </span>
+                                                    <!-- <img class="w-full object-cover" src={{userOne}} alt="Profile"> -->
+                                                </div>
+                                          }
                                     </div>
                                   </td>
                                   <td class="ng-wind-data-item text-center">
@@ -221,7 +220,7 @@
                                             </button>
                                         }
                                     </td>
-                                  <td class="ng-wind-data-item  text-center space-x-7">
+                                  <td class="ng-wind-data-item  text-center space-x-4">
                                     <button class="tooltip relative w-7 h-7 " >
                                         <svg xmlns="http://www.w3.org/2000/svg"   (click)="openModal(interim)" class="  text-info hover:text-info-800" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="currentColor" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM216 336h24V272H216c-13.3 0-24-10.7-24-24s10.7-24 24-24h48c13.3 0 24 10.7 24 24v88h8c13.3 0 24 10.7 24 24s-10.7 24-24 24H216c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-208a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"/>
                                         </svg>
@@ -237,7 +236,7 @@
                                    @if(activeKangourou==""){
                                     @if(interim?.etat =="en cours"){
                                         <button class="tooltip relative w-7 h-7 " >
-                                            <svg xmlns="http://www.w3.org/2000/svg" (click)="rompre(interim)" class=" text-red-600 hover:text-red-700" viewBox="0 0 384 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="currentColor" d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/></svg>
+                                            <svg xmlns="http://www.w3.org/2000/svg" (click)="rompre(interim)" class=" text-red-600 hover:text-red-700 -mt-1" viewBox="0 0 384 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="currentColor" d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/></svg>
                                             <!-- <svg xmlns="http://www.w3.org/2000/svg"  (click)="rompre(interim)" class=" text-red-600 hover:text-red-900" viewBox="0 0 384 512">!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.<path fill="currentColor" d="M376.6 84.5c11.3-13.6 9.5-33.8-4.1-45.1s-33.8-9.5-45.1 4.1L192 206 56.6 43.5C45.3 29.9 25.1 28.1 11.5 39.4S-3.9 70.9 7.4 84.5L150.3 256 7.4 427.5c-11.3 13.6-9.5 33.8 4.1 45.1s33.8 9.5 45.1-4.1L192 306 327.4 468.5c11.3 13.6 31.5 15.4 45.1 4.1s15.4-31.5 4.1-45.1L233.7 256 376.6 84.5z"/></svg> -->
                                             <span class="tooltip-text">Rompre</span>
                                         </button>
@@ -253,6 +252,7 @@
                                         <svg xmlns="http://www.w3.org/2000/svg" (click)="editer(interim)" class=" text-blue-700 hover:text-blue-800" viewBox="0 0 640 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="currentColor" d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512H322.8c-3.1-8.8-3.7-18.4-1.4-27.8l15-60.1c2.8-11.3 8.6-21.5 16.8-29.7l40.3-40.3c-32.1-31-75.7-50.1-123.9-50.1H178.3zm435.5-68.3c-15.6-15.6-40.9-15.6-56.6 0l-29.4 29.4 71 71 29.4-29.4c15.6-15.6 15.6-40.9 0-56.6l-14.4-14.4zM375.9 417c-4.1 4.1-7 9.2-8.4 14.9l-15 60.1c-1.4 5.5 .2 11.2 4.2 15.2s9.7 5.6 15.2 4.2l60.1-15c5.6-1.4 10.8-4.3 14.9-8.4L576.1 358.7l-71-71L375.9 417z"/></svg>
                                         <span class="tooltip-text">Editer</span>
                                     </button>
+                                    
                                    }
                                   </td>
                                </tr>
@@ -262,105 +262,107 @@
                          </table>
                       </div>
                    </div>
-                   <nav class="ng-wind-table-pagination mt-5 flex justify-between items-center" aria-label="Table navigation">
-                    <div class="ng-wind-table-page-view flex items-center">
-                      Lignes par page:
-                       <div class="mx-2">
-                            <select (click)="PageTailleChange($event)" id="states" class="block w-full rounded-sm bg-gray-100 p-1 text-xs text-gray-900">
-                                <option value="3">3</option>
-                                <option value="6">6</option>
-                                <option value="9">9</option>
-                                <option value="10">10</option>
-                                <option value="20">20</option>
-                                <option value="50">50</option>
-                                <option value="100">100</option>
-                                <option value="tous">all</option>
-                            </select>
-                        </div>
-                      <!-- <div class="mx-2">
-                        <select  id="states" class="block w-full rounded-sm bg-gray-100 p-1 text-xs text-gray-900">
-                        <option value="3">3</option>
-                        <option value="6">6</option>
-                        <option value="8">8</option>
-                        <option value="10">10</option>
-                        <option value="20">20</option>
-                        <option value="50">50</option>
-                        <option value="100">100</option>
-                        <option value="200">200</option>
-                        <option value="300">300</option>
-                        <option value="400">400</option>
-                        </select>
-                      </div> -->
-                      <span class="me-1 ms-4 font-semibold text-gray-900">{{ currentPage }}</span> /
-                      <span class="ms-1 font-semibold text-gray-900">{{ totalPages.length }}</span>&nbsp; sur <span class="text-gray-900">&nbsp; {{ total }}</span>
-                    </div>
-                    <ul class="inline-flex h-8 -space-x-px text-xs rtl:space-x-reverse">
-                        <li>
-                           <a (click)="prevPage()" class="cursor-pointer ng-wind-page-prev">
-                              Précédent
-                           </a>
-                        </li>
-                        @for ( page of totalPages;track page){
-                        <li  [class.activate]="page==currentPage">
-                           <a (click)="selectPage(page)" aria-current="page" [ngClass]="page == currentPage ? 'active-page' : 'bg-white hover:bg-gray-100' "
-                              class="page-number cursor-pointer">
-                              {{page}}
-                           </a>
-                        </li>
-                        }
-                        <li>
-                           <a (click)="nextPage()" class="ng-wind-page-next cursor-pointer">Suivant</a>
-                        </li>
-                     </ul>
-                  </nav>
+                  
                 </div>
              </div>
         </section>
     }@else{
-        <!-- <pre>{{ dataRemplacer|json }}</pre> -->
-<mat-table #table [dataSource]="dataRemplacer"  class="mat-elevation-z8 boerder shadow-md" cdkDropList (cdkDropListDropped)="drop($event)"
-  cdkDropListData="dataRemplacer">
-  <!-- Position Column -->
-  <ng-container matColumnDef="Prenom" sticky>
-    <mat-header-cell *matHeaderCellDef> Prenom </mat-header-cell>
-    <mat-cell *matCellDef="let element">
-      <!-- <mat-icon class="example-drag-cursor">reorder</mat-icon> -->
-      <span>{{element.remplacer.prenom}}</span>
-    </mat-cell>
-  </ng-container>
-
-  <!-- Name Column -->
-  <ng-container matColumnDef="Nom">
-    <mat-header-cell *matHeaderCellDef> Nom </mat-header-cell>
-    <mat-cell *matCellDef="let element"> {{element.remplacer.nom}} </mat-cell>
-  </ng-container>
-
-  <!-- Weight Column -->
-  <ng-container matColumnDef="Action">
-    <mat-header-cell *matHeaderCellDef> Action </mat-header-cell>
-    <mat-cell *matCellDef="let element"> <button class ="tooltip relative w-3 h-3 cursor-default ">
-        <svg xmlns="http://www.w3.org/2000/svg"  class="text-cyan-700" viewBox="0 0 512 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="currentColor" d="M32 96l320 0 0-64c0-12.9 7.8-24.6 19.8-29.6s25.7-2.2 34.9 6.9l96 96c6 6 9.4 14.1 9.4 22.6s-3.4 16.6-9.4 22.6l-96 96c-9.2 9.2-22.9 11.9-34.9 6.9s-19.8-16.6-19.8-29.6l0-64L32 160c-17.7 0-32-14.3-32-32s14.3-32 32-32zM480 352c17.7 0 32 14.3 32 32s-14.3 32-32 32l-320 0 0 64c0 12.9-7.8 24.6-19.8 29.6s-25.7 2.2-34.9-6.9l-96-96c-6-6-9.4-14.1-9.4-22.6s3.4-16.6 9.4-22.6l96-96c9.2-9.2 22.9-11.9 34.9-6.9s19.8 16.6 19.8 29.6l0 64 320 0z"/></svg>
-       <span class="tooltip-text mt-3">Remplacé</span>
-    </button> </mat-cell>
-  </ng-container>
-
-  <!-- Symbol Column -->
-  <ng-container matColumnDef="Prénom">
-    <mat-header-cell *matHeaderCellDef> Prenom </mat-header-cell>
-    <mat-cell *matCellDef="let element"> {{element.remplacant.prenom}} </mat-cell>
-  </ng-container>
-
-  <!-- Quantity Column -->
-  <ng-container matColumnDef="nom">
-    <mat-header-cell *matHeaderCellDef> Nom </mat-header-cell>
-    <mat-cell *matCellDef="let element">{{element.remplacer.nom}}</mat-cell>
-  </ng-container>
-
-  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-  <mat-row *matRowDef="let row; columns: displayedColumns;" cdkDrag [cdkDragData]="row"></mat-row>
-</mat-table>
-
-    }
+        <mat-table #table [dataSource]="dataRemplacer"  class="mat-elevation-z8 boerder shadow-md" cdkDropList (cdkDropListDropped)="drop($event)"
+        cdkDropListData="dataRemplacer">
+        <ng-container matColumnDef="Prenom" sticky>
+            <mat-header-cell *matHeaderCellDef> Prenom </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                @for(item of element.remplacer.interimaires;track item.id){
+                    <span>{{item.profile.prenom}}</span>
+                }
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Nom">
+            <mat-header-cell *matHeaderCellDef> Nom </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                @for(item of element.remplacer.interimaires;track item.id){
+                {{item.profile.nom}} 
+                }
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Action">
+            <mat-header-cell *matHeaderCellDef> Action </mat-header-cell>
+            <mat-cell *matCellDef="let element"> <button class ="tooltip relative w-3 h-3 cursor-default ">
+                <svg xmlns="http://www.w3.org/2000/svg"  class="text-cyan-700" viewBox="0 0 512 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="currentColor" d="M32 96l320 0 0-64c0-12.9 7.8-24.6 19.8-29.6s25.7-2.2 34.9 6.9l96 96c6 6 9.4 14.1 9.4 22.6s-3.4 16.6-9.4 22.6l-96 96c-9.2 9.2-22.9 11.9-34.9 6.9s-19.8-16.6-19.8-29.6l0-64L32 160c-17.7 0-32-14.3-32-32s14.3-32 32-32zM480 352c17.7 0 32 14.3 32 32s-14.3 32-32 32l-320 0 0 64c0 12.9-7.8 24.6-19.8 29.6s-25.7 2.2-34.9-6.9l-96-96c-6-6-9.4-14.1-9.4-22.6s3.4-16.6 9.4-22.6l96-96c9.2-9.2 22.9-11.9 34.9-6.9s19.8 16.6 19.8 29.6l0 64 320 0z"/></svg>
+                <span class="tooltip-text mt-3">Remplacé</span>
+                </button> </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Prénom">
+                <mat-header-cell *matHeaderCellDef> Prenom </mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                @for(item of element.remplacant.interimaires;track item.id){
+                {{item.profile.prenom}} 
+                }
+                </mat-cell>
+            </ng-container>
+        <ng-container matColumnDef="nom">
+            <mat-header-cell *matHeaderCellDef> Nom </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                @for(item of element.remplacant.interimaires;track item.id){
+                            {{item.profile.nom}} 
+                }
+            </mat-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="displayedColumns" class="bg-green-600"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;" cdkDrag [cdkDragData]="row"></mat-row>
+        </mat-table>
+    } 
+    <nav class="ng-wind-table-pagination bg-white mt-0.5 flex justify-between items-center" aria-label="Table navigation">
+        <div class="ng-wind-table-page-view ml-2 flex items-center">
+          Lignes par page:
+           <div class="mx-2">
+                <select (click)="PageTailleChange($event)" id="states" class="block w-full rounded-sm bg-gray-100 p-1 text-xs text-gray-900">
+                    <option value="3">3</option>
+                    <option value="6">6</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                    <option value="tous">all</option>
+                </select>
+            </div>
+          <!-- <div class="mx-2">
+            <select  id="states" class="block w-full rounded-sm bg-gray-100 p-1 text-xs text-gray-900">
+            <option value="3">3</option>
+            <option value="6">6</option>
+            <option value="8">8</option>
+            <option value="10">10</option>
+            <option value="20">20</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+            <option value="200">200</option>
+            <option value="300">300</option>
+            <option value="400">400</option>
+            </select>
+          </div> -->
+          <span class="me-1 ms-4 font-semibold text-gray-900">{{ currentPage }}</span> /
+          <span class="ms-1 font-semibold text-gray-900">{{ totalPages.length }}</span>&nbsp; sur <span class="text-gray-900">&nbsp; {{ total }}</span>
+        </div>
+        <ul class="inline-flex h-8 -space-x-px text-xs rtl:space-x-reverse mr-3">
+            <li>
+               <a (click)="prevPage()" class="cursor-pointer ng-wind-page-prev">
+                  Précédent
+               </a>
+            </li>
+            @for ( page of totalPages;track page){
+            <li  [class.activate]="page==currentPage">
+               <a (click)="selectPage(page)" aria-current="page" [ngClass]="page == currentPage ? 'active-page' : 'bg-white hover:bg-gray-100' "
+                  class="page-number cursor-pointer">
+                  {{page}}
+               </a>
+            </li>
+            }
+            <li>
+               <a (click)="nextPage()" class="ng-wind-page-next cursor-pointer">Suivant</a>
+            </li>
+         </ul>
+      </nav>
  
     <!-- Example Modal -->
 </div>
@@ -375,9 +377,18 @@
 
       <div class="flex justify-between space-x-24">
           <div class="flex items-center gap-3 sticky top-0 bg-white px-8 py-3 shadow-[0_5px_5px_-5px] shadow-gray-600">
-              <div
-                  class="w-32 h-30 flex items-center justify-center overflow-hidden  border-2 border-emerald-600">
-                  <img class="w-full object-cover" [src]="apiImag +interimaire?.profile?.photo "  alt="Profile">
+              <div class="w-32 h-30 flex items-center justify-center overflow-hidden  border-2 border-emerald-600">
+                  @if(interimaire?.profile?.photo){
+                    <div  class="flex overflow-hidden border-2 border-gray-500">
+                      <img class="w-full h-full object-contain" [src]="apiImag +interimaire?.profile?.photo " alt="Profile">
+                    </div>
+                  }@else{
+                    <div class="w-32 h-32 flex items-center justify-center overflow-hidden rounded-full border-2 border-emerald-600">
+                            <span  class="rounded-2xl w-16 h-16 bg-gray-400 flex items-center justify-center text-white font-semibold">
+                               {{   getUserInitials( interimaire?.profile?.prenom || '', interimaire?.profile?.nom || '')}} 
+                            </span>
+                    </div>
+                  }
               </div>
           </div>
           <div class="space-y-2 mt-3 justify-end">
@@ -425,7 +436,7 @@
       <div class=" flex space-x-3 mt-5">
           <div>
               <div  class="tooltip relative">Lieu :
-                  <span class="tooltip-text absolute bg-green-600 py-1 w-full text-white text-xs rounded  whitespace-nowrap  bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                  <span class="tooltip-text absolute">
                       lieu d'execution
                   </span>
               </div>
@@ -475,36 +486,36 @@
          </div>
          <div  class="flex flex-col">
               <button class="tooltip relative">Unitaire :
-                  <span class="tooltip-text absolute bg-green-600 py-1 px-5 text-white text-xs rounded  whitespace-nowrap  bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                  <span class="tooltip-text absolute ">
                       Coût Unitaire
                   </span>
               </button>
               <button type="button" class="btn btn-outline-secondary me-2 tooltip relative">{{getNumber(interimaire?.categorie?.cout_unitaire_journalier) }}
-                  <span class="tooltip-text absolute bg-black text-white text-xs rounded py-1 px-2 bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                  <span class="tooltip-text absolute ">
                       FCFA
                   </span>
               </button>
           </div>
           <div  class="flex flex-col">
               <button class=" tooltip relative  ">Durée :
-                  <span class="tooltip-text absolute bg-green-600 py-1 px-5 text-white text-xs rounded  whitespace-nowrap  bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                  <span class="tooltip-text absolute ">
                       Durée Kangourou
                   </span>
               </button>
               <button type="button" class="btn btn-outline-secondary me-2 tooltip relative">{{interimaire?.poste?.duree_kangurou }}
-                <span class="tooltip-text absolute bg-black text-white text-xs rounded py-1 px-2 bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                <span class="tooltip-text absolute ">
                     Jour
                 </span>
               </button>
           </div>
          <div  class="flex flex-col">
               <button class=" tooltip relative">Montant :
-                  <span class="tooltip-text absolute bg-green-600 py-1 px-5 text-white text-xs rounded  whitespace-nowrap  bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                  <span class="tooltip-text absolute ">
                       Montant Kangourou
                   </span>
               </button>
               <button type="button" class="btn btn-outline-secondary me-2 tooltip relative">{{getNumber(interimaire?.poste?.montant_kangurou) }}
-                  <span class="tooltip-text absolute bg-black text-white text-xs rounded py-1 px-2 bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                  <span class="tooltip-text absolute">
                       FCFA
                   </span>
               </button>
@@ -519,7 +530,7 @@
       <div class=" flex space-x-3 mt-7">
           <div  class="flex flex-col">
               <button class=" tooltip relative">Début :
-                  <span class="tooltip-text absolute bg-green-600 py-1 px-5 text-white text-xs rounded  whitespace-nowrap  bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                  <span class="tooltip-text absolute ">
                       Début Contrat
                   </span>
               </button>
@@ -529,7 +540,7 @@
           </div>
           <div  class="flex flex-col">
               <button class=" tooltip relative" >Fin :
-                  <span class="tooltip-text absolute bg-green-600 py-1 px-5 text-white text-xs rounded  whitespace-nowrap  bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                  <span class="tooltip-text absolute ">
                       Fin Contrat
                   </span>
               </button> 
@@ -537,37 +548,37 @@
           </div>
           <div  class="flex flex-col">
               <button class="tooltip relative">Presence :
-                  <span class="tooltip-text absolute bg-green-600 py-1 px-5 text-white text-xs rounded  whitespace-nowrap  bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                  <span class="tooltip-text absolute ">
                       Temps Presence Structure
                   </span>
               </button>
               <button type="button"  class="btn btn-outline-secondary me-2 tooltip relative">{{getNumber(interimaire?.contrats?.temps_presence_structure_actuel)}}
-                  <span class="tooltip-text absolute bg-black  text-white text-xs rounded py-1 px-2 bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                  <span class="tooltip-text absolute ">
                       JOUR
                   </span>
               </button>
           </div>
           <div  class="flex flex-col">
               <button class="tooltip relative"> Autre :
-                  <span class="tooltip-text absolute bg-green-600 py-1 px-5 text-white text-xs rounded  whitespace-nowrap  bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                  <span class="tooltip-text absolute ">
                       Presence Autre Structure
                   </span>
               </button>
               <button type="button"  class="btn btn-outline-secondary me-2 tooltip relative">
                   {{interimaire?.contrats?.temps_presence_autre_structure_sonatel}}
-                  <span class="tooltip-text absolute bg-black text-white text-xs rounded py-1 px-2 bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                  <span class="tooltip-text absolute">
                       MOIS
                   </span>
                </button>
           </div>
           <div  class="flex flex-col">
               <button class="tooltip relative"> Cumul :
-                  <span class="tooltip-text absolute bg-green-600 py-1 px-5 text-white text-xs rounded  whitespace-nowrap  bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                  <span class="tooltip-text absolute ">
                       Cumul Presence structure
                   </span>
               </button> 
               <button type="button"  class="btn btn-outline-secondary me-2 tooltip relative">{{interimaire?.contrats?.cumul_presence_sonatel}}
-                  <span class="tooltip-text absolute bg-black text-white text-xs rounded py-1 px-2 bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                  <span class="tooltip-text absolute">
                       MOIS
                   </span>
               </button>
@@ -576,25 +587,25 @@
       <div class=" flex space-x-3 space-y-2 mt-7">
           <div  class="flex flex-col">
               <button class="tooltip relative mt-2"> Contrat :
-                  <span class="tooltip-text absolute bg-green-600 py-1 px-5 text-white text-xs rounded  whitespace-nowrap  bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                  <span class="tooltip-text absolute ">
                       Durée Contrat
                   </span>
               </button>
               <button type="button"  class="btn btn-outline-secondary me-2 tooltip relative">{{interimaire?.contrats?.duree_contrat}}
-                  <span class="tooltip-text absolute bg-black text-white text-xs rounded py-1 px-2 bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                  <span class="tooltip-text absolute ">
                       MOIS
                   </span>
               </button>
           </div>
           <div  class="flex flex-col">
               <button class="tooltip relative"> Reste  :
-                  <span class="tooltip-text absolute bg-green-600 py-1 px-5 text-white text-xs rounded  whitespace-nowrap  bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                  <span class="tooltip-text absolute ">
                       Durée Restant
                   </span>
               </button>
               <button type="button"  class="btn btn-outline-secondary me-2 tooltip relative">
                   {{interimaire?.contrats?.duree_contrat_restant}}
-                  <span class="tooltip-text absolute bg-black text-white text-xs rounded py-1 px-2 bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                  <span class="tooltip-text absolute">
                       MOIS
                   </span>
                </button>
@@ -602,24 +613,24 @@
           <div  class="flex flex-col">
               <button 
               class="tooltip relative"> Mensuel  :
-                  <span class="tooltip-text absolute bg-green-600 py-1 px-5 text-white text-xs rounded  whitespace-nowrap  bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                  <span class="tooltip-text absolute ">
                       Coût Mensuel
                   </span>
               </button> 
               <button type="button"  class="btn btn-outline-secondary me-2 tooltip relative">{{getNumber(interimaire?.contrats?.cout_mensuel)}}
-                  <span class="tooltip-text absolute bg-black text-white text-xs rounded py-1 px-2 bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                  <span class="tooltip-text absolute">
                       FCFA
                   </span>
               </button>
           </div>
           <div  class="flex flex-col">
               <button class="tooltip relative">Global  :
-                  <span class="tooltip-text absolute bg-green-600 py-1 px-5 text-white text-xs rounded  whitespace-nowrap  bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                  <span class="tooltip-text absolute">
                       Coût Global 
                   </span>
               </button>
               <button type="button"  class="btn btn-outline-secondary me-2 tooltip relative">{{getNumber(interimaire?.contrats?.cout_global)}}
-                  <span class="tooltip-text absolute bg-black text-white text-xs rounded py-1 px-2 bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                  <span class="tooltip-text absolute">
                       FCFA
                   </span>
               </button>
@@ -634,7 +645,7 @@
       <div class=" flex space-x-3 mt-7">
           <div class="flex flex-col">
               <button class="tooltip text-nowrap relative"> Kangourou :
-                  <span class="tooltip-text absolute bg-green-600 py-1 px-5 text-white text-xs rounded  whitespace-nowrap  bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                  <span class="tooltip-text absolute">
                       DA kangourou
                   </span>
               </button> 
@@ -642,12 +653,41 @@
           </div>
           @if(interimaire?.profile?.commentaire !== null){
               <div class="flex w-full flex-col">
-                  <button class="" > Commentaire</button> 
+                  <button class="cursor-default" > Commentaire</button> 
                   <textarea name="" readonly  class="border w-full border-gray-600 bg-gray-100">{{ interimaire?.profile?.commentaire }}</textarea>
               </div>
           }
       </div>
-      <!-- } -->
+      @if(interimaire?.etat==="rompre"){
+      <div class="flex space-x-3 mt-4">
+            <div class="flex flex-col">
+                <button class="tooltip text-nowrap relative"> Date :
+                    <span class="tooltip-text absolute">
+                        Date de rompre
+                    </span>
+                </button>
+                <button type="button" class="btn btn-outline-secondary me-2 text-nowrap">{{interimaire?.contrats?.date}}</button>
+            </div>
+            <div class="flex flex-col w-full">
+                <button class="tooltip text-nowrap relative"> Motif :
+                    <span class="tooltip-text absolute ">
+                        Motif de Rompre
+                    </span>
+                </button>
+                <div class="text-center rounded-md border-2 ">{{ interimaire?.contrats?.motif }}</div>
+                <!-- <mat-form-field class="" >
+                    <mat-label></mat-label>
+                    <textarea matInput
+                            readonly
+                            cdkTextareaAutosize
+                            #autosize="cdkTextareaAutosize"
+                            cdkAutosizeMinRows="1"
+                            cdkAutosizeMaxRows="5">{{ interimaire?.contrats?.motif }}
+                    </textarea>
+                </mat-form-field> -->
+            </div>
+      </div>
+      }
   }@else{
       <textarea [(ngModel)]="commentaire"  class="m-3 w-full h-32 border border-gray-600" name="" id=""></textarea>
   }
@@ -669,7 +709,17 @@
             <div class="flex items-center gap-3 sticky top-0 bg-white px-8 py-3 shadow-[0_5px_5px_-5px] shadow-gray-600">
                 <div
                     class="w-32 h-30 flex items-center justify-center overflow-hidden  border-2 border-emerald-600">
-                    <img class="w-full object-cover" [src]="apiImag +interimaire?.profile?.photo "  alt="Profile">
+                    @if(interimaire?.profile?.photo){
+                        <div  class="flex overflow-hidden border-2 border-gray-500">
+                          <img class="w-full h-full object-contain" [src]="apiImag +interimaire?.profile?.photo " alt="Profile">
+                        </div>
+                      }@else{
+                        <div class="w-32 h-32 flex items-center justify-center overflow-hidden rounded-full border-2 border-emerald-600">
+                                <span  class="rounded-2xl w-16 h-16 bg-gray-400 flex items-center justify-center text-white font-semibold">
+                                   {{   getUserInitials( interimaire?.profile?.prenom || '', interimaire?.profile?.nom || '')}} 
+                                </span>
+                        </div>
+                      }
                 </div>
             </div>
             <div class="space-y-2 mt-3 justify-end">
@@ -728,6 +778,7 @@
             @else{
                <form action="" [formGroup]="formRenouveler">
                     <div>
+                        <div class="text-red-600"> il a déja fait {{ calculDuree(interimaire?.contrats?.date_fin_contrat,interimaire?.contrats?.date_debut_contrat) }} mois</div>
                         <div class="form-group mt-3">
                             <label for="date" class="form-label required"> Date début</label>
                             <input type="date" formControlName="date_debut" name="" class="form-control" id="">

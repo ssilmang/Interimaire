@@ -369,7 +369,7 @@
                <div class="max-w-screen-md  w-full">
                   <label for="poste" class="form-label">
                   </label>
-                  <input type="number"   formControlName="montant_kangourou"  placeholder="30000" class="form-control"
+                  <input type="text" (input)="numberSpace($event)"  formControlName="montant_kangourou"  placeholder="30000" class="form-control"
                   [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('montant_kangourou')?.invalid &&(formPermanent.get('montant_kangourou')?.touched || formPermanent.get('montant_kangourou')?.dirty),
                   'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('montant_kangourou')?.valid &&(formPermanent.get('montant_kangourou')?.touched || formPermanent.get('montant_kangourou')?.dirty)}"
      
@@ -395,9 +395,17 @@
             <div class="card-title ">
                <label for="agence" class="form-label required"> Employeur </label>          
             </div>
-           @if(interimCategorie){
+           @if(interimCategorie && !autreAgence){
             <div class="card-title ">
                <label for="agence" class="form-label-  required"> Categorie d'intérim </label>          
+            </div>
+           }
+           @if (interimaire && autreAgence){
+            <div class="card-title ">
+               <label for="agence" class="form-label-  required"> Categorie </label>          
+            </div>
+            <div class="card-title ">
+               <label for="agence" class="form-label-  required"> Coût unitaire </label>          
             </div>
            }
          </div>
@@ -493,6 +501,7 @@
                 }
               }
               }@else{
+               
                <input type="text"   formControlName="agence"  placeholder="Permanent" class="form-control"
                [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('agence')?.invalid &&(formPermanent.get('agence')?.touched || formPermanent.get('agence')?.dirty),
                'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('agence')?.valid &&(formPermanent.get('agence')?.touched || formPermanent.get('agence')?.dirty)}"
@@ -505,8 +514,38 @@
                }
               }
             </div>
+            @if (interimaire && autreAgence){
+               <div class="max-w-screen-md w-full">
+                  <label for="agence" class="form-label">    
+                  </label>
+                  <input type="text"   formControlName="interimaireCategorie"  placeholder="AB1" class="form-control"
+                  [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('interimaireCategorie')?.invalid &&(formPermanent.get('interimaireCategorie')?.touched || formPermanent.get('interimaireCategorie')?.dirty),
+                  'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('interimaireCategorie')?.valid &&(formPermanent.get('interimaireCategorie')?.touched || formPermanent.get('interimaireCategorie')?.dirty)}"
+                  />
+                  @if(formPermanent.get('interimCategorie')?.invalid && formPermanent.get('interimCategorie')?.touched){
+                     @if(formPermanent.get('interimCategorie')?.hasError('required')){
+                     
+                           <div class="text-red-500 text-xs">Ce champs est obligatoire</div>
+                     }
+                  }
+               </div>
+               <div class="max-w-screen-md w-full">
+                  <label for="agence" class="form-label">    
+                  </label>
+                     <input type="text" (input)="numberSpace($event)"  formControlName="cout_unitaire"  placeholder="150 000" class="form-control"
+                     [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('cout_unitaire')?.invalid &&(formPermanent.get('cout_unitaire')?.touched || formPermanent.get('cout_unitaire')?.dirty),
+                     'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('cout_unitaire')?.valid &&(formPermanent.get('cout_unitaire')?.touched || formPermanent.get('cout_unitaire')?.dirty)}"
+                     />
+                     @if(formPermanent.get('cout_unitaire')?.invalid && formPermanent.get('cout_unitaire')?.touched){
+                        @if(formPermanent.get('cout_unitaire')?.hasError('required')){
+                        
+                              <div class="text-red-500 text-xs">Ce champs est obligatoire</div>
+                        }
+                     }
+               </div>
+            }
            
-               @if(interimCategorie ){
+               @if(interimCategorie && !autreAgence){
                   <div class="max-w-screen-md w-full">
                      <label for="agence" class="form-label">    
                      </label>

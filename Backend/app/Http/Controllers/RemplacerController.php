@@ -16,6 +16,7 @@ class RemplacerController extends Controller
         try{
            return DB::transaction(function() use($request){
                 $remplacer = Remplacer::with(['profileRemplacer','profileRemplacant'])->get();
+               
                 return response()->json([
                     "statut"=>Response::HTTP_OK,
                     "message"=>"all remplcement",

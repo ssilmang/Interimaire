@@ -1,1 +1,1 @@
-<data-table [rowData]="dataDV" [pageData]="pages" [columnData]="columnData" />
+<data-table [rowData]="dataDV?dataDV:dataPermanent" [pageData]="pages" [columnData]="columnData" [message]="message" (supprimerEvent)="suppEvent($event)" />

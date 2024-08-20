@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\PermanentResource;
+use App\Models\Agence;
 use App\Models\AgenceCommercial;
 use App\Models\Categorie;
+use App\Models\Contrat;
 use App\Models\Direction;
 use App\Models\Interim;
 use App\Models\Permanent;
@@ -33,7 +35,7 @@ class PermanentController extends Controller
     {
         $permanents = Permanent::with(['profile', 'poste', 'canal', 'statut', 'groupe', 'categoriegroupe', 'agence', 'direction', 'locau', 'pole', 'departement', 'service', 'agence_commercial', 'responsable'])
         ->findOrFail($id);
-        $collaborateurs = $permanents->collaborateurs()->paginate($index);
+        $collaborateurs = $permanents->collaborateurs()->where('etat',0)->paginate($index);
         return response()->json([
             'statut'=>Response::HTTP_OK,
             'message'=>'all permanents',
@@ -53,7 +55,7 @@ class PermanentController extends Controller
     {
         $poste = Poste::where('libelle','Directeur des ventes')->first();
         $direction = Direction::where('libelle','DV')->first();
-        $permanent = Permanent::where(['poste_id'=>$poste->id,'direction_id'=>$direction->id])->first();
+        $permanent = Permanent::where(['poste_id'=>$poste->id,'direction_id'=>$direction->id,'etat'=>0])->first();
         $data =["dvs"=>PermanentResource::make($permanent)];    
         return $this->response->response(Response::HTTP_OK,'index permanent dv',$data);
     }
@@ -246,203 +248,260 @@ class PermanentController extends Controller
     public function import(Request $request)
     {
         try{
-           return DB::transaction(function() use($request){
-            request()->validate([
-                'files' => 'required|mimes:xlsx,xls|max:2048'
-            ]);
-            $file = $request->files;
-            if($file->count()>0)
-            {
-              $file = $file->get('files');
-            }
-            $fastExcel = new FastExcel();
-            $realisation =[];
-            $import = $fastExcel->import($file);
-            foreach ($import as $key => $value)
-            {
-                $statut = $this->controller->store($value['STATUT'],'Statut','statut');
-                $canal = $this->controller->store($value['CANAL'],"Canal","Canal");
-                $agence = $this->controller->store($value['AGENCE INTERIM'],"Agence","Agence");
-                $groupe = $this->controller->store($value['GROUPE'],"Groupe","Groupe");
-                $categorie = $this->controller->store($value['CATEGORIE'],"Categoriegroupe","Categorie de groupe");
-                $poste = $this->controller->store($value['POSTES'],"Poste","Poste");
-                $locau = $this->controller->store($value['LIEU D EXECUTION'],"Locau","locau");         
-                $service = null; $direction = null; $pole = null; $departement = null; $commercial =null;   
-                
-                if(isset($value['DIRECTION']) && $value['DIRECTION']!= "N/A")
-                {
-                    $direction = $this->controller->store($value['DIRECTION'],"Direction","direction");
-                }
-                if(isset($value['POLE']) && $direction )
-                {   
-                    $pole = $this->controller->create($value['POLE'],'direction_id',$direction->id,"Pole","pole");
-                }
-                if(isset($value['DEPARTEMENT']) && $value['DEPARTEMENT']!="N/A" && $pole)
-                {
-                    $departement = $this->controller->create($value['DEPARTEMENT'],'pole_id',$pole->id,"Departement","departement");
-                }
-                if(isset($value['SERVICE'])  && $departement)
-                {
-                    $service = $this->controller->create($value['SERVICE'],'departement_id',$departement->id,"Service","service");
-                }
-                
-                // if($service==null)
-                // {
-                //     $commercial = $this->controller->create($value['SERVICE'],'departement_id',$departement->id,"AgenceCommercial","agenceCommercial");
-                // }
-                $explode = explode(' ',$value['RESPONSABLE HIERARCHIQUE']);
-                $prenom="";$nom="";
-                 $email=null;$adresse=null;$commentaire=null;
-                if(isset($value['EMAIL']) && !empty($value['EMAIL']) && $value['EMAIL']!='N/A'){
-                    $email=$value['EMAIL'];
-                }
-                if(isset($value['ADRESSE']) && !empty($value['ADRESSE']) && $value['ADRESSE']!='N/A'){
-                    $adresse=$value['ADRESSE'];
-                }
-                if(isset($value['COMMENTAIRE']) && !empty($value['COMMENTAIRE']) && $value['COMMENTAIRE']!='N/A'){
-                    $commentaire = $value['COMMENTAIRE'];
-                }
-                $profile = Profile::updateOrCreate([
-                    "matricule"=>$value['Mle'],
-                ],[
-                    "prenom"=>$value['PRENOMS'],
-                    'nom'=>$value['NOM'],
-                    "telephone"=>$value['TELEPHONE'],
-                    'telephone_pro'=>$value['TELEPHONE PRO'],
-                    'email'=>  $email,
-                    'adresse'=>$adresse,
-                    'commentaire'=>$commentaire,
+           return DB::transaction(function() use($request)
+           {
+                request()->validate([
+                    'files' => 'required|mimes:xlsx,xls|max:2048'
                 ]);
-                if(count($explode)>=2)
+                $file = $request->files;
+                if($file->count()>0)
                 {
-                    $prenom= implode(' ',array_slice($explode,0,-1));
-                    $nom = end($explode);
+                $file = $file->get('files');
                 }
-                $userResponsabe = Profile::where(['prenom'=>$prenom,'nom'=>$nom])->first();
-                $responsable = null;
-                $realisation[]=$userResponsabe;
-                if($direction!= null && $pole==null)
+                $fastExcel = new FastExcel();
+                $realisation =[];
+                $import = $fastExcel->import($file);
+                foreach ($import as $key => $value)
                 {
-                    $responsable = Permanent::where('direction_id',$direction->id)->where('profile_id',$userResponsabe->id)->first();
-                }
-                if($pole!=null && $departement==null)
-                {
-                    $responsable = Permanent::where('pole_id',$pole->id)->where('profile_id',$userResponsabe->id)->first();
-                }
-                if($departement!=null && $service==null)
-                {
-                    $responsable = Permanent::where('departement_id',$departement->id)->where('profile_id',$userResponsabe->id)->first();
-                }
-                if($service!=null)
-                {
-                    $responsable = Permanent::where('service_id',$service->id)->where('profile_id',$userResponsabe->id)->first();
-                    if($responsable==null)
+                    $statut =isset($value['Statut'])? $this->controller->store($value['Statut'],'Statut','statut'):null;
+                    $canal =isset($value['Canal'])? $this->controller->store($value['Canal'],"Canal","Canal"):null;
+                    $groupe =isset($value['Groupe'])? $this->controller->store($value['Groupe'],"Groupe","Groupe"):null;
+                    $locau = isset($value['Lieu d\'exécution'])? $this->controller->store($value['Lieu d\'exécution'],"Locau","locau"):null;         
+                    $service = null; $direction = null; $pole = null; $departement = null; $commercial =null;   
+                    $poste = null;
+                    if(!is_numeric($value['Poste']) && $value['Poste']!= null)
+                    {
+                        $poste = Poste::firstOrCreate([
+                            'libelle'=>$value['Poste'],
+                            'duree_kangurou'=>$value['Durée kangourou']?$value['Durée kangourou']:null,
+                            'montant_kangurou'=>$value['Montant kangourou']?$value['Montant kangourou']:null
+                        ]);
+                    }else
+                    {
+                        $poste = Poste::find($value['Poste']);
+                    }
+                    if(isset($value['Direction']) && $value['Direction']!= "N/A")
+                    {
+                        $direction = $this->controller->store($value['Direction'],"Direction","direction");
+                    }
+                    if(isset($value['Pole']) && $direction)
+                    {   
+                        $pole = $this->controller->create($value['Pole'],'direction_id',$direction->id,"Pole","pole");
+                    }
+                    if(isset($value['Département']) && $value['Département']!="N/A" && $pole)
+                    {
+                        $departement = $this->controller->create($value['Département'],'pole_id',$pole->id,"Departement","departement");
+                    }
+                    if(isset($value['Service'])  && $departement)
+                    {
+                        $service = $this->controller->create($value['Service'],'departement_id',$departement->id,"Service","service");
+                    }
+                    $explode = explode(' ',$value['Responsable Hiérarchique']);
+                    $prenom="";$nom="";
+                    $email=null;$adresse=null;$commentaire=null;
+                    if(isset($value['Courriel']) && !empty($value['Courriel']) && $value['Courriel']!='N/A')
+                    {
+                        $email=$value['Courriel'];
+                    }
+                    if(isset($value['Adresse']) && !empty($value['Adresse']) && $value['Adresse']!='N/A')
+                    {
+                        $adresse=$value['Adresse'];
+                    }
+                    if(isset($value['Commentaire']) && !empty($value['Commentaire']) && $value['Commentaire']!='N/A')
+                    {
+                        $commentaire = $value['Commentaire'];
+                    }
+                    $profile = Profile::updateOrCreate([
+                        "matricule"=>$value['Matricule'],
+                    ],[
+                        "prenom"=>$value['Prenom'],
+                        'nom'=>$value['Nom'],
+                        "telephone"=>$value['Téléphone'],
+                        'telephone_pro'=>$value['Téléphone pro'],
+                        'email'=>  $email,
+                        'adresse'=>$adresse,
+                        'commentaire'=>$commentaire,
+                    ]);
+                    if(count($explode)>=2)
+                    {
+                        $prenom = implode(' ',array_slice($explode,0,-1));
+                        $nom = end($explode);
+                    }
+                    $userResponsabe = Profile::where(['prenom'=>$prenom,'nom'=>$nom])->first();
+                    
+                    $responsable = null;
+                    $realisation[]=$userResponsabe;
+                    if($direction!= null && $pole==null)
+                    {
+                        $responsable = Permanent::where('direction_id',$direction->id)->where('profile_id',$userResponsabe->id)->first();
+                    }
+                    if($pole!=null && $departement==null)
+                    {
+                        $responsable = Permanent::where('pole_id',$pole->id)->where('profile_id',$userResponsabe->id)->first();
+                    }
+                    if($departement!=null && $service==null)
                     {
                         $responsable = Permanent::where('departement_id',$departement->id)->where('profile_id',$userResponsabe->id)->first();
                     }
-                }       
-                if(strtolower($statut->libelle)===strtolower("PRESTATAIRE"))
-                {
-                    $prestataire = Prestataire::updateOrCreate([
-                        'profile_id'=>$profile->id,
-                    ],[
-                        'poste_id'=>$poste->id,
-                        'canal_id'=>$canal->id,
-                        'statut_id'=>$statut->id,
-                        'groupe_id'=>$groupe->id,
-                        'locau_id'=>$locau->id,
-                        'categoriegroupe_id'=>$categorie->id,
-                        'agence_id'=>$agence->id,
-                        'direction_id'=>$direction->id,
-                        'pole_id'=>$pole? $pole->id :null,
-                        'departement_id'=>$departement? $departement->id : null,
-                        'service_id'=>$service? $service->id :null,
-                        'agence_commercial_id'=>null,
-                        'responsable_id'=>$responsable?$responsable->id:null,
-                    ]);
-                    // return $this->response->response(Response::HTTP_OK,"prestataire ajouter avec succès",$prestataire);
-                }
-                elseif (strtolower($statut->libelle) === strtolower("PERMANENT"))
-                {
-                    $permanent = Permanent::updateOrCreate([
-                        'profile_id'=>$profile->id
-                    ],[
-                        'poste_id'=>$poste->id,
-                        'canal_id'=>$canal->id,
-                        'statut_id'=>$statut->id,
-                        'groupe_id'=>$groupe->id,
-                        'locau_id'=>$locau->id,
-                        'categoriegroupe_id'=>$categorie->id,
-                        'agence_id'=>$agence->id,
-                        'direction_id'=>$direction->id,
-                        'pole_id'=>$pole? $pole->id : null,
-                        'departement_id'=>$departement? $departement->id : null,
-                        'service_id'=>$service? $service->id : null,
-                        'agence_commercial_id'=>null,
-                        'responsable_id'=>$responsable?$responsable->id:null,
-                    ]);
-                    // return $this->response->response(Response::HTTP_OK,"permanent ajouter avec succès",$permanent);
-                }
-                // elseif(strtolower($statut->libelle===strtolower("INTERIMAIRE")))
-                // {
-                //     // if (isset($request->categorieInterim) && isset($request->responsable) && isset($request->poste)) {
-                //     //     $date_debut = Carbon::createFromFormat('Y-m-d',$value['DATE DEBUT']);
-                //     //     $date_fin = Carbon::createFromFormat('Y-m-d',$value['DATE FIN']);
-                //     //     $duree_contrat =( $date_debut->diffInMonths($date_fin));
-                //     //     $contrat = $duree_contrat + $request->$value['AUTRE STRUCTURE'];
-                //     //     if($contrat>24){
-                //     //         return response()->json([
-                //     //             "statut"=>Response::HTTP_BAD_REQUEST,
-                //     //             "message"=>"le contrat est supérieur à deux ans; invalide!!!",
-                //     //             ]);
-                //     //             }
-                //     //             $temps_presence_structure_actuel = 0;
-                //     //             $temps_presence_total = $request->$value['AUTRE STRUCTURE'];
-                //     //             $categorie = Categorie::where('libelle',$value['CATEGORIE'])->first();  
-                                   
-                //     //             $interim = new Interim();
-                //     //             $interim->statut_id = $statut->id;
-                //     //             $interim->profile_id = $profile->id;
-                //     //             $interim->categorie_id = $categorie->id;
-                //     //             $interim->responsable_id = $responsable;
-                //     //             $interim->poste_id = $poste->id;
-                //     //             $interim->save();
-                //     //             $message ="Contrat ajouter avec succès";        
-                                
-                //     //             $cout_mensuel = $categorie->cout_unitaire_journalier *30;
-                //     //             $cout_global = $cout_mensuel * $duree_contrat;
-                //     //             $contrat = Contrat::createOrUpdate([
-                //     //                 'interim_id' => $interim->id,
-                //     //                 'date_debut_contrat' => $request->date_debut_contrat,
-                //     //                 'date_fin_contrat' => $request->date_fin_contrat,
-                //     //                 'temps_presence_autre_structure_sonatel' => $request->temps_presence_autre_structure_sonatel,
-                //     //                 'temps_presence_structure_actuel'=>$temps_presence_structure_actuel,
-                //     //                 'cumul_presence_sonatel' => $temps_presence_total,
-                //     //                 'duree_contrat' => $duree_contrat,
-                //     //                 'duree_contrat_restant' => $duree_contrat,
-                //     //                 'cout_mensuel' => $cout_mensuel,
-                //     //                 'cout_global' => $cout_global,
-                //     //                 'DA' => $request->DA?$request->DA:0,
-                //     //                 'DA_kangurou' => $request->DA_kangourou?$request->DA_kangourou:0,
-                //     //                 'commentaire' => $request->commentaire,
-                //     //             ]);
+                    if($service!=null)
+                    {
+                        $responsable = Permanent::where('service_id',$service->id)->where('profile_id',$userResponsabe->id)->first();
+                        if($responsable==null)
+                        {
+                            $responsable = Permanent::where('departement_id',$departement->id)->where('profile_id',$userResponsabe->id)->first();
+                        }
+                    }       
+                    if(strtolower($statut->libelle)===strtolower("PRESTATAIRE"))
+                    {
+                        $agence = $this->controller->store($value['Agence interim'],"Agence","Agence");
+                        $categorie = $this->controller->store($value['Catégorie'],"Categoriegroupe","Categorie de groupe");
+                        $prestataire = Prestataire::updateOrCreate([
+                            'profile_id'=>$profile->id,
+                        ],[
+                            'poste_id'=>$poste->id,
+                            'canal_id'=>$canal->id,
+                            'statut_id'=>$statut->id,
+                            'groupe_id'=>$groupe->id,
+                            'locau_id'=>$locau->id,
+                            'categoriegroupe_id'=>$categorie->id,
+                            'agence_id'=>$agence->id,
+                            'direction_id'=>$direction->id,
+                            'pole_id'=>$pole? $pole->id :null,
+                            'departement_id'=>$departement? $departement->id : null,
+                            'service_id'=>$service? $service->id :null,
+                            'agence_commercial_id'=>null,
+                            'responsable_id'=>$responsable?$responsable->id:null,
+                        ]);
+                        // return $this->response->response(Response::HTTP_OK,"prestataire ajouter avec succès",$prestataire);
+                    }
+                    elseif (strtolower($statut->libelle) === strtolower("PERMANENT"))
+                    {
+                        $agence = $this->controller->store($value['Agence interim'],"Agence","Agence");
+                        $categorie = $this->controller->store($value['Catégorie'],"Categoriegroupe","Categorie de groupe");
+                        $permanent = Permanent::updateOrCreate([
+                            'profile_id'=>$profile->id
+                        ],[
+                            'poste_id'=>$poste->id,
+                            'canal_id'=>$canal->id,
+                            'statut_id'=>$statut->id,
+                            'groupe_id'=>$groupe->id,
+                            'locau_id'=>$locau->id,
+                            'categoriegroupe_id'=>$categorie->id,
+                            'agence_id'=>$agence->id,
+                            'direction_id'=>$direction->id,
+                            'pole_id'=>$pole? $pole->id : null,
+                            'departement_id'=>$departement? $departement->id : null,
+                            'service_id'=>$service? $service->id : null,
+                            'agence_commercial_id'=>null,
+                            'responsable_id'=>$responsable?$responsable->id:null,
+                        ]);
+                    }
+                    elseif(strtolower($statut->libelle) === strtolower("INTERIMAIRE"))
+                    {
+                        if (isset($value['Agence interim']) && isset($responsable))
+                        {
+                            $date_debut = $value['Date début'] instanceof \DateTimeImmutable ? $value['Date début']->format('Y-m-d') : Carbon::createFromFormat('Y-m-d', $value['Date début']);
+                            $date_fin = $value['Date fin'] instanceof \DateTimeImmutable ? $value['Date fin']->format('Y-m-d') : Carbon::createFromFormat('Y-m-d', $value['Date fin']);
+                            $date_debut = explode(' ',$date_debut);
+                            $date_fin = explode(' ',$date_fin);
+                            $date_debut = ($date_debut instanceof Carbon) ? $date_debut[0] : Carbon::parse($date_debut[0]);
+                            $date_fin = ($date_fin instanceof Carbon) ? $date_fin[0] : Carbon::parse($date_fin[0]);
+                            $duree_contrat =( $date_debut->diffInMonths($date_fin)); 
+                            $contrat = $duree_contrat + $value['Temps présence autres structures Sonatel'];
+                            if($contrat>24){
+                                return response()->json([
+                                    "statut"=>Response::HTTP_BAD_REQUEST,
+                                    "message"=>"le contrat est supérieur à deux ans; invalide!!!",
+                                    ]);
+                            }
+                            $categorieInterim= null;
+                            $cout = isset($value['Coût unitaire (tarif journalier)'])?$value['Coût unitaire (tarif journalier)']:0;
+                            if(!is_numeric($value['Agence interim']) && $value['Agence interim'] != null)
+                            {
+                                $agence = Agence::firstOrCreate([
+                                    'libelle'=>$value['Agence interim'],                
+                                ]);
+                                $categorieInterim = Categorie::updateOrCreate([
+                                    'libelle'=>$value['Catégorie']?$value['Catégorie']:null,
+                                ],[
+                                    'cout_unitaire_journalier'=>$cout,
+                                    'agence_id'=>$agence->id
+                                ]);
+                            }else
+                            {
+                                $categorieInterim = Categorie::find($request->categorieInterim);
+                            }
+                            $temps_presence_structure_actuel = $value['Temps présence structure actuelle']?$value['Temps présence structure actuelle']:0;
                             
-                //     //             return response()->json([
-                //     //                 'statut'=>Response::HTTP_OK,
-                //     //                 'message'=>$message,
-                //     //                 'data'=>$contrat,
-                //     //             ]);
-                //     // } 
-                // }
-            }
-            return response()->json([
-                $realisation
-            ]);
+                            $temps_presence_autre_structure =$value['Temps présence autres structures Sonatel']?$value['Temps présence autres structures Sonatel']:0;
+                            $temps_presence_cumul = ($temps_presence_structure_actuel/30) + $temps_presence_autre_structure;
+                            // return response()->json($profile->id);
+                            $interim = Interim::updateOrCreate([
+                                'profile_id' => $profile?$profile['id']:null,                              
+                                'statut_id' => $statut?$statut->id:null],[
+                                'responsable_id' => $responsable?$responsable->id:null,
+                                 'categorie_id' => $categorieInterim->id?$categorieInterim->id:null,
+                                'poste_id' => $poste? $poste->id:null,
+                                'etat' => isset($value['Etat'])?$value['Etat']:'en cours',
+                            ]);
+                            $message ="Contrat ajouter avec succès";        
+                            $contrat = Contrat::updateOrCreate([
+                                'interim_id' => $interim->id],[
+                                'date_debut_contrat' => explode(' ',$date_debut)[0],
+                                'date_fin_contrat' =>explode(' ',$date_fin)[0],
+                                'temps_presence_structure_actuel' =>$value['Temps présence structure actuelle']?$value['Temps présence structure actuelle']:0,
+                                'temps_presence_autre_structure_sonatel'=>$value['Temps présence autres structures Sonatel']?$value['Temps présence autres structures Sonatel']:0,
+                                'cumul_presence_sonatel' => $temps_presence_cumul,
+                                'duree_contrat' => isset($value['Durée contrat'])?$value['Durée contrat']:0,
+                                'duree_contrat_restant' => isset($value['Durée contrat restante'])?$value['Durée contrat restante']:0,
+                                'cout_mensuel' =>isset($value['Coût mensuel (tarif mensuel)'])?$value['Coût mensuel (tarif mensuel)']:0,
+                                'cout_global' =>isset($value['Coût global'])?$value['Coût global']:0,
+                                'DA' => isset($value['DA'])?$value['DA']:0,
+                                'DA_kangurou' => isset($value['DA kangourou'])?$value['DA kangourou']:0,
+                                'commentaire' => isset($value['Commentaire'])?$value['Commentaire']:0,
+                            ]);
+                        } 
+                    }
+                }
+                return response()->json([
+                    $realisation
+                ]);
             });
-
         }catch(QueryException $e)
         {
             return $this->response->response(Response::HTTP_BAD_REQUEST,'erreur',$e->getMessage());
+        }
+    }
+    public function supprimer(Request $request,$id)
+    {
+        try{
+            return DB::transaction(function() use($request,$id)
+            {
+                $object = null;
+                $profile = Profile::find($id);
+                if($profile)
+                {   
+                    $permanent = Permanent::where('profile_id',$profile->id)->first();
+                    $prestataire = Prestataire::where('profile_id',$profile->id)->first();
+                    if($permanent)
+                    {
+                        $permanent->update(['date'=>$request->date,'motif'=>$request->motif,'etat'=>1,'commentaire'=>$request->commentaire]);   
+                        $object = $permanent;
+                    }else if($prestataire)
+                    {
+                        $prestataire->update(['date'=>$request->date,'motif'=>$request->motif,'etat'=>1,'commentaire'=>$request->commentaire]); 
+                        $object = $prestataire;
+                    }
+                    else{
+                        return $this->response->response(Response::HTTP_NO_CONTENT,'ce profile n\'est pas un permanent ni un prestataire',$profile);
+                    }  
+                    return $this->response->response(Response::HTTP_OK,"vous avez supprimer avec succès  $profile->prenom   $profile->nom .",PermanentResource::make($object));
+                }
+                return $this->response->response(Response::HTTP_BAD_REQUEST,'ce profile n\'existe pas ',$object);
+            });
+
+        }catch(QueryException $e){
+            return $this->response->response(Response::HTTP_BAD_REQUEST,'erreur lors du traitement',$e);
         }
     }
 }

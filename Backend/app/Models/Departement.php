@@ -9,9 +9,8 @@ class Departement extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'libelle',
-        'pole_id'
+    protected $guarded = [
+       'id'
         ];
 
     public function pole()

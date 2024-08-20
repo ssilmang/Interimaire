@@ -38,16 +38,16 @@
                     </div>
                 </th> -->
                 <th scope="col" class="px-6 py-3">
-                    Mle
+                    Matricule
                 </th>
                 <th scope="col" class="px-6 py-3">
-                    Prenoms
+                    Prenom
                 </th>
                 <th scope="col" class="px-6 py-3">
                     Nom
                 </th>
                 <th scope="col" class="px-6 py-3">
-                    Postes
+                    Poste
                 </th>
                 <th scope="col" class="px-6 py-3">
                     Canal
@@ -65,10 +65,10 @@
                     Service
                 </th>
                 <th scope="col" class="px-6 py-3 text-nowrap">
-                    Lieu d'Execution
+                    Lieu d'exécution
                 </th>
                 <th scope="col" class="px-6 py-3 text-nowrap">
-                    Responsable Hierachique
+                    Responsable Hiérachique
                 </th>
                 <th scope="col" class="px-6 py-3">
                     Statut
@@ -80,7 +80,16 @@
                     Groupe
                 </th>
                 <th scope="col" class="px-6 py-3">
+                    Profile
+                </th>
+                <th scope="col" class="px-6 py-3">
                     Categorie
+                </th>
+                <th scope="col" class="px-6 py-3">
+                   MOUVEMENT/Avancement/Promotion
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    DATE DERNIER(E):Avancement/Promotion
                 </th>
                 <th scope="col" class="px-6 py-3">
                     Téléphone
@@ -89,7 +98,55 @@
                     Téléphone Pro
                 </th>
                 <th scope="col" class="px-6 py-3">
+                   Couriel
+                </th>
+                <th scope="col" class="px-6 py-3">
                     Commentaire
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    DA
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Date début
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Date fin
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Temps présence structure actuelle
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Temps présence autres structures Sonatel
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Cumul temps de présence Sonatel
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Durée kangourou
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Durée contrat
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Durée contrat restante
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Coût unitaire (tarif journalier)
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Coût mensuel (tarif mensuel)
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    DA kangourou
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Montant kangourou
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Coût global
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Etat
                 </th>
             </tr>
         </thead>
@@ -103,58 +160,115 @@
                     </div>
                 </td> -->
                 <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                    {{data.Mle}}
+                    {{data.Matricule}}
                 </th>
                 <td class="px-6 py-4">
-                    {{data.PRENOMS}}
+                    {{data.Prenom}}
                 </td>
                 <td class="px-6 py-4">
-                    {{data.NOM}}
+                    {{data.Nom}}
                 </td>
                 <td class="px-6 py-4">
-                    {{data.POSTES}}
+                    {{data.Poste}}
                 </td>
                 <td class="px-6 py-4">
-                    {{data.CANAL}}
+                    {{data.Canal}}
                 </td>
                 <td class="px-6 py-4">
-                    {{data.DIRECTION}}
+                    {{data.Direction}}
                 </td>
                 <td class="px-6 py-4">
-                    {{data.POLE}}
+                    {{data.Pole}}
                 </td>
                 <td class="px-6 py-4">
-                    {{data.DEPARTEMENT}}
+                    {{data['Département']}}
                 </td>
                 <td class="px-6 py-4">
-                    {{data.SERVICE}}
+                    {{data.Service}}
                 </td>
                 <td class="px-6 py-4">
-                    {{data['LIEU D EXECUTION']}}
+                    {{data["Lieu d'exécution"]}}
                 </td>
                 <td class="px-6 py-4">
-                    {{data['RESPONSABLE HIERARCHIQUE']}}
+                    {{data['Responsable Hiérarchique']}}
                 </td>
                 <td class="px-6 py-4">
-                    {{data.STATUT}}
+                    {{data.Statut}}
                 </td>
                 <td class="px-6 py-4">
-                    {{data['AGENCE INTERIM']}}
+                    {{data['Agence Interim']}}
                 </td>
                 <td class="px-6 py-4">
-                    {{data.GROUPE}}
+                    {{data.Groupe}}
                 </td>
                 <td class="px-6 py-4">
-                    {{data.CATEGORIE}}
+                    {{data.Profile}}
                 </td>
                 <td class="px-6 py-4">
-                    {{data.TELEPHONE}}
+                    {{data['Catégorie']}}
                 </td>
                 <td class="px-6 py-4">
-                    {{data['TELEPHONE PRO']}}
+                    {{data['MOUVEMENT /Avancement/Promotion']}}
                 </td>
                 <td class="px-6 py-4">
-                    {{data.COMMENTAIRE}}
+                    {{data['DATE DERNIER(E) : Avancement/Promotion']}}
+                </td>
+                <td class="px-6 py-4">
+                    {{data['Téléphone']}}
+                </td>
+                <td class="px-6 py-4">
+                    {{data['Téléphone pro']}}
+                </td>
+                <td class="px-6 py-4">
+                    {{data['Courriel']}}
+                </td>
+                <td class="px-6 py-4">
+                    {{data.Commentaire}}
+                </td>
+                <td class="px-6 py-4">
+                    {{data['DA']}}
+                </td>
+                <td class="px-6 py-4">
+                    {{data['Date début']}}
+                </td>
+                <td class="px-6 py-4">
+                    {{data['Date fin']}}
+                </td>
+                <td class="px-6 py-4">
+                    {{data['Temps présence structure actuelle']}}
+                </td>
+                <td class="px-6 py-4">
+                    {{data['Temps présence autres structures Sonatel']}}
+                </td>
+                <td class="px-6 py-4">
+                    {{data['Cumul temps de présence Sonatel']}}
+                </td>
+                <td class="px-6 py-4">
+                    {{data['Durée kangourou']}}
+                </td>
+                <td class="px-6 py-4">
+                    {{data['Durée contrat']}}
+                </td>
+                <td class="px-6 py-4">
+                    {{data['Durée contrat restante']}}
+                </td>
+                <td class="px-6 py-4">
+                    {{data['Coût unitaire (tarif journalier)']}}
+                </td>
+                <td class="px-6 py-4">
+                    {{data['Coût mensuel (tarif mensuel)']}}
+                </td>
+                <td class="px-6 py-4">
+                    {{data['DA kangourou']}}
+                </td>
+                <td class="px-6 py-4">
+                    {{data['Montant Kangourou']}}
+                </td>
+                <td class="px-6 py-4">
+                    {{data['Coût global']}}
+                </td>
+                <td class="px-6 py-4">
+                    {{data['Etat']}}
                 </td>
             </tr>
             }

@@ -1,5 +1,5 @@
 import { CommonModule, formatDate } from '@angular/common';
-import { AfterViewInit, ChangeDetectorRef, Component, OnInit, ViewChild, inject } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, DestroyRef, OnInit, ViewChild, inject } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
 import { Chart, registerables } from 'chart.js';
 import { Images } from 'docs/assets/data/images';
@@ -19,7 +19,7 @@ import * as  XLSX from 'xlsx';
 import * as XLSXStyle from 'xlsx-style';
 import { MatInputModule } from '@angular/material/input';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { from, map, Observable, startWith } from 'rxjs';
+import { from, map, Observable, pipe, startWith, takeUntil } from 'rxjs';
 import {Dialog,DialogModule,DialogRef} from '@angular/cdk/dialog';
 import { DialogExprtComponent } from '../dialog/dialog-exprt/dialog-exprt.component';
 import { RechercherLibellePipe } from '../../pipe/rechercher-libelle.pipe';
@@ -28,6 +28,8 @@ import { DiolagRemplacementComponent } from '../dialog/diolag-remplacement/diola
 import {CdkDragDrop,CdkDropList ,CdkDrag, moveItemInArray} from '@angular/cdk/drag-drop'
 import { MatTableModule,MatTable} from '@angular/material/table'
 import {MatIconModule} from '@angular/material/icon'
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop'
+import { MatFormFieldModule } from '@angular/material/form-field';
 // import { ExcelService } from 'src/app/excel-service';
 Chart.register(...registerables);
 
@@ -46,14 +48,15 @@ Chart.register(...registerables);
     DialogModule,
     RechercherLibellePipe,
     CdkDropList,
-     CdkDrag,
-      MatTableModule,
-       MatIconModule
-    
+    CdkDrag,
+    MatTableModule,
+    MatIconModule,
+    MatFormFieldModule
   ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
-  animations: [pageTransition]
+  animations: [pageTransition],
+  // changeDetection:ChangeDetectionStrategy.OnPush
 })
 export class DashboardComponent implements OnInit, AfterViewInit
 {
@@ -110,10 +113,12 @@ export class DashboardComponent implements OnInit, AfterViewInit
   numeroTelephone:string=""
   numeroTelephonePro:string="";
   dataRemplacer:DataRemplacer[]=[]
-  @ViewChild('table', {static: true}) table!: MatTable<DataRemplacer>;
+  isVisible:boolean=true
 
+  @ViewChild('table', {static: true}) table!: MatTable<DataRemplacer>;
   displayedColumns: string[] = ['Prenom', 'Nom', 'Action', 'Prénom', 'nom'];
   dataSource:DataRemplacer[] =[];
+  private destroyRef= inject(DestroyRef)
   constructor(
     private sharedService: LocalStorageService,
     private serve:PermanentService, 
@@ -130,7 +135,7 @@ export class DashboardComponent implements OnInit, AfterViewInit
     {
       date:[,[Validators.required,this.DateValidator(this.interimaire!)]],
       motif:[''],
-      date_debu:[''],
+      date_debut:[''],
       date_fin:['']
     });
     this.formRenouveler = this.fb.group({
@@ -163,7 +168,6 @@ export class DashboardComponent implements OnInit, AfterViewInit
         this.cdRef.detectChanges();
       }
     })
-   
     // var myChart = new Chart("areaWiseSale", {
     //   type: 'doughnut',
     //   data: {
@@ -199,7 +203,6 @@ export class DashboardComponent implements OnInit, AfterViewInit
     this.index(this.taille,this.currentPage);
     this.allAgence();
     this.indexRemplacer()
-    console.log(this.dataSource);
   }
   drop(event: CdkDragDrop<string>) {
     const previousIndex = this.dataSource.findIndex(d => d === event.item.data);
@@ -213,8 +216,6 @@ export class DashboardComponent implements OnInit, AfterViewInit
   }
   ngAfterViewInit=(): void=>
   {    
-console.log(this.activeFinContrat);
-
     if(this.activeFinContrat)
     { 
       this.finContrat();
@@ -222,19 +223,18 @@ console.log(this.activeFinContrat);
     if(this.activeKangourou)
     {  
       this.Kangourou();
-    }
-    console.log(this.sharedService.openModal$);
-    console.log(this.remplacement);
-    
+    }  
     if(this.remplacement){
       this.indexRemplacer();
       this.dataSource= this.dataRemplacer
-    console.log(this.dataSource);
      }
     this.cdRef.detectChanges()
   }
   checkFormValidity() {
-    if (this.formRompre.valid) {
+    let cal = this.calculDuree(this.interimaire?.contrats.date_fin_contrat,this.interimaire?.contrats.date_debut_contrat);
+    console.log(this.calculDuree(this.interimaire?.contrats.date_fin_contrat,this.interimaire?.contrats.date_debut_contrat));
+    
+    if (this.formRompre.valid && cal<24) {
       this.formeValide = false; 
     } else {
       this.formeValide = true; 
@@ -254,6 +254,7 @@ console.log(this.activeFinContrat);
         const dateDebutContrat = new Date(this.interimaire.contrats.date_debut_contrat!);
         const dateFinContrat = new Date(this.interimaire.contrats.date_fin_contrat);
         const dateActuel = new Date();
+       
         if (dateValue <= dateDebutContrat || dateValue >= dateFinContrat) {  
           return { 'horsIntervale': true };
         }
@@ -302,9 +303,20 @@ console.log(this.activeFinContrat);
       return null;
     }
   }
+  calculDuree(date_fin:string|undefined,date_debut:string|undefined):number{
+    let duree_restant = 0;
+    if(date_debut!=undefined && date_fin!=undefined){
+      const debut = new Date(date_debut);
+      const fin = new Date(date_fin);
+      const anneeDiff = fin.getFullYear() - debut.getFullYear();
+      const moisDiff = fin.getMonth() - debut.getMonth();
+      duree_restant= anneeDiff * 12 + moisDiff; 
+    }
+    return duree_restant;
+  }
   index(taille:number,page:number)
   {
-    this.service.index(taille,page).subscribe({
+    this.service.index(taille,page).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next:(response=>{
         this.backg = "bg-orange-600"
         this.dataInterims = response.data.interimaires;
@@ -319,7 +331,7 @@ console.log(this.activeFinContrat);
   }
   indexRemplacer()
   {
-    this.service.indexRemplacer().subscribe({
+    this.service.indexRemplacer().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next:(response)=>{
         this.dataRemplacer = response.data;
         console.log(this.dataRemplacer);
@@ -329,7 +341,7 @@ console.log(this.activeFinContrat);
   }
   allAgence()
   {
-    this.serve.indexAll().subscribe({
+    this.serve.indexAll().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next:(response=>{
         this.dataAgence = response.data.agences       
       })
@@ -417,8 +429,8 @@ console.log(this.activeFinContrat);
             const index = this.dataInterims.findIndex(ele => ele.id === this.id);
             if (index !== -1) 
             {                  
-              this.dataInterims[index].date = this.formRompre.value.date;
-              this.dataInterims[index].motif = this.formRompre.value.motif;
+              this.dataInterims[index].contrats.date = this.formRompre.value.date;
+              this.dataInterims[index].contrats.motif = this.formRompre.value.motif;
               this.dataInterims[index].etat = response.data.etat;           
             } 
             this.message  = response.message
@@ -456,8 +468,9 @@ console.log(this.activeFinContrat);
   {
     this.taille=3;
     this.currentPage =0
-    this.service.finContrat(this.taille,this.currentPage).subscribe({
+    this.service.finContrat(this.taille,this.currentPage).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next:(response)=>{
+        this.isVisible = true
         this.activeFinContrat ="border-b-violet-700 border-y-4";
         this.backg = "bg-violet-700"
         this.activeCours="";
@@ -475,6 +488,7 @@ console.log(this.activeFinContrat);
     this.activeCours="contrat activé"
     this.activeKangourou="";
     this.remplacement=''
+    this.isVisible = true;
     this.activeFinContrat="";
     this.index(this.taille,this.currentPage);
   }
@@ -482,8 +496,9 @@ console.log(this.activeFinContrat);
   {
     this.taille=3;
     this.currentPage =0
-    this.service.processusKangourou(this.taille,this.currentPage).subscribe({
+    this.service.processusKangourou(this.taille,this.currentPage).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next:(response)=>{
+        this.isVisible = true;
         this.activeKangourou = "border-y-4 border-b-cyan-700";
         this.backg = "bg-cyan-700"
         this.activeCours="";
@@ -834,7 +849,7 @@ console.log(this.activeFinContrat);
       const dialogRef = this.dialogg.open(DiolagRemplacementComponent,{
         data:interim
       });
-      dialogRef.afterClosed().subscribe(result=>{
+      dialogRef.afterClosed().pipe(takeUntilDestroyed(this.destroyRef)).subscribe(result=>{
         const index = this.dataInterims.findIndex(ele => ele.id === this.id);
         if (index !== -1) 
         {                  
@@ -848,6 +863,7 @@ console.log(this.activeFinContrat);
     this.activeCours='';
     this.activeFinContrat='';
     this.activeKangourou=""
+    this.isVisible =false;
     this.remplacement='border-y-4 border-b-emerald-700'
   }
   formatSpaces(number: number): string {
@@ -872,7 +888,15 @@ console.log(this.activeFinContrat);
       return '0'
     return this.formatSpaces(value);
   }
- 
+  getUserInitials(prenom:string,nom:string):string {
+    if (!prenom || !nom) return '';
+
+    const initials = prenom.charAt(0).toUpperCase() + nom.charAt(0).toUpperCase();
+    return initials;
+  }
+  supprimer=(interim:Interim)=>{
+    
+  }
 
 
 }
