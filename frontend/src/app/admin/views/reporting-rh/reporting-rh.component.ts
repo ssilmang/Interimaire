@@ -10,12 +10,17 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {MatCardModule} from '@angular/material/card';
 import {MatChipsModule} from '@angular/material/chips';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
-import { ApexChart, ApexDataLabels, ApexNonAxisChartSeries, ApexTitleSubtitle,NgApexchartsModule } from 'ng-apexcharts';
+import { ApexAxisChartSeries, ApexChart, ApexDataLabels, ApexNonAxisChartSeries, ApexTitleSubtitle,NgApexchartsModule } from 'ng-apexcharts';
 import { CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
 import { MatTable, MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import  {jsPDF} from 'jspdf';
+import html2canvas from 'html2canvas';
+import { Dialog } from '@angular/cdk/dialog';
+import { PdfPowerpointComponent } from '../dialog/pdf-powerpoint/pdf-powerpoint.component';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 Chart.register(...registerables)
 @Component({
   selector: 'app-reporting-rh',
@@ -52,7 +57,7 @@ export class ReportingRhComponent
   showDetails:boolean = false;
   showPrestat:boolean = false;
   showInterim:boolean = false;
-  data:any
+  data:any=[]
   view:[number,number] = [700, 370];
   showLegend = true;
   showLabels = true;
@@ -61,7 +66,7 @@ export class ReportingRhComponent
   legendPosition = 'right';
   dataSource:any
   colorScheme: any = this.generateRandomColors(3);
-  colorAgence:any =this.generateRandomColors(11);
+  colorAgence:string[] =this.generateRandomColors(10);
   colorCategorie = this.generateRandomColors(5);
   isCommentaire:boolean=false
   dataCanal:any=[]
@@ -86,14 +91,16 @@ export class ReportingRhComponent
   saveCateg:boolean=true;
   saveCan:boolean=true;
   saveRan:boolean=true;
+  dataAgence:any[]=[]
   frenchMonthNames = [
     'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
     'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
   ];
-  constructor(private service: ReportingService){}
+  total:number=0
+  constructor(private service: ReportingService, public dialog:MatDialog){}
   displayedColumns: string[] = ['key','value'];
   displayedColumnsCanal: string[] = ['key', 'permanent', 'prestataire', 'interimaire','totalGeneral'];
-  displayedColumnsCategorie:string[]= ['ele', 'permanent', 'prestataire','totalGeneral'];
+  displayedColumnsCategorie:string[]= ['ele', 'permanent', 'prestataire','interimaire','totalGeneral'];
   chartSeries: ApexNonAxisChartSeries = [];
   chartDetails: ApexChart = {
     type: 'pie',
@@ -101,8 +108,14 @@ export class ReportingRhComponent
       show: true
     }
   };
+  chartpie: ApexChart = {
+    type: 'donut',
+    toolbar: {
+      show: true
+    }
+  };
   chartBar: ApexChart = {
-    type: 'bar',
+    type: 'area',
     toolbar: {
       show: true
     }
@@ -111,12 +124,16 @@ export class ReportingRhComponent
   chartCategorie:string[] = [];
   label:string[]=[]
   chartTitle: ApexTitleSubtitle = {
-    // text: 'Leading Companies',
     align: 'center'
   };
   chartDataLabels: ApexDataLabels = {
-    enabled: true
+    enabled: true,
+    formatter: (val: number) => {
+      const percentage = (val / this.total) * 100;
+      return percentage.toFixed(2) + '%';
+    },
   };
+  chartSeri:ApexAxisChartSeries=[]
   public pieChartOptions: ChartOptions<'pie'> = {
     responsive: false,
   };
@@ -167,6 +184,71 @@ export class ReportingRhComponent
       this.commentaireCan = commentCan
     }
   }
+  // generatePdf() {
+  //   const pdf = new jsPDF('p', 'pt', 'a4');
+  //   const element = document.getElementById('reporting');
+  
+  //   // Directly add HTML content to PDF
+  //   pdf.html(element!, {
+  //     callback: function (pdf) {
+  //       pdf.save('reporting.pdf');
+  //     },
+  //     x: 10,
+  //     y: 10,
+  //     html2canvas: { scale: 0.5 },
+  //     margin: [10, 10, 10, 10], // Margins for the PDF
+  //     autoPaging: true,
+  //   });
+  // }
+  generatePdf()
+  {
+    const element = document.getElementById('statut_id')as HTMLElement;
+    const agence = document.getElementById('agence_id') as HTMLElement;
+    const categorie_id = document.getElementById('categorie_id') as HTMLElement;
+    const canal_id = document.getElementById('canal_id') as HTMLElement;
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.data = {
+        donnee: element,
+        agence:agence,
+        canal:canal_id,
+        categorie:categorie_id,
+        mois:this.moisActuel,
+        annee:this.anneeActuel,
+        dataStatut:{
+          values:this.chartSeries,
+          labels:this.chartLabels,
+          colors:this.colorScheme,
+          commentaire:this.commentaireStat
+        },
+        dataAgence:{
+            data:this.data,
+            values:this.dataAgence,
+            labels:this.label,
+            colors:this.colorAgence,
+            commentaire:this.commentaireAgenc
+        },
+        dataCategorie:{
+            data:this.dataCategorieGroupe,
+            values:this.dataCategorieTotal,
+            labels:this.chartCategorie,
+            colors:this.colorCategorie,
+            commentaire:this.commentaireCateg
+        },
+        dataCanal:{
+          data:this.dataCanal,
+          commentaire:this.commentaireCateg
+        },
+        dataRang:{
+          data:this.dataRang,
+          commentaire:this.commentaireRan
+      }
+    }
+    console.log(dialogConfig);
+    
+    this.dialog.open(PdfPowerpointComponent,dialogConfig);
+  }
+
+
   // loadCharData() {
   //   this.service.loadSalesData().subscribe({
   //     next:(item=>{
@@ -237,6 +319,68 @@ export class ReportingRhComponent
   //     }
   //   })
   // }
+
+//   generatePdf() {
+//     // const element = document.getElementById('reporting');
+//     const chartElement = document.querySelectorAll('apx-chart') ;
+//     // const chartImages: string[] = [];
+//     // html2canvas(chartElement).then((canvas) => {
+//     //   const chartImgData = canvas.toDataURL('image/png');
+  
+ 
+//     //   html2canvas(element!, { scale: 2 }).then((canvas) => {
+//     //     const pdf = new jsPDF('p', 'pt', 'a4');
+        
+//     //     // Add the main content to the PDF
+//     //     pdf.html(element!, {
+//     //       callback: function (pdf) {
+//     //         // Add the captured chart image at a specific position
+//     //         pdf.addImage(chartImgData, 'PNG', 40, 300, 500, 300); // Adjust position and size as needed
+//     //         pdf.save('reporting.pdf');
+//     //       },
+//     //       x: 10,
+//     //       y: 10,
+//     //       html2canvas: { scale: 0.5 },
+//     //     });
+//     //   });
+//     // });
+//     const element = document.getElementById('reporting');
+// const chartElements =Array.from(document.querySelectorAll('apx-chart'));
+// const chartImages: string[] = [];
+
+// const captureCharts = async () => {
+//   for (let ele of chartElements) {
+//     const canvas = await html2canvas(ele as HTMLElement);
+//     const chartImgData = canvas.toDataURL('image/png');
+//     chartImages.push(chartImgData);
+//   }
+
+//   return chartImages;
+// };
+
+// captureCharts().then((chartImages) => {
+//   html2canvas(element!, { scale: 2 }).then((canvas) => {
+//     const pdf = new jsPDF('p', 'pt', 'a4');
+    
+//     // Add the main content to the PDF
+//     pdf.html(element!, {
+//       callback: function (pdf) {
+//         // Add each captured chart image at a specific position
+//         chartImages.forEach((img, index) => {
+//           const positionY = 300 + (index * 310); // Adjust Y position for each chart
+//           pdf.addImage(img, 'PNG', 40, positionY, 500, 300);
+//         });
+
+//         pdf.save('reporting.pdf');
+//       },
+//       x: 10,
+//       y: 10,
+//       html2canvas: { scale: 0.5 },
+//     });
+//   });
+// });
+
+//   }
   getRandomColor()
   {
     const letters = '0123456789ABCDEF';
@@ -291,9 +435,10 @@ export class ReportingRhComponent
   {
     this.service.getAgence().subscribe({
       next:(response)=>{
-        console.log(response);
         this.dataSource = response.data
         this.data=response.data;
+        console.log(response);
+        this.dataAgence= response.data;
         if (this.dataSource.length > 0) {
           this.dataSource = Object.keys(this.dataSource[0]).map(key => ({
             key: key,
@@ -303,9 +448,18 @@ export class ReportingRhComponent
         this.totalValue = this.dataSource.reduce((acc:any, item:any) => acc + item.value, 0);
         this.label = Object.keys(this.data[0]);
         this.data =Object.values(this.data[0]);
+        this.chartSeri=[{
+            name:'Effectif',
+            data:this.data
+        }];
+        this.total = this.data.reduce((acc:number, value:number) => acc + value, 0);
+        console.log(this.label);
         console.log(this.data);
         
-        // this.chartGraphe(this.dataSource,'piechart','bar','G RH');
+        
+        
+        
+        // this.chartGraphe(this.data,'piechart','bar','G RH');
       }
     })
   }
@@ -353,31 +507,22 @@ export class ReportingRhComponent
   }
   faireComm()
   {
-    this.isCommentaire= !this.isCommentaire
-    console.log(this.isCommentaire);
-    
+    this.isCommentaire= !this.isCommentaire 
   }
   getCanal()
   {
     this.service.getCanal().subscribe({
-      next:(response)=>{
-        console.log(response);
-        
+      next:(response)=>{ 
         const transformData = Object.keys(response.data.dataCanal).map((key)=>({
-
           key,
           statut:false,
           ...response.data.dataCanal[key],
         }));
         this.dataCanal = transformData;
-        this.dataRang= Object.keys(response.data.dataRang).map((key)=>({
+        this.dataRang = Object.keys(response.data.dataRang).map((key)=>({
           key,
           value:response.data.dataRang[key],
-        }))
-        console.log(this.dataCanal);
-        console.log(this.dataRang);
-        
-        
+        })) 
       }
     })
   }
@@ -422,23 +567,16 @@ export class ReportingRhComponent
   {
     this.service.getCategorieGroupe().subscribe({
       next:(response)=>{
-        console.log(response);
         const transforme = Object.keys(response.data).map(ele=>({
           ele,
           ...response.data[ele]
         }))
-        this.dataCategorieGroupe=transforme
-        console.log(this.dataCategorieGroupe);
+        this.dataCategorieGroupe = transforme
         let data:any =[]
         this.dataCategorieTotal = Object.keys(response.data).map(item=>{
           return this.getTotalCanal(response.data[item])
         });
         this.chartCategorie = Object.keys(response.data);
-      
-      console.log(this.dataCategorieTotal);
-      console.log(this.chartCategorie);
-      
-      
       }    
     })
   }
@@ -491,6 +629,5 @@ export class ReportingRhComponent
     let rang = (event.target as HTMLTextAreaElement).value;
       this.saveRan = rang.length<3
   }
-
 }
 

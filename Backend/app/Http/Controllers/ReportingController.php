@@ -163,6 +163,7 @@ class ReportingController extends Controller
         $dataRangs=[];
         $canals = Canal::all();
         $groupes = Groupe::all();
+        $per=[];
         foreach($canals as $canal)
         {
             $permanent = Permanent::where('canal_id',$canal->id)->get();
@@ -172,29 +173,26 @@ class ReportingController extends Controller
             $data[$canal->libelle]['prestataire'] =+ $prestataire; 
             $data[$canal->libelle]['interimaire'] =+ $inerim->count();   
             foreach ($groupes as $key => $groupe) 
-            {
-         
+            {       
                 if($canal->libelle)
                 {
-                    $permanentgroupe = Permanent::where('canal_id',$canal->id)->where('groupe_id',$groupe->id)->get();
+                    $permanentgroupe = Permanent::where('canal_id',$canal->id);
                     $prestatairegroupe = Prestataire::where(['canal_id'=>$canal->id,'groupe_id'=>$groupe->id])->count();
-                    $interimgroupe=0;
-                    if($permanentgroupe)
-                    {
-                        $interimgroupe = Interim::whereIn('responsable_id',$permanentgroupe->pluck('id'))->whereIn('etat',['rompre','en cours','terminer'])->count();
-                    }
-                    $dataRangs[$canal->libelle][$groupe->libelle]['permanent'] =+ $permanentgroupe->count();
-                    $dataRangs[$canal->libelle][$groupe->libelle]['prestataire'] =+ $prestatairegroupe;
-                    $dataRangs[$canal->libelle][$groupe->libelle]['interimaire'] =+ 0;
+                    $interimgroupe = Interim::whereIn('responsable_id',$permanentgroupe->pluck('id'))
+                                    ->where('groupe_id',$groupe->id)
+                                    ->whereIn('etat', ['rompre', 'en cours', 'terminer'])
+                                    ->count(); 
+                    $dataRangs[$canal->libelle][$groupe->libelle]['permanent'] = $permanentgroupe->where('groupe_id',$groupe->id)->count();
+                    $dataRangs[$canal->libelle][$groupe->libelle]['prestataire'] = $prestatairegroupe;
+                    $dataRangs[$canal->libelle][$groupe->libelle]['interimaire'] = $interimgroupe;
                 }              
             }
-        }
-       
+        } 
         $donnees = [
             'dataCanal'=>$data,
             'dataRang'=>$dataRangs,
         ];
-        
+        // return response()->json($per);
         return $this->response->response(Response::HTTP_OK,'Tous les canals',$donnees);     
     }
     public function getCategorieGroupe()
@@ -204,8 +202,10 @@ class ReportingController extends Controller
         foreach ($categories as $key => $categorie) {
             $permanent = Permanent::where('categoriegroupe_id',$categorie->id)->get();
             $prestataire = Prestataire::where('categoriegroupe_id',$categorie->id)->get();
+            $interim = Interim::where('categoriegroupe_id',$categorie->id)->whereIn('etat', ['rompre', 'en cours', 'terminer'])->get();
             $data[$categorie->libelle]['permanent']= +$permanent->count();
             $data[$categorie->libelle]['prestataire']= +$prestataire->count();
+            $data[$categorie->libelle]['interimaire']= +$interim->count();
         }
         return $this->response->response(Response::HTTP_OK,'Categorie groupe recupérer',$data);
     }

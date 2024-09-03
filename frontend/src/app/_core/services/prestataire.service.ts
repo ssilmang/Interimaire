@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { RequestUser, Response, User, dataUser,UserToken } from '../interface/interim';
-import { DataPrestataire, Permanent } from '../interface/permanent';
+import { DataPrestataire, Permanent, RequestSupprimer } from '../interface/permanent';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -22,5 +22,9 @@ export class PrestataireService {
   login(data:dataUser):Observable<Response<UserToken>>
   {
     return this._http.post<Response<UserToken>>(`http://127.0.0.1:8000/api/login`,data)
+  }
+  supprimerPersonne(data:RequestSupprimer,id:number):Observable<Response<Permanent>>
+  {
+    return this._http.post<Response<Permanent>>(`${environment.apiUrl}supprimer/${id}`,data);
   }
 }

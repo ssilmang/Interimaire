@@ -14,6 +14,14 @@ class Interim extends Model
     {
         return $this->belongsTo(Categorie::class);
     }
+    public function categoriegroupe()
+    {
+        return $this->belongsTo(Categoriegroupe::class);
+    }
+    public function groupe()
+    {
+        return $this->belongsTo(Groupe::class);
+    }
     public function poste()
     {
         return $this->belongsTo(Poste::class);

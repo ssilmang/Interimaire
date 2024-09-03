@@ -433,7 +433,7 @@
              <button class="" > Commentaire :</button> 
              <textarea name="" readonly  class="border w-full border-gray-600 bg-gray-100">{{ dataDetails?.profile?.commentaire }}</textarea>
          </div>
-     }
+         }
     }@else{
       @if(arretPermt){
          <form action="" [formGroup]="formSupprimer" >
@@ -482,7 +482,7 @@
    @defer(when arretPermt){
       <div class="space-x-3 flex justify-end">
             <button type="button"  (click)="onModalCloseHandler(false)" class="btn btn-danger ">Annuler</button>
-            <button type="button"  (click)="onSubmit()" class="btn btn-success">Enregistrer</button>
+            <button type="button" [disabled]="!formSupprimer.get('motif')?.valid || !formSupprimer.get('date')?.valid"  (click)="onSubmit()" class="btn btn-success">Enregistrer</button>
       </div>
    }
       <!-- <textarea [(ngModel)]="commentaire"  class="m-3 w-full h-32 border border-gray-600" name="" id=""></textarea> -->

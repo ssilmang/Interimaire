@@ -24,7 +24,6 @@ use Symfony\Component\HttpFoundation\Response;
 class PermanentController extends Controller
 {
     public $response ,$controller, $interimaire;
-    
     public function __construct(ResponseController $response,HeriteController $controller,InterimController $interimaire)
     {
         $this->response = $response;
@@ -65,7 +64,9 @@ class PermanentController extends Controller
             return DB::transaction(function() use($request,$id,$idProfile,$upload,$contrat_id)
             {     
                 $valide = $request->validate([
-                    'statut'=>'required'
+                    'statut'=>'required',
+                    'groupe'=>'required',
+                    'categorie'=>'required',
                 ]);
                 $file ="";
                 $photo = '';
@@ -73,7 +74,8 @@ class PermanentController extends Controller
                 $idInterim =  Interim::find($id);
                 $idPermanent = Permanent::find($id);
                 $idPrestataire = Prestataire::find($id);
-
+                $groupe = $this->controller->store($request->groupe,"Groupe","Groupe");
+                $categorie = $this->controller->store($request->categorie,"Categoriegroupe","Categorie de groupe");
                 if($upload == "null"){
                     if($request->hasfile('photo'))
                     {
@@ -85,7 +87,6 @@ class PermanentController extends Controller
                 }else{
                     $photo=$request->photo;
                 }
-                
                 $statut = $this->controller->store($request->statut,"Statut","statut");
                 if($idProfile == 0){
                     $profile =  $this->controller->UserProfile($request,$photo);
@@ -97,12 +98,11 @@ class PermanentController extends Controller
                     if($upload == "null"){
                         $file->move('uploads/Interims/',$filename);
                     }
-
                     if($id!=0){
-                    $int= $this->interimaire->update($request,$id,$statut,$profile,$contrat_id);
+                    $int= $this->interimaire->update($request,$id,$statut,$profile,$contrat_id,$categorie,$groupe);
                     return $int;
                     }else{
-                        $interim =$this->interimaire->store($request,$statut,$profile);
+                        $interim =$this->interimaire->store($request,$statut,$profile,$categorie,$groupe);
                     return $interim;
                     }
                }else
@@ -110,15 +110,12 @@ class PermanentController extends Controller
                    $validate = $request->validate([
                        'poste'=>'required',
                        'canal'=>'required',
-                       'groupe'=>'required',
-                       'categorie'=>'required',
                        'agence'=>'required',
                        'statut'=>'required',
                     ]);
                     $canal = $this->controller->store($request->canal,"Canal","Canal");
                     $agence = $this->controller->store($request->agence,"Agence","Agence");
-                    $groupe = $this->controller->store($request->groupe,"Groupe","Groupe");
-                    $categorie = $this->controller->store($request->categorie,"Categoriegroupe","Categorie de groupe");
+                   
                     $poste = $this->controller->store($request->poste,"Poste","Poste");
                     $locau = $this->controller->store($request->locau,"Locau","locau");         
                     $service = 0; $direction = 0; $pole = 0; $departement = 0; $commercial =0;          
@@ -147,12 +144,12 @@ class PermanentController extends Controller
                     }
                     if($statut->libelle === "Prestataire")
                     {
-
-                        if($upload == "null"){
+                        if($upload == "null")
+                        {
                             $file->move('uploads/prestataire/',$filename);
                         }
-                       if($id!=0){
-
+                       if($id!=0)
+                       {
                             $idPrestataire->profile_id=$profile->id;
                             $idPrestataire->poste_id=$poste->id;
                             $idPrestataire->canal_id=$canal->id;
@@ -168,7 +165,6 @@ class PermanentController extends Controller
                             $idPrestataire->agence_commercial_id=$commercial?$commercial->id:null;
                             $idPrestataire->responsable_id=$request->responsable;
                             $idPrestataire->save();
-                        
                         return $this->response->response(Response::HTTP_OK,"Prestataire mise en jour avec succès",$idPrestataire);
                        }
                        else{
@@ -192,12 +188,12 @@ class PermanentController extends Controller
                        }
                     }else
                     {
-                        
-                        if($upload === "null"){
+                        if($upload === "null")
+                        {
                             $file->move('uploads/higlights/',$filename);
                         }
-                       
-                        if($id!= 0){
+                        if($id!= 0)
+                        {
                            $permanent = Permanent::find($id);
                             $permanent->profile_id=$profile->id;
                             $permanent->poste_id=$poste->id;
@@ -235,11 +231,9 @@ class PermanentController extends Controller
                             ]);
                             return $this->response->response(Response::HTTP_OK,"permanent ajouter avec succès",$permanent);
                         }
-
                     }
                }
             });
-
         }catch(QueryException $e)
         {
           return $this->response->response(Response::HTTP_BAD_REQUEST,"erreur",$e->getMessage());
@@ -266,19 +260,17 @@ class PermanentController extends Controller
                     $statut =isset($value['Statut'])? $this->controller->store($value['Statut'],'Statut','statut'):null;
                     $canal =isset($value['Canal'])? $this->controller->store($value['Canal'],"Canal","Canal"):null;
                     $groupe =isset($value['Groupe'])? $this->controller->store($value['Groupe'],"Groupe","Groupe"):null;
-                    $locau = isset($value['Lieu d\'exécution'])? $this->controller->store($value['Lieu d\'exécution'],"Locau","locau"):null;         
+                    $locau = isset($value['Lieu d\'exécution'])? $this->controller->store($value['Lieu d\'exécution'],"Locau","locau"):null;
+                    $categorie =isset( $value['Catégorie'])? $this->controller->store($value['Catégorie'],"Categoriegroupe","Categorie de groupe"):null;         
                     $service = null; $direction = null; $pole = null; $departement = null; $commercial =null;   
                     $poste = null;
-                    if(!is_numeric($value['Poste']) && $value['Poste']!= null)
+                    if(isset($value['Poste']) && $value['Poste']!= null)
                     {
                         $poste = Poste::firstOrCreate([
                             'libelle'=>$value['Poste'],
-                            'duree_kangurou'=>$value['Durée kangourou']?$value['Durée kangourou']:null,
-                            'montant_kangurou'=>$value['Montant kangourou']?$value['Montant kangourou']:null
+                            'duree_kangurou'=>isset($value['Durée kangourou'])?$value['Durée kangourou']:null,
+                            'montant_kangurou'=>isset($value['Montant kangourou'])?$value['Montant kangourou']:null
                         ]);
-                    }else
-                    {
-                        $poste = Poste::find($value['Poste']);
                     }
                     if(isset($value['Direction']) && $value['Direction']!= "N/A")
                     {
@@ -350,11 +342,16 @@ class PermanentController extends Controller
                         {
                             $responsable = Permanent::where('departement_id',$departement->id)->where('profile_id',$userResponsabe->id)->first();
                         }
-                    }       
+                    }    
+                    $agence = null;
+                    if(isset($value['Agence interim']) && $value['Agence interim'] != null)
+                    {
+                        $agence = Agence::firstOrCreate([
+                            'libelle'=>$value['Agence interim'],                
+                        ]);   
+                    }   
                     if(strtolower($statut->libelle)===strtolower("PRESTATAIRE"))
                     {
-                        $agence = $this->controller->store($value['Agence interim'],"Agence","Agence");
-                        $categorie = $this->controller->store($value['Catégorie'],"Categoriegroupe","Categorie de groupe");
                         $prestataire = Prestataire::updateOrCreate([
                             'profile_id'=>$profile->id,
                         ],[
@@ -362,8 +359,8 @@ class PermanentController extends Controller
                             'canal_id'=>$canal->id,
                             'statut_id'=>$statut->id,
                             'groupe_id'=>$groupe->id,
-                            'locau_id'=>$locau->id,
                             'categoriegroupe_id'=>$categorie->id,
+                            'locau_id'=>$locau->id,
                             'agence_id'=>$agence->id,
                             'direction_id'=>$direction->id,
                             'pole_id'=>$pole? $pole->id :null,
@@ -376,8 +373,7 @@ class PermanentController extends Controller
                     }
                     elseif (strtolower($statut->libelle) === strtolower("PERMANENT"))
                     {
-                        $agence = $this->controller->store($value['Agence interim'],"Agence","Agence");
-                        $categorie = $this->controller->store($value['Catégorie'],"Categoriegroupe","Categorie de groupe");
+                        
                         $permanent = Permanent::updateOrCreate([
                             'profile_id'=>$profile->id
                         ],[
@@ -400,40 +396,34 @@ class PermanentController extends Controller
                     {
                         if (isset($value['Agence interim']) && isset($responsable))
                         {
-                            $date_debut = $value['Date début'] instanceof \DateTimeImmutable ? $value['Date début']->format('Y-m-d') : Carbon::createFromFormat('Y-m-d', $value['Date début']);
-                            $date_fin = $value['Date fin'] instanceof \DateTimeImmutable ? $value['Date fin']->format('Y-m-d') : Carbon::createFromFormat('Y-m-d', $value['Date fin']);
+                            $day_debut= isset($value['Date début'])? $value['Date début'] :0;
+                            $day_fin= isset($value['Date fin'])? $value['Date fin'] :0;
+                            $date_debut = $day_debut instanceof \DateTimeImmutable ? $day_debut->format('Y-m-d') : Carbon::createFromFormat('Y-m-d', $day_debut);
+                            $date_fin = $day_fin instanceof \DateTimeImmutable ? $day_fin->format('Y-m-d') : Carbon::createFromFormat('Y-m-d', $day_fin);
                             $date_debut = explode(' ',$date_debut);
                             $date_fin = explode(' ',$date_fin);
                             $date_debut = ($date_debut instanceof Carbon) ? $date_debut[0] : Carbon::parse($date_debut[0]);
                             $date_fin = ($date_fin instanceof Carbon) ? $date_fin[0] : Carbon::parse($date_fin[0]);
                             $duree_contrat =( $date_debut->diffInMonths($date_fin)); 
-                            $contrat = $duree_contrat + $value['Temps présence autres structures Sonatel'];
+                            $contrat = $duree_contrat + isset($value['Temps présence autres structures Sonatel'])?$value['Temps présence autres structures Sonatel']:0;
                             if($contrat>24){
                                 return response()->json([
                                     "statut"=>Response::HTTP_BAD_REQUEST,
                                     "message"=>"le contrat est supérieur à deux ans; invalide!!!",
-                                    ]);
+                                ]);
                             }
                             $categorieInterim= null;
                             $cout = isset($value['Coût unitaire (tarif journalier)'])?$value['Coût unitaire (tarif journalier)']:0;
-                            if(!is_numeric($value['Agence interim']) && $value['Agence interim'] != null)
-                            {
-                                $agence = Agence::firstOrCreate([
-                                    'libelle'=>$value['Agence interim'],                
-                                ]);
+                            if(isset($value['Catégorie Interim']) && $value['Catégorie Interim']!=null){
                                 $categorieInterim = Categorie::updateOrCreate([
-                                    'libelle'=>$value['Catégorie']?$value['Catégorie']:null,
+                                    'libelle'=>isset($value['Catégorie Interim'])?$value['Catégorie Interim']:'AM1',
                                 ],[
                                     'cout_unitaire_journalier'=>$cout,
                                     'agence_id'=>$agence->id
                                 ]);
-                            }else
-                            {
-                                $categorieInterim = Categorie::find($request->categorieInterim);
                             }
-                            $temps_presence_structure_actuel = $value['Temps présence structure actuelle']?$value['Temps présence structure actuelle']:0;
-                            
-                            $temps_presence_autre_structure =$value['Temps présence autres structures Sonatel']?$value['Temps présence autres structures Sonatel']:0;
+                            $temps_presence_structure_actuel = isset($value['Temps présence structure actuelle'])?$value['Temps présence structure actuelle']:0;
+                            $temps_presence_autre_structure =isset($value['Temps présence autres structures Sonatel'])?$value['Temps présence autres structures Sonatel']:0;
                             $temps_presence_cumul = ($temps_presence_structure_actuel/30) + $temps_presence_autre_structure;
                             // return response()->json($profile->id);
                             $interim = Interim::updateOrCreate([
@@ -442,6 +432,8 @@ class PermanentController extends Controller
                                 'responsable_id' => $responsable?$responsable->id:null,
                                  'categorie_id' => $categorieInterim->id?$categorieInterim->id:null,
                                 'poste_id' => $poste? $poste->id:null,
+                                'groupe_id'=>$groupe->id,
+                                'categoriegroupe_id'=>$categorie->id,
                                 'etat' => isset($value['Etat'])?$value['Etat']:'en cours',
                             ]);
                             $message ="Contrat ajouter avec succès";        
@@ -449,8 +441,8 @@ class PermanentController extends Controller
                                 'interim_id' => $interim->id],[
                                 'date_debut_contrat' => explode(' ',$date_debut)[0],
                                 'date_fin_contrat' =>explode(' ',$date_fin)[0],
-                                'temps_presence_structure_actuel' =>$value['Temps présence structure actuelle']?$value['Temps présence structure actuelle']:0,
-                                'temps_presence_autre_structure_sonatel'=>$value['Temps présence autres structures Sonatel']?$value['Temps présence autres structures Sonatel']:0,
+                                'temps_presence_structure_actuel' =>isset($value['Temps présence structure actuelle'])?$value['Temps présence structure actuelle']:0,
+                                'temps_presence_autre_structure_sonatel'=>isset($value['Temps présence autres structures Sonatel'])?$value['Temps présence autres structures Sonatel']:0,
                                 'cumul_presence_sonatel' => $temps_presence_cumul,
                                 'duree_contrat' => isset($value['Durée contrat'])?$value['Durée contrat']:0,
                                 'duree_contrat_restant' => isset($value['Durée contrat restante'])?$value['Durée contrat restante']:0,

@@ -89,13 +89,13 @@ class InterimController extends Controller
             ]);
         }
     }
-    public function store(Request $request,$statut,$profile)
+    public function store(Request $request,$statut,$profile,$categoriegroupe,$groupe)
     {
         try{
-            return DB::transaction(function() use($request,$statut,$profile)
+            return DB::transaction(function() use($request,$statut,$profile,$categoriegroupe,$groupe)
             {
                 Validator::make($request->all(),[
-                    'categorieInterim' => 'required|exists:categories,id',
+                    'categorieInterim' => 'required',
                     'responsable' => 'required|exists:permanents,id',
                     'poste' => 'required',
                 ])->validate();   
@@ -146,6 +146,8 @@ class InterimController extends Controller
                     $interim = new Interim();
                     $interim->statut_id = $statut['id'];
                     $interim->profile_id = $profile->id;
+                    $interim->groupe_id = $groupe->id;
+                    $interim->categoriegroupe_id = $categoriegroupe->id;
                     $interim->categorie_id = $categorie->id;
                     $interim->responsable_id = $request->responsable;
                     $interim->poste_id = $poste->id;
@@ -184,10 +186,10 @@ class InterimController extends Controller
             ]);
         }
     }
-    public function update(Request $request,$id,$statut,$profile,$contrat_id)
+    public function update(Request $request,$id,$statut,$profile,$contrat_id,$categoriegroupe,$groupe)
     {
         try{
-            return DB::transaction(function() use($request,$id,$statut,$profile,$contrat_id){
+            return DB::transaction(function() use($request,$id,$statut,$profile,$contrat_id,$categoriegroupe,$groupe){
                $interim = Interim::find($id);
                 
                 $poste = $this->controller->store($request->poste,"Poste","Poste");
@@ -208,6 +210,8 @@ class InterimController extends Controller
                                
                     $interim->statut_id = $statut->id;
                     $interim->profile_id = $profile->id;
+                    $interim->groupe_id = $groupe->id;
+                    $interim->categoriegroupe_id = $categoriegroupe->id;
                     $interim->categorie_id = $categorie->id;
                     $interim->responsable_id = $request->responsable;
                     $interim->poste_id = $poste->id;  
@@ -246,7 +250,8 @@ class InterimController extends Controller
             ]);
         }
     }
-    public function inserImage(Request $request){
+    public function inserImage(Request $request)
+    {
         $interim = new Image();
         if($request->hasfile('photo')){
             $file = $request->file('photo');
@@ -261,7 +266,8 @@ class InterimController extends Controller
          dd($request->photo);
         // $interim->save();
     }
-    public function indexImage(Request $request){
+    public function indexImage(Request $request)
+    {
         $imgages = Image::all();
         return view('image')->with('images',$imgages);
     }
@@ -401,7 +407,9 @@ class InterimController extends Controller
                                 }
                                 $profile =  $this->controller->UserProfile($request,$photo);
                                 $statut = Statut::find($interimaire->statut_id);
-                                $int = $this->store($request,$statut,$profile);
+                                $groupe = $this->controller->store($request->groupe,"Groupe","Groupe");
+                                $categorie = $this->controller->store($request->categorie,"Categoriegroupe","Categorie de groupe");
+                                $int = $this->store($request,$statut,$profile,$categorie,$groupe);
                                 if($int)
                                 {
                                     Interim::find($interimaire->id)->update(['etat'=>'remplacer']);

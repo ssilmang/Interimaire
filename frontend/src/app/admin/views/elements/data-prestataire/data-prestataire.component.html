@@ -1,1 +1,1 @@
-<data-prestataire  [rowData]="dataPrestataire" [currentPage]="currentPage" [taille]="taille" [total]="total" [pageData]="totalPages" [columnData]="columnData"/>
+<data-prestataire  [rowData]="dataPrestataire?dataPrestataire:prestataireData" [message]="message" [currentPage]="currentPage" [taille]="taille" [total]="total" [pageData]="totalPages" [columnData]="columnData"  (supprimerEvent)="suppEvent($event)"/>

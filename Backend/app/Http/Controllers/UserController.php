@@ -204,6 +204,7 @@ class UserController extends Controller
             'Agence interim'=>'N/A',
             'Groupe'=>'N/A',
             'Catégorie'=>'N/A',
+            'Code Catégorie'=>'N/A',
             'MOUVEMENT /Avancement/Promotion'=>'N/A',
             'DATE DERNIER(E) : Avancement/Promotion'=>'N/A',
             'Téléphone'=>$item['telephone'],
@@ -375,12 +376,21 @@ class UserController extends Controller
                     $profileData['Canal'] = $interimaireData['responsable']['canal']['libelle'];
                 }
             }
+            if($interimaireData['groupe']!==null)
+            {
+                $profileData['Groupe'] = $interimaireData['groupe']['libelle'];
+            }
+            if($interimaireData['categoriegroupe']!==null)
+            {
+                $profileData['Catégorie'] = $interimaireData['categoriegroupe']['libelle'];
+            }
             if($interimaireData['categorie']!=null)
             {
-                $profileData['Catégorie'] = $interimaireData['categorie']['libelle'];
+                $profileData['Code Catégorie'] = $interimaireData['categorie']['libelle'];
                 $profileData['Agence interim'] = $interimaireData['categorie']['agence']['libelle'];
                 $profileData['Coût unitaire (tarif journalier)'] = $interimaireData['categorie']['cout_unitaire_journalier'];
             }
+
             if($interimaireData['contrats'] && $interimaireData['contrats']->isNotEmpty())
             {
                 $contrat = $interimaireData['contrats']->first();

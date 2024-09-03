@@ -15,8 +15,7 @@ constructor(public dialogRef: DialogRef,private shared:LocalStorageService){
 }
   enCours=()=>{
   this.shared.clickIci('encours')
- this.dialogRef.close();
-  
+  this.dialogRef.close();
   }
   global=()=>{
     this.shared.clickIci('global');

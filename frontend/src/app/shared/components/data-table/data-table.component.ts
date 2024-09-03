@@ -26,7 +26,7 @@ import { AlertType } from '../alert/alert.type';
   selector: 'data-table',
   standalone: true,
   imports: [
-    CommonModule,
+     CommonModule,
      ModalModule,
      FormsModule,
      RouterLink,
@@ -76,9 +76,9 @@ export class DataTableComponent implements OnInit,AfterViewInit{
   optionselect:string = '';
   messageHidden:string='';
   arretPermt :boolean=false
+  ajoutComm:boolean = true;
   formSupprimer:FormGroup
   autre:boolean = false;
-  ajoutComm:boolean = true;
   activeEnregistre:boolean =true;
   idProfile!:number
   @Input() message:string =''
@@ -225,6 +225,7 @@ export class DataTableComponent implements OnInit,AfterViewInit{
     this.arretPermt=false;
     this.footer = true;
     this.couleur =  "bg-red-600  hover:bg-red-700"
+    this.formSupprimer.reset()
   }
   toggleDropdown()
   {
@@ -452,7 +453,6 @@ export class DataTableComponent implements OnInit,AfterViewInit{
       form:this.formSupprimer.value,
       id:this.idProfile
     }
-   
     this.supprimerEvent.emit(data);
     this.showModal = false;
     this.faireCommentaire = false

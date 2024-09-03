@@ -353,7 +353,6 @@
                <div class="max-w-screen-md w-96">
                   <label for="statut" class="form-label">
                   </label>
-                  
                   <input type="number"   formControlName="duree_kangourou"  placeholder="30" class="form-control"
                   [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('duree_kangourou')?.invalid &&(formPermanent.get('duree_kangourou')?.touched || formPermanent.get('duree_kangourou')?.dirty),
                   'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('duree_kangourou')?.valid &&(formPermanent.get('duree_kangourou')?.touched || formPermanent.get('duree_kangourou')?.dirty)}"
@@ -384,14 +383,14 @@
             </div>
          }
          <div class="flex justify-around mt-5">
-            @if(!interimaire){
+            <!-- @if(!interimaire){ -->
                <div class="card-title">
                   <label for="base-input" class="form-label required">Groupe</label>
                </div>
                <div class="card-title">
                   <label for="categorie" class="form-label required"> Categorie </label>
                </div>
-            }
+            <!-- } -->
             <div class="card-title ">
                <label for="agence" class="form-label required"> Employeur </label>          
             </div>
@@ -410,7 +409,7 @@
            }
          </div>
          <div class="mt-2 flex justify-around space-x-16">
-           @if(!interimaire){
+           <!-- @if(!interimaire){ -->
             <div class="max-w-screen-md w-full">
                <label for="groupe" class="form-label">      
                </label>
@@ -479,7 +478,7 @@
                  }
                }
             </div>
-           }
+           <!-- } -->
             <div class="max-w-screen-md w-full">
                <label for="agence" class="form-label">    
                </label>
