@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class RoleResource extends JsonResource
+class DataStatutResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,9 +15,10 @@ class RoleResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id'=>$this->id,
-            'libelle'=>$this->libelle,
-            'eatat'=>$this->etat,
+            "id"=>$this->id,
+            "annee_mois"=>AnneeMoisResource::make($this->annee_mois),
+            "statut"=>$this->statut,
+            "libelle"=>$this->libelle,
         ];
     }
 }

@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\AnneeResource;
 use App\Http\Resources\DirectionResource;
+use App\Http\Resources\RoleResource;
 use App\Models\Agence;
+use App\Models\Annee;
 use App\Models\Canal;
 use App\Models\Categorie;
 use App\Models\Categoriegroupe;
@@ -12,6 +15,7 @@ use App\Models\Departement;
 use App\Models\Direction;
 use App\Models\Groupe;
 use App\Models\Interim;
+use App\Models\Mois;
 use App\Models\Permanent;
 use App\Models\Pole;
 use App\Models\Prestataire;
@@ -26,6 +30,16 @@ class ReportingController extends Controller
     public function __construct(ResponseController $response)
     {
         $this->response = $response;
+    }
+    public function annee_mois()
+    {
+        $annes =Annee::all();
+        $mois = Mois::all();
+        $data = [
+            "annee"=>AnneeResource::collection($annes),
+            "mois"=>RoleResource::collection($mois),
+        ];
+        return $this->response->response(Response::HTTP_OK,'tous',$data);
     }
     public function reporting()
     {
@@ -123,39 +137,19 @@ class ReportingController extends Controller
     }
     public function getDRV()
     {
-        $data =[
-           
-        ];
-        $direct = Direction::where('libelle','DV')->first();
-        $drvSupport = Canal::whereIn('libelle',['DRV','SUPPORT','pole dv','pole doc'])->get();
-        $direction = DirectionResource::make($direct);
-        
-        // $permanent = Permanent::where()
-        if($direction->libelle)
+        $departements =Departement::all();
+        $data =[];
+        foreach ($departements as $key => $departement )
         {
-            $data[$direction->libelle] =  [
-                'interimaire'=>0,
-                'prestataire'=>0,
-                'permanent'=>0,
-            ];
+            $permanents = Permanent::where('departement_id',$departement->id)->get();
+            $prestataires = Prestataire::where('departement_id',$departement->id)->get();
+            $interimaires = Interim::whereIn('responsable_id',$permanents->pluck('id'))->get();
+            $data[$departement->libelle]["permanent"] = $permanents->count();
+            $data[$departement->libelle]["prestataire"] = $prestataires->count();
+            $data[$departement->libelle]["interimaire"] = $interimaires->count();
         }
-        foreach ($direction->poles as $key => $value)
-        {
-            $data['pole '.$value->libelle] = [
-                'interimaire'=>0,
-                'prestataire'=>0,
-                'permanent'=>0,
-            ];
-            foreach ($value->departements as $key => $departement)
-            {
-                $data[$departement->libelle] =  [
-                    'interimaire'=>0,
-                    'prestataire'=>0,
-                    'permanent'=>0,
-                ];
-            }
-        }
-        return response()->json($data);
+       
+        return $this->response->response(Response::HTTP_OK,'tous',$data);
     }
     public function getCanal()
     {
@@ -163,12 +157,12 @@ class ReportingController extends Controller
         $dataRangs=[];
         $canals = Canal::all();
         $groupes = Groupe::all();
-        $per=[];
         foreach($canals as $canal)
         {
             $permanent = Permanent::where('canal_id',$canal->id)->get();
             $prestataire = Prestataire::where('canal_id',$canal->id)->count();
-            $inerim = Interim::whereIn('responsable_id',$permanent->pluck('id'))->whereIn('etat',['rompre','en cours','terminer'])->get();
+            $inerim = Interim::whereIn('responsable_id',$permanent->pluck('id'))
+                                ->whereIn('etat',['rompre','en cours','terminer'])->get();
             $data[$canal->libelle]['permanent'] =+ $permanent->count(); 
             $data[$canal->libelle]['prestataire'] =+ $prestataire; 
             $data[$canal->libelle]['interimaire'] =+ $inerim->count();   
@@ -192,7 +186,6 @@ class ReportingController extends Controller
             'dataCanal'=>$data,
             'dataRang'=>$dataRangs,
         ];
-        // return response()->json($per);
         return $this->response->response(Response::HTTP_OK,'Tous les canals',$donnees);     
     }
     public function getCategorieGroupe()

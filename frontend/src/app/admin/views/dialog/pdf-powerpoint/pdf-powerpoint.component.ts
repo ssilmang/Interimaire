@@ -13,7 +13,8 @@ import PptxGenJS from 'pptxgenjs';
   templateUrl: './pdf-powerpoint.component.html',
   styleUrl: './pdf-powerpoint.component.css'
 })
-export class PdfPowerpointComponent {
+export class PdfPowerpointComponent
+{
   donnee:any
   public userOne: string =Images.LOGO ;
   constructor(private dialogRef: MatDialogRef<PdfPowerpointComponent>,@Inject(MAT_DIALOG_DATA) private data:any)
@@ -168,7 +169,6 @@ export class PdfPowerpointComponent {
   }
   powerPoint()
   {
-
       const pptx = new PptxGenJS();
       let slid= pptx.addSlide();
       slid.addImage({
@@ -181,24 +181,25 @@ export class PdfPowerpointComponent {
       let slide = pptx.addSlide();
       slide.addText( `Reporting RH ${this.donnee.mois} ${this.donnee.annee}`,
       {
-        shape:pptx.ShapeType.ellipseRibbon2,
-        x: 0.3,
+        // shape:pptx.ShapeType.ellipseRibbon2,
+        x: 0.5,
         y: 1,
         h:1,
         w:9.5,
         fontSize: 32,
-        color:'ffffff',
-        shadow:{
-          type: 'outer',
-          color: "696969",
-          blur: 3,
-          offset: 10,
-          angle: 60
-        },
-       fill: {
-         color:'#FF7800',
-         type:'solid'
-        }
+        color:'#FF7800',
+        align:'center'
+      //   shadow:{
+      //     type: 'outer',
+      //     color: "696969",
+      //     blur: 3,
+      //     offset: 10,
+      //     angle: 60
+      //   },
+      //  fill: {
+      //    color:'#FF7800',
+      //    type:'solid'
+      //   }
       });
       slide.addText(`Ce document récapitule les KPI Rh marquants durant le mois de  ${this.donnee.mois }  ${ this.donnee.annee }.`,
       {
@@ -210,44 +211,47 @@ export class PdfPowerpointComponent {
       });
       slide.addText('DV/PPCO/PRC',
         {
-          shape:pptx.ShapeType.round1Rect,
+          // shape:pptx.ShapeType.round1Rect,
           x:2.8,
           y:3.3,
           h:0.5,
           w:4,
           align:'center',
           fontSize:30,
-          color:'ffffff',
-          fill:{
-            color:'#FF7800',
-            type:'solid',
-          },
-          shadow:{
-            type: 'outer',
-            color: "696969",
-            blur: 3,
-            offset: 10,
-            angle: 10
-          }
+          color:'#FF7800',
+          // fill:{
+          //   color:'#FF7800',
+          //   type:'solid',
+          // },
+          // shadow:{
+          //   type: 'outer',
+          //   color: "696969",
+          //   blur: 3,
+          //   offset: 10,
+          //   angle: 10
+          // }
         });
       let statut = pptx.addSlide();
-      statut.addText('Effectifs par Statut',{shape: pptx.ShapeType.ribbon2,
+      statut.addText('Effectifs par Statut',{
+        // shape: pptx.ShapeType.ribbon2,
         x:1,
         y:0.3,
         h:0.5,
         align:'center',
-        color:'#ffffff',
-        shadow:{
-          type: 'outer',
-          color: "696969",
-          blur: 3,
-          offset: 10,
-          angle: 60
-        },
-       fill: {
-         color:'#FF7800',
-         type:'solid'
-        }});
+        color:'#FF7800',
+        fontSize:24
+      //   shadow:{
+      //     type: 'outer',
+      //     color: "696969",
+      //     blur: 3,
+      //     offset: 10,
+      //     angle: 60
+      //   },
+      //  fill: {
+      //    color:'#FF7800',
+      //    type:'solid'
+      //   }
+      });
       const ellipseWidth = 1.5;
       const spacing = 0.3; 
       const totalEllipseWidth = this.donnee.dataStatut.values.length * (ellipseWidth + spacing);
@@ -281,39 +285,46 @@ export class PdfPowerpointComponent {
         y: 3.7,               
         w: 8,              
         h: 1.5,             
-        fontSize: 14,      
+        fontSize: 14,  
+        color:"000000",    
         align:'center',
-        color:'#ffffff',
-        shadow:{
-          type: 'outer',
-          color: "696969",
-          blur: 3,
-          offset: 10,
-          angle: 60
-        },
+        
+        // shadow:{
+        //   type: 'outer',
+        //   color: "696969",
+        //   blur: 3,
+        //   offset: 10,
+        //   angle: 60
+        // },
        fill: {
-         color:'#FF7800',
-         type:'solid'
-        }    
+        color:'ffffff',
+         type:'solid',
+        },
+        line:{
+          color:'000000',
+          width:1.3
+        } 
       });
       let agence = pptx.addSlide();
-      agence.addText('Effectifs par Agence',{shape: pptx.ShapeType.ribbon2,
-        x:1,
-        y:0.3,
+      agence.addText('Répartition des effectifs : Sonatel(Permanent), Prestataire et Interimaire',{
+        // shape: pptx.ShapeType.ribbon2,
+        x:0.25,
+        y:0.2,
         h:0.5,
-        align:'center',
-        color:'#ffffff',
-       fill: {
-         color:'#FF7800',
-         type:'solid'
-        },
-        shadow:{
-          type: 'outer',
-          color: "696969",
-          blur: 3,
-          offset: 10,
-          angle: 60
-        },
+        w:10,
+        color:'#FF7800',
+        fontSize:20
+      //  fill: {
+      //    color:'#FF7800',
+      //    type:'solid'
+      //   },
+      //   shadow:{
+      //     type: 'outer',
+      //     color: "696969",
+      //     blur: 3,
+      //     offset: 10,
+      //     angle: 60
+      //   },
       });
         const headers = [
           { text: 'Permanent/Interim/Prestataire', options: { bold: true, color: 'FFFFFF', fill: 'FF7800' } },
@@ -334,7 +345,7 @@ export class PdfPowerpointComponent {
           { text: 'Total', options: { bold: true, color: 'FFFFFF', fill: { color: '#FF7800' } } },
           { text: total.toString(), options: { bold: true, color: 'FFFFFF', fill: { color: '#FF7800' } } },
         ]);
-        agence.addTable(tableData, {
+        agence.addTable(tableData,{
           x: 0.5,  
           y: 1.0,  
           w: 3.0,   
@@ -359,7 +370,7 @@ export class PdfPowerpointComponent {
           {
             chartColors:this.donnee.dataAgence.colors,
             x: 3.7,
-            y: 1,
+            y: 0.9,
             w: 5.7,
             h: 3.2,
             showLegend:true,
@@ -369,6 +380,17 @@ export class PdfPowerpointComponent {
             color:'#ffffff',
             dataLabelColor:'#FFFFFF'
           });
+          agence.addText("Titre : Pourcentage de l'effectif global",
+            {
+              x:3.3,
+              y:4.1,
+              color:'FF7800',
+              underline:{
+                style:"dash"
+              },
+              align:'center',
+            }
+          )
         agence.addText(`${this.donnee.dataAgence.commentaire}`,
         {
           shape:pptx.ShapeType.round2DiagRect,
@@ -377,70 +399,83 @@ export class PdfPowerpointComponent {
           w: 9,              
           h: 1,             
           fontSize: 14,      
-          color: '#ffffff',      
+          color: '#000000',      
           align:'center',
-          shadow:{
-            type: 'outer',
-            color: "696969",
-            blur: 3,
-            offset: 10,
-            angle: 60
-          },
-         fill: {
-           color:'#FF7800',
-           type:'solid'
-          }       
+          fill: {
+            color:'ffffff',
+             type:'solid',
+            },
+            line:{
+              color:'000000',
+              width:1.3
+            } 
+        //   shadow:{
+        //     type: 'outer',
+        //     color: "696969",
+        //     blur: 3,
+        //     offset: 10,
+        //     angle: 60
+        //   },
+        //  fill: {
+        //    color:'#FF7800',
+        //    type:'solid'
+        //   }       
         });
         let categorie = pptx.addSlide();
         categorie.addText('Effectifs par Catégorie',{
-          shape:pptx.ShapeType.ribbon2,
+          // shape:pptx.ShapeType.ribbon2,
           x:1,
           y:0.3,
           h:0.5,
           align:'center',
-          color:'FFFFFF',
-          shadow:{
-            offset:10,
-            type:'outer',
-            blur:3,
-            angle:60,
-            color:'696969'
-          },
-          fill:{
-            color:'FF7800',
-            type:'solid'
-          }
+          color:'FF7800',
+          fontSize:24
+          // shadow:{
+          //   offset:10,
+          //   type:'outer',
+          //   blur:3,
+          //   angle:60,
+          //   color:'696969'
+          // },
+          // fill:{
+          //   color:'FF7800',
+          //   type:'solid'
+          // }
         })
         const dataCategorie:any=[];
         const headerCategories =[
           {text:'Catégorie',options:{bold:true,color:'FFFFFF',fill:'FF7800'}},
           {text:'Permanent',options:{bold:true,color:'FFFFFF',fill:'FF7800'}},
           {text:'Prestataire',options:{bold:true,color:'FFFFFF',fill:'FF7800'}},
+          {text:'Interimaire',options:{bold:true,color:'FFFFFF',fill:'FF7800'}},
           {text:'Total',options:{bold:true,color:'FFFFFF',fill:'FF7800'}}
         ];
         dataCategorie.push(headerCategories);
         this.donnee.dataCategorie.data.forEach((row:any)=>{
-          const total = row.permanent + row.prestataire;
+          const total = row.permanent + row.prestataire+row.interimaire;
           dataCategorie.push([
           {text:row.ele},
           {text:row.permanent.toString()},
           {text:row.prestataire.toString()},
+          {text:row.interimaire.toString()},
           {text:total.toString(),options:{color:'FF7800'}},
           ]);
         });
         const totalPermanent =  this.donnee.dataCategorie.data.reduce((sum:any, row:any) => sum + row.permanent, 0);
         const totalPrestataire =  this.donnee.dataCategorie.data.reduce((sum:any, row:any) => sum + row.prestataire, 0);
-        const grandTotal = totalPermanent + totalPrestataire;
+        const totalInterimaire=  this.donnee.dataCategorie.data.reduce((sum:any, row:any) => sum + row.interimaire, 0);
+        const grandTotal = totalPermanent + totalPrestataire + totalInterimaire;
         const footerRow = [
           { text: 'Total', options: { bold: true,fill:'FF7800',color:'FFFFFF' } },
           { text: totalPermanent.toString(), options: { bold: true,fill:'FF7800',color:'FFFFFF'}},
           { text: totalPrestataire.toString(), options: { bold: true,fill:'FF7800',color:'FFFFFF'}},
+          { text: totalInterimaire.toString(), options: { bold: true,fill:'FF7800',color:'FFFFFF'}},
           { text: grandTotal.toString(), options: { bold: true,fill:'FF7800',color:'FFFFFF'}}
         ];
         dataCategorie.push(footerRow);
         categorie.addTable(dataCategorie,{
           x:0.5,
-          y:1.5,
+          y:1.2,
           w:4.3,
           h:1,
           fontSize:10,
@@ -462,7 +497,7 @@ export class PdfPowerpointComponent {
         {
           chartColors:this.donnee.dataCategorie.colors,
           x: 4.8,
-          y: 1.3,
+          y: 1,
           w: 5.2,
           h: 2.5,
           showLegend:true,
@@ -476,77 +511,123 @@ export class PdfPowerpointComponent {
         {
             shape:pptx.ShapeType.round2DiagRect,
             x:0.3,
-            y:3.9,
+            y:3.8,
             w:9,
             h:1.2,
             fontSize: 14,      
             align:'center',
-            color:'#ffffff',
-            shadow:{
-              type: 'outer',
-              color: "696969",
-              blur: 3,
-              offset: 10,
-              angle: 60
-            },
+            color:'#000000',
             fill: {
-             color:'#FF7800',
-             type:'solid'
-            }  
+              color:'ffffff',
+               type:'solid',
+              },
+              line:{
+                color:'000000',
+                width:1.3
+              } 
+            // shadow:{
+            //   type: 'outer',
+            //   color: "696969",
+            //   blur: 3,
+            //   offset: 10,
+            //   angle: 60
+            // },
+            // fill: {
+            //  color:'#FF7800',
+            //  type:'solid'
+            // }  
         });
-        let canal = pptx.addSlide();
-        canal.addText('Effectifs par Canal',{
-          shape:pptx.ShapeType.ribbon2,
-          x:1,
-          y:0.3,
-          h:0.5,
-          color:'ffffff',
-          align:'center',
-          shadow:{
-            type:'outer',
-            offset:10,
-            angle:45,
-            color:'F1F1F1'
-          },
-          fill:{
-            color:'FF7800',
-            type:'solid'
-          }
-        })  
-        const dataCanal:any=[]
+        let text="Structure";
         const headerCanal=[
-          {text:'Canal',options:{bold:true,fill:'FF7800',color:'ffffff'}},
+          {text:`${text}`,options:{bold:true,fill:'FF7800',color:'ffffff'}},
           {text:'Permanent',options:{bold:true,fill:'FF7800',color:'ffffff'}},
           {text:'Prestataire',options:{bold:true,fill:'FF7800',color:'ffffff'}},
           {text:'Interimaire',options:{bold:true,fill:'FF7800',color:'ffffff'}},
           {text:'Total Général',options:{bold:true,fill:'FF7800',color:'ffffff'}},
         ];
-        dataCanal.push(headerCanal);
-        this.donnee.dataCanal.data.forEach((row:any)=>{
-          const total = row.permanent + row.prestataire + row.interimaire;
-          dataCanal.push([
-          {text:row.key},
-          {text:row.permanent.toString()},
-          {text:row.prestataire.toString()},
-          {text:row.interimaire.toString()},
-          {text:total.toString(),options:{color:'FF7800'}},
-          ]);
-        });
-        const totalPermanentCanal =  this.donnee.dataCategorie.data.reduce((sum:any, row:any) => sum + row.permanent, 0);
-        const totalPrestataireCanal =  this.donnee.dataCategorie.data.reduce((sum:any, row:any) => sum + row.prestataire, 0);
-        const totalInterimCanal =  this.donnee.dataCategorie.data.reduce((sum:any, row:any) => sum + row.prestataire, 0);
-        const grandTotalCanal = totalPermanentCanal + totalPrestataireCanal+totalInterimCanal;
-        const footerRowCanal:any = [
-          { text: 'Total', options: { bold: true,fill:'FF7800',color:'FFFFFF' } },
-          { text: totalPermanentCanal.toString(), options: { bold: true,fill:'FF7800',color:'FFFFFF'}},
-          { text: totalPrestataireCanal.toString(), options: { bold: true,fill:'FF7800',color:'FFFFFF'}},
-          { text: totalInterimCanal.toString(), options: { bold: true,fill:'FF7800',color:'FFFFFF'}},
-          { text: grandTotalCanal.toString(), options: { bold: true,fill:'FF7800',color:'FFFFFF'}}
-        ];
-        dataCanal.push(footerRowCanal);
+        let departement = pptx.addSlide();
+        departement.addText('Effectif par Departement',
+          {
+            x:1,
+            y:0.2,
+            h:0.2,
+            color:"FF7800",
+            fontSize:24,
+            align:'center',
+          });
+          let dataDepartement:any=[];
+          let dataDepart = this.table(dataDepartement,headerCanal,this.donnee.dataDepartement.data);
+          dataDepartement = dataDepart.dataCanal;
+          let rowDepart = dataDepart.footerRow;
+          departement.addTable(dataDepartement,{
+            x:0.5,
+            y:0.6,
+            h:0.2,
+            w:9,
+            color:'000000',
+            fill:{
+              color:'F1F1F1',
+              type:'solid'
+            },
+            align:'center',
+            fontSize:12,
+            border:{
+              type:'solid',
+              pt:1,
+              color:'000000'
+            }
+          })
+          if(this.donnee.dataDepartement.commentaire!="")
+          {
+            let commDepart =pptx.addSlide();
+            commDepart.addText(this.donnee.dataDepartement.commentaire,
+              {
+                  shape:pptx.ShapeType.round2DiagRect,
+                  x:0.5,
+                  y:1.2,
+                  w:9,
+                  h:1,
+                  fontSize: 14,      
+                  align:'center',
+                  color:'#000000',
+                  fill: {
+                    color:'ffffff',
+                     type:'solid',
+                    },
+                    line:{
+                      color:'000000',
+                      width:1.3
+                    },
+              });
+          }
+        let canal = pptx.addSlide();
+        canal.addText('Effectifs par Canal',{
+          // shape:pptx.ShapeType.ribbon2,
+          x:1,
+          y:0.2,
+          h:0.5,
+          color:'FF7800',
+          align:'center',
+          fontSize:24
+          // shadow:{
+          //   type:'outer',
+          //   offset:10,
+          //   angle:45,
+          //   color:'F1F1F1'
+          // },
+          // fill:{
+          //   color:'FF7800',
+          //   type:'solid'
+          // }
+        })  
+        let dataCanal:any=[]
+        text = "Canal";
+        let donnees = this.table(dataCanal,headerCanal,this.donnee.dataCanal.data);
+        dataCanal = donnees.dataCanal;
+        const footerRowCanal = donnees.footerRow;
         canal.addTable(dataCanal,{
           x:0.5,
-          y:0.9,
+          y:0.7,
           h:0.3,
           w:9,
           color:'000000',
@@ -566,44 +647,53 @@ export class PdfPowerpointComponent {
         {
             shape:pptx.ShapeType.round2DiagRect,
             x:0.5,
-            y:4.3,
+            y:4.2,
             w:9,
             h:1,
             fontSize: 14,      
             align:'center',
-            color:'#ffffff',
-            shadow:{
-              type: 'outer',
-              color: "696969",
-              blur: 3,
-              offset: 10,
-              angle: 60
-            },
+            color:'#000000',
             fill: {
-             color:'#FF7800',
-             type:'solid'
-            }  
-        });
+              color:'ffffff',
+               type:'solid',
+              },
+              line:{
+                color:'000000',
+                width:1.3
+              } 
+            // shadow:{
+            //   type: 'outer',
+            //   color: "696969",
+            //   blur: 3,
+            //   offset: 10,
+            //   angle: 60
+            // },
+            // fill: {
+            //  color:'#FF7800',
+            //  type:'solid'
+            // }  
+        });    
         let rang = pptx.addSlide();
-        rang.addText('Effectifs par Rang',
+        rang.addText('Détails des effectifs selon le Canal',
           {
-            shape:pptx.ShapeType.ribbon2,
-            x:1,
+            // shape:pptx.ShapeType.ribbon2,
+            x:0.5,
             y:0.3,
             h:0.5,
             align:'center',
-            color:'ffffff',
-            fill:{
-              color:'FF7800',
-              type:'solid'
-            },
-            shadow:{
-              type:'outer',
-              blur:3,
-              offset:10,
-              angle:45,
-              color:'F1F1F1',
-            }
+            color:'FF7800',
+            fontSize:24
+            // fill:{
+            //   color:'FF7800',
+            //   type:'solid'
+            // },
+            // shadow:{
+            //   type:'outer',
+            //   blur:3,
+            //   offset:10,
+            //   angle:45,
+            //   color:'F1F1F1',
+            // }
           });
           const rowsPerSlide = 14; 
           let currentRow = 0;
@@ -683,43 +773,92 @@ export class PdfPowerpointComponent {
               fontSize: 12,
               border: { type: 'solid', pt: 1, color: '000000' }
             });
-          }     
-          currentSlide.addText(this.donnee.dataRang.commentaire,
-          {
-              shape:pptx.ShapeType.round2DiagRect,
-              x:0.5,
-              y:3.3,
-              w:9,
-              h:2,
-              fontSize: 14,      
-              align:'center',
-              color:'#ffffff',
-              shadow:{
-                type: 'outer',
-                color: "696969",
-                blur: 3,
-                offset: 10,
-                angle: 60
-              },
-              fill: {
-                color:'#FF7800',
-                type:'solid'
-              }  
+          } 
+          if(this.donnee.dataRang.commentaire!=""){    
+            currentSlide.addText(this.donnee.dataRang.commentaire,
+            {
+                shape:pptx.ShapeType.round2DiagRect,
+                x:0.5,
+                y:3.3,
+                w:9,
+                h:2,
+                fontSize: 14,      
+                align:'center',
+                color:'#000000',
+                fill: {
+                  color:'ffffff',
+                  type:'solid',
+                  },
+                  line:{
+                    color:'000000',
+                    width:1.3
+                  } 
+                // shadow:{
+                //   type: 'outer',
+                //   color: "696969",
+                //   blur: 3,
+                //   offset: 10,
+                //   angle: 60
+                // },
+                // fill: {
+                //   color:'#FF7800',
+                //   type:'solid'
+                // }  
+            });
+        }
+          let end = pptx.addSlide();
+          end.addText("FIN!", {
+            x: 0.89,
+            y: 1.5,
+            w: 8,
+            h: 3,
+            align: 'center',
+            fontSize: 48, 
+            fontFace: 'Verdana',
+            color: 'FF7800',
+            bold: true,
           });
       pptx.writeFile({fileName:'reporting.pptx'});
       this.dialogRef.close();
   }
-  boucle(statut: any, data: any, pptx: any, ellipseWidth: number, spacing: number, labels: any, slideWidth: number,position:number) {
+  table(dataCanal:any,headerCanal:any,data:any)
+  {
+    dataCanal.push(headerCanal);
+    data.forEach((row:any)=>{
+          const total = row.permanent + row.prestataire + row.interimaire;
+          dataCanal.push([
+          {text:row.key},
+          {text:row.permanent.toString()},
+          {text:row.prestataire.toString()},
+          {text:row.interimaire.toString()},
+          {text:total.toString(),options:{color:'FF7800'}},
+          ]);
+        });
+        const totalPermanentCanal =  data.reduce((sum:any, row:any) => sum + row.permanent, 0);
+        const totalPrestataireCanal =  data.reduce((sum:any, row:any) => sum + row.prestataire, 0);
+        const totalInterimCanal =  data.reduce((sum:any, row:any) => sum + row.interimaire, 0);
+        const grandTotalCanal = totalPermanentCanal + totalPrestataireCanal+totalInterimCanal;
+        const footerRowCanal:any = [
+          { text: 'Total', options: { bold: true,fill:'FF7800',color:'FFFFFF' } },
+          { text: totalPermanentCanal.toString(), options: { bold: true,fill:'FF7800',color:'FFFFFF'}},
+          { text: totalPrestataireCanal.toString(), options: { bold: true,fill:'FF7800',color:'FFFFFF'}},
+          { text: totalInterimCanal.toString(), options: { bold: true,fill:'FF7800',color:'FFFFFF'}},
+          { text: grandTotalCanal.toString(), options: { bold: true,fill:'FF7800',color:'FFFFFF'}}
+        ];
+        dataCanal.push(footerRowCanal);
+        return { dataCanal:dataCanal,footerRow:footerRowCanal};
+  }
+  boucle(statut: any, data: any, pptx: any, ellipseWidth: number, spacing: number, labels: any, slideWidth: number,position:number) 
+  {
     if (!data || !labels || data.length === 0 || labels.length === 0) {
-      console.error('Data or labels are undefined or empty.');
       return;
     }
     if (data.length !== labels.length) {
-      console.error('Data and labels arrays have different lengths.');
       return;
     }
     let currentRow = 0;
-    data.forEach((ele: any, index: number) => {
+    data.forEach((ele: any, index: number) =>
+    {
       if (ele!==0) {
         const maxElementsPerRow = Math.floor((slideWidth - 1) / (ellipseWidth + spacing));
         const xPosition = 1 + ((index % maxElementsPerRow) * (ellipseWidth + spacing));
@@ -768,7 +907,7 @@ export class PdfPowerpointComponent {
           align: 'center',
           color: '#000000',
         });
-        if ((index + 1) % maxElementsPerRow === 0) {
+        if((index + 1) % maxElementsPerRow === 0){
           currentRow += 1;
         }
       }

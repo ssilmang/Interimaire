@@ -1,20 +1,40 @@
+<app-modal 
+    [show]="show" 
+    [premierButtonText]="'Oui'"
+    [deuxiemeButtonText]="'Non'"
+    (clickCommentaire)="validerArchive($event)"
+    (closeModal)="close($event)"
+    [couleur]="couleur"
+    [footer]="footer"
+   >
 
+    <app-alert [show]="true"  [dismissible]="true">
+        <h6 class="text-lg font-semibold">
+            <i class="bi bi-check2-circle"></i>
+            Success
+        </h6>
+     
+    </app-alert>
+
+@if(footer){
+    <p> Voulez-vous vraiment enregistrerce reporting</p>
+}
+</app-modal>
 <div class="card shadow-md ">
     <div class=" flex justify-around border-b-2 border-orange-600" >
       <div class="  form-group mx-auto  relative">
-        <select id="countries" class="bg-gray-50 border form-control border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+        <select id="countries" [(ngModel)]="annee" (change)="selectAnnee($event)" class="bg-gray-50 border form-control border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
           <option selected>Selectionner une annee</option>
-          <option value="US">2025</option>
-          <option value="CA">2024</option>
-          <option value="FR">2023</option>
-          <option value="DE">2022</option>
+          @for(annee of dataAnnee;track annee){
+          <option [ngValue]="annee">{{ annee.annee }}</option>
+          }
         </select>
       </div>
       <div class="  form-group  mx-auto relative">
-        <select id="service" class="bg-gray-50 border form-control border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-          <option selected>Selectionner un mois</option>
-          @for(mois of  frenchMonthNames;track mois){
-              <option value="{{ mois }}">{{ mois }}</option>
+        <select id="service" [(ngModel)]="mois" (change)="selectMois($event)" class="bg-gray-50 border form-control border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+          <option [ngValue]="null" selected>Selectionner un mois</option>
+          @for(mois of  dataMois;track mois){
+              <option [ngValue]="mois">{{ mois.libelle }}</option>
           }
         </select>
       </div>
@@ -34,9 +54,11 @@
         <div class=" col-span-2  md:col-span-1">
             <button (click)="generatePdf()" class="btn btn-success">Exporter</button>
         </div>
+        <div class=" col-span-2  md:col-span-1 ml-6">
+            <button  (click)="archive()" class="btn bg-orange-600 text-white">Enregistrer</button>
+        </div>
     </div>
 </div>
-
 <!-- <div class="columns-1 ">
 
     <div class="flex w-full">
@@ -82,7 +104,6 @@
         </div>
     </div>
 </div> -->
-
 <!-- <table>
     <tr>
         <td>
@@ -355,7 +376,7 @@
         <div id="agence_id" class="   w-8/12 h-2/12 mt-2">
             <!-- <canvas id="piechart" ></canvas> -->
             <apx-chart style="width: 100%;" class=" -mt-1" [series]="chartSeri" [chart]="chartBar" [labels]="label" [colors]="colorAgence" [title]="chartTitle" [dataLabels]="chartDataLabels"></apx-chart>
-            <div class="justify-center flex font-bold underline -mt-8">Titre : Pourcentage de l'effectif global</div>
+            <div class="justify-center flex font-bold underline -mt-5">Titre : Pourcentage de l'effectif global</div>
         </div>
     </div>
     <div class="flex justify-end ">
@@ -444,6 +465,69 @@
         </div>
     </div>
     </div>
+    <div class="card">
+        <div class="mt-2"></div>
+            <h6 class="text-orange-600 text-center items-center border bg-gray-100 rounded-md mt-2">Effectifs par Departement</h6>
+        <div  class="example-container mt-2 flex justify-center items-center">
+            <div  class=" container " style="width: 98%;">
+                <mat-table id="canal_id"
+                #table1
+                [dataSource]="dataDepartement"
+                class="mat-elevation-z8"
+                cdkDropList
+                (cdkDropListDropped)="drop($event,dataDepartement,table1)"
+                cdkDropListData="dataDepartement">
+            
+                <ng-container matColumnDef="key">
+                <mat-header-cell *matHeaderCellDef> Structure </mat-header-cell>
+                <mat-cell *matCellDef="let element" class="text-upperCase"> {{ element?.key }} </mat-cell>
+                <mat-footer-cell *matFooterCellDef class="bg-orange"> Total </mat-footer-cell>
+                </ng-container>
+            
+                <ng-container matColumnDef="permanent">
+                <mat-header-cell *matHeaderCellDef class="text-center flex justify-center items-center"> Permanent </mat-header-cell>
+                <mat-cell *matCellDef="let element" class="text-center flex justify-center items-center"> {{ element?.permanent }} </mat-cell>
+                <mat-footer-cell *matFooterCellDef class="bg-orange text-center flex justify-center items-center"> {{ getTotalForColumn('permanent',dataDepartement) }} </mat-footer-cell>
+                </ng-container>
+            
+                <ng-container matColumnDef="prestataire">
+                <mat-header-cell *matHeaderCellDef class="text-center flex justify-center items-center"> Prestataire </mat-header-cell>
+                <mat-cell *matCellDef="let element" class="text-center flex justify-center items-center"> {{ element?.prestataire }} </mat-cell>
+                <mat-footer-cell *matFooterCellDef class="bg-orange text-center flex justify-center items-center"> {{ getTotalForColumn('prestataire',dataDepartement) }} </mat-footer-cell>
+                </ng-container>
+            
+                <ng-container matColumnDef="interimaire">
+                <mat-header-cell *matHeaderCellDef class="text-center flex justify-center items-center"> Interimaire </mat-header-cell>
+                <mat-cell *matCellDef="let element" class="text-center flex justify-center items-center"> {{ element?.interimaire }} </mat-cell>
+                <mat-footer-cell *matFooterCellDef class="bg-orange text-center flex justify-center items-center"> {{ getTotalForColumn('interimaire',dataDepartement) }} </mat-footer-cell>
+                </ng-container>
+                <ng-container matColumnDef="totalGeneral">
+                    <mat-header-cell *matHeaderCellDef   class="bg-orange text-center flex justify-center items-center"> Total général </mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="bg-orange text-center flex justify-center items-center"> {{ getTotalCanal(element) }} </mat-cell>
+                    <mat-footer-cell *matFooterCellDef class="bg-orange text-center flex justify-center items-center"> {{ getTotalGeneral(dataDepartement) }} </mat-footer-cell>
+                </ng-container>
+            
+            
+                
+                <mat-header-row *matHeaderRowDef="displayedColumnsCanal"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumnsCanal;" cdkDrag></mat-row>
+                <mat-footer-row *matFooterRowDef="displayedColumnsCanal"></mat-footer-row>
+            </mat-table>
+            </div>
+        </div> 
+        <div class="flex justify-end mt-2">
+            <button (click)="commentaireDepart()" class="btn bg-orange-600 shadow-lg shadow-orange-600/70 text-white">Commentaire</button>
+        </div>
+        <div *ngIf="commentDepart" class="w-full mt-2 mb-4 border border-gray-400 rounded-lg bg-gray-50 dark:bg-gray-700  dark:border-gray-600">
+            <div class="px-4 py-2 bg-white rounded-t-lg dark:bg-gray-300">
+            <label for="comment" class="text-orange-600 text-2xl ">Commentaire</label>
+            <textarea id="comment" rows="4" (input)="activeDepart($event)"  [(ngModel)]="commentaireDepartement" class="w-full px-0 text-sm text-center text-gray-900 border rounded-lg border-gray-400 bg-white dark:bg-gray-300 focus:ring-0 dark:text-white dark:placeholder-gray-400" placeholder="............Ecrire votre commentaire..........." required ></textarea>
+            <div class="flex justify-end">
+                <button (click)="enregistrerDepart()" [disabled]="saveDepart" class="btn btn-success">Enregistrer</button>
+            </div>
+            </div>
+        </div>
+        </div>
     <div class="card">
     <div class="mt-2"></div>
         <h6 class="text-orange-600 text-center items-center border bg-gray-100 rounded-md mt-2">Effectifs par Canal</h6>

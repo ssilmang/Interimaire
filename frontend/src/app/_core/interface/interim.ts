@@ -206,6 +206,18 @@ export interface Task {
     dataCanal:any
     dataRang:any
   }
+  export interface DepartementDatas{
+    
+  }
+  export interface DataArchive{
+    dataStatut:DataReporting,
+    dataAgence:any,
+    dataCategorie:any
+    dataDepartement:any
+    dataCanal:any
+    dataRang:any
+    dataCommentaire:any
+  }
 //  export const  codeCouleur: [
 //         {
 //           "colorcode": "green"

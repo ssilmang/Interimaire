@@ -614,7 +614,9 @@ export class FormsComponent implements AfterViewInit,OnInit
     formData.append('telephone_pro',this.formPermanent.get('telephone_pro')?.value.trim().replace(/\s/g,''));
     formData.append('date_debut_contrat',this.formPermanent.get('date_debut_contrat')?.value)
     formData.append('date_fin_contrat',this.formPermanent.get('date_fin_contrat')?.value)
-    formData.append('DA',this.formPermanent.get('DA')?.value.trim().replace(/\s/g,''))
+    if(this.formPermanent.get('DA')?.value){
+      formData.append('DA',this.formPermanent.get('DA')?.value.trim().replace(/\s/g,''));
+    }
     formData.append('DA_kangourou',this.formPermanent.get('DA_kangourou')?.value.trim().replace(/\s/g,''))
     formData.append('duree_kangourou',this.formPermanent.get('duree_kangourou')?.value.trim().replace(/\s/g,''))
     formData.append('montant_kangourou',this.formPermanent.get('montant_kangourou')?.value.trim().replace(/\s/g,''))

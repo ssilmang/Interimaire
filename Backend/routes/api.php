@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AgenceCommercialsController;
 use App\Http\Controllers\AgenceController;
+use App\Http\Controllers\AnneeController;
 use App\Http\Controllers\CanalController;
 use App\Http\Controllers\CategorieController;
 use Illuminate\Http\Request;
@@ -12,6 +13,7 @@ use App\Http\Controllers\LocalController;
 use App\Http\Controllers\DepartementController;
 use App\Http\Controllers\ChefDeServiceController;
 use App\Http\Controllers\ContratController;
+use App\Http\Controllers\DataReportingController;
 use App\Http\Controllers\DirectionController;
 use App\Http\Controllers\GroupeController;
 use App\Http\Controllers\InterimController;
@@ -166,10 +168,19 @@ Route::middleware('auth:sanctum')->prefix('Interim')->group(function()
         Route::get('/reporting','reporting');
     });
     Route::controller(ReportingController::class)->group(function(){
+        Route::get('/get/annee_mois','annee_mois');
         Route::get('/reporting','reporting');
         Route::get('/getAgence','getAgence');
         Route::get('/getdrv/support','getDRV');
         Route::get('/getCanal','getCanal');
         Route::get('/getCategorieGroupe','getCategorieGroupe');
+    });
+    Route::controller(AnneeController::class)->group(function(){
+        Route::post('/annee_mois','store');
+    });
+    Route::controller(DataReportingController::class)->group(function()
+    {
+        Route::post('/dataReporting/{annee}/{mois}','store');
+        Route::get('/getArchiveReporting/{annee}/{mois}','index');
     });
 });
