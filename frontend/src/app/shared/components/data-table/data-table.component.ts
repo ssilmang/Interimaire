@@ -219,7 +219,9 @@ export class DataTableComponent implements OnInit,AfterViewInit{
     this.ajoutComm = true;
     this.dataDetails= collab;
     this.showModal = !this.showModal;
-    this.faireCommentaire = true
+    this.faireCommentaire = true;
+    console.log(collab);
+    
   }
   onModalCloseHandler(event: boolean)
   {
@@ -439,6 +441,8 @@ export class DataTableComponent implements OnInit,AfterViewInit{
     this.footer = false;
     this.idProfile = interim.profile.id;
     this.showModal = !this.showModal;  
+    console.log(interim);
+    
   }
   AutreMotif=()=>{
     this.autre= true;

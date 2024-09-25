@@ -27,7 +27,7 @@ class ProfileRemplacerResource extends JsonResource
         $key ='interimaires';
         if($this->statut == "permanent"){
             $key = 'permanents';
-            $resources =  PermanentResource::collection($this->permanents);
+            $resources =  PermanentResource::collection($this->permanentOfRemplaces);
         }else{
             $resources = InterimResource::collection($this->interimaires);
         }

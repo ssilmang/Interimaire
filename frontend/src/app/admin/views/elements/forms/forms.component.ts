@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild, inject } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, DestroyRef, ElementRef, OnInit, ViewChild, inject } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Images } from 'src/assets/data/images';
 import { Agence, DataDepartement, DataPole, DataService, Pole, Role } from 'src/app/_core/interface/interim';
@@ -12,6 +12,7 @@ import { environment } from 'src/environments/environment.development';
 import { ToastrService } from 'ngx-toastr';
 import { ModalModule } from 'src/app/shared/components/modal/modal.module';
 import { RouterLink } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-forms',
@@ -96,7 +97,8 @@ export class FormsComponent implements AfterViewInit,OnInit
   @ViewChild('checkboxRef',{static:false}) checkboxRef!:ElementRef<HTMLInputElement>;
   constructor(
     private sharedService:LocalStorageService,
-    private cdRef:ChangeDetectorRef
+    private cdRef:ChangeDetectorRef,
+    private cref : DestroyRef
    )
   {
      this.formPermanent = this.fb.group(
@@ -142,7 +144,7 @@ export class FormsComponent implements AfterViewInit,OnInit
   ngAfterViewInit(): void
   {
 
-    this.sharedService.currentInterim.subscribe(interim=>{
+    this.sharedService.currentInterim.pipe(takeUntilDestroyed(this.cref)).subscribe(interim=>{
       if(interim){ 
         console.log(interim);
         
@@ -167,7 +169,7 @@ export class FormsComponent implements AfterViewInit,OnInit
           this.kangourou =true;
           this.formPermanent.get('date_debut_contrat')?.patchValue(interim.contrats.date_debut_contrat)
           this.interimCategorie =true;
-          this.sharedService.currentAgence.subscribe(element=>{
+          this.sharedService.currentAgence.pipe(takeUntilDestroyed(this.cref)).subscribe(element=>{
             this.dataAgence=element.find((ele:any)=>ele.id === interim.categorie.agence.id) 
             this.formPermanent.get('agence')?.patchValue(interim.categorie.agence)
             this.formPermanent.get('categorieInterim')?.patchValue(interim.categorie)     
@@ -212,7 +214,7 @@ export class FormsComponent implements AfterViewInit,OnInit
         this.cdRef.detectChanges();
       }
     })
-    this.sharedService.currentChange.subscribe(change=>{
+    this.sharedService.currentChange.pipe(takeUntilDestroyed(this.cref)).subscribe(change=>{
      if(change)
       {
         this.profileChange = change;
@@ -222,6 +224,7 @@ export class FormsComponent implements AfterViewInit,OnInit
             this.enregistre = "Remplacer";
         }
           this.formPermanent.get('poste')?.setValue(change.poste);
+          this.formPermanent.get('responsable')?.setValue(change.responsable);
           this.cdRef.detectChanges();
      }
     })

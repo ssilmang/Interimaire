@@ -34,7 +34,7 @@ class RemplacementResource extends JsonResource
             'id' => $this->id,
             "rem"=>$this->remplacer,
             'remplacer'=>new ProfileRemplacerResource($remplacer,$this->statut),
-            'remplacant'=>new ProfileRemplacerResource($remplacant,$this->statut),
+            'remplacant'=>new ProfilePermanentResource($remplacant,$this->statut),
         ];
     }
 }

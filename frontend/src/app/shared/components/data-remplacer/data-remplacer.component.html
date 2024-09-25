@@ -78,8 +78,8 @@
       </div>
       <div class=" form-group  relative mx-auto ">
        <select (click)="remplace($event)" [(ngModel)]="change"  id="states" class="block w-full form-control border-gray-500 rounded-lg bg-gray-100  px-2 py-2.5  text-gray-900">
-          <option value="remplacer">Remplacer</option>
-          <option value="remplacement">Remplacement</option>
+          <option value="remplacer">A remplacer</option>
+          <option value="remplacement">Remplacé</option>
        </select>
       </div>
     </div>
@@ -118,7 +118,7 @@
                             </thead>
           
                             @if( dataPermanents.length == 0 || dataPermanents.length == undefined){
-                            <div class="absolute top-52 w-full text-center">
+                            <div class="absolute top-16 w-full text-center">
                                <button disabled type="button"
                                   class="me-2 inline-flex items-center rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:text-blue-700 focus:ring-2 focus:ring-blue-700">
                                   <svg aria-hidden="true" role="status"
@@ -263,7 +263,7 @@
  [show]="showModal"
   (closeModal)="onModalCloseHandler($event)" 
   (clickCommentaire)="clickCommentaire($event)"
-  [premierButtonText]="isCommentaire ? 'Enregistrer':'Commentaire'"
+  [premierButtonText]="isCommentaire ? 'Enregistrer':''"
   [deuxiemeButtonText]="annuler ? 'Fermer' : 'Annuler'"
   [couleur]="couleur"
   [footer]="footer"
@@ -273,7 +273,7 @@
           <div class="flex items-center gap-3 sticky top-0 bg-white px-8 py-3 shadow-[0_5px_5px_-5px] shadow-gray-600">
            <div class="bg-gray-800 rounded-lg p-1">
                <div  class="flex  w-34 h-32 overflow-hidden border-2 border-gray-500">
-                     @if(dataDetails?.profile?.photo){
+                     @if(dataDetails?.profile?.photo!="null"){
                           <img class="w-full h-full object-contain" [src]="apiImag + dataDetails?.profile?.photo" alt="Profile">
                       }@else{
                         <div class="w-32 h-32 flex items-center justify-center overflow-hidden rounded-full border-2 border-emerald-600">
@@ -401,7 +401,24 @@
          </div>
          }
     }
-    <div class="border-2 card">dfrre</div>
+    @if(dataDetails?.motif!=null){
+    <div class="card border-2 mt-2">
+        <div class=" flex space-x-24 mt-5">
+            <div>
+                <div  class="tooltip relative">Motif</div>
+                    <button type="button" class="btn btn-outline-secondary me-2">{{dataDetails?.motif}}</button>
+            </div>
+            <div>
+                    <div  class="tooltip relative">Date</div>
+                    <button type="button" class="btn btn-outline-secondary me-2">{{dataDetails?.date}}</button>
+            </div>
+        </div>
+        <div class="mt-1">        
+            <label for="message" class="block  text-sm font-medium text-gray-900 dark:text-white">Commentaire</label>
+            <textarea id="message" rows="4" readonly class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Write your thoughts here...">{{dataDetails?.commentaire}}</textarea>
+        </div>
+    </div>  
+    }
   
       <!-- <textarea [(ngModel)]="commentaire"  class="m-3 w-full h-32 border border-gray-600" name="" id=""></textarea> -->
 

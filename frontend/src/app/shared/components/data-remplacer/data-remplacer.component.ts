@@ -56,12 +56,13 @@ export class DataRemplacerComponent implements AfterViewInit, OnInit{
   isCommentaire:boolean = false;
   annuler:boolean = true;
   couleur:string = "bg-white";
-  footer:boolean = false;
+  footer:boolean = true;
   dataPermanentList:DataPermanentList<Permanent>[] = [];
   dataDetails?:Permanent;
   isDropdownOpen:boolean = true;
   faireCommentaire:boolean = true;
   hideSelectionIndicator = signal(false);
+  isloading:boolean = true;
   @ViewChild('table', {static: true}) table!: MatTable<DataRemplacer<Permanent>>;
   constructor(private service : PermanentService, private crefDestroy :DestroyRef, private shared:LocalStorageService){
 
@@ -74,6 +75,7 @@ export class DataRemplacerComponent implements AfterViewInit, OnInit{
     this.index()
     this.getSubstitution();
     this.getListRemplacement();
+  
   }
   index()
   {

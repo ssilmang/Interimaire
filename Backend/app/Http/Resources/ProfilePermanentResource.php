@@ -12,12 +12,26 @@ class ProfilePermanentResource extends JsonResource
      *
      * @return array<string, mixed>
      */
+    protected $statut;
+    public function __construct($resource,$statut="permanent")
+    {
+        parent::__construct($resource);
+        $this->statut = $statut;
+    }
     public function toArray(Request $request): array
     {
+        
+        
+        $resources = null;
+        $key ='interimaires';
+        if($this->statut == "permanent"){
+            $key = 'permanents';
+            $resources =  PermanentResource::collection($this->permanents);
+        }else{
+            $resources = InterimResource::collection($this->interimaires);
+        }
         return [
-           'id'=>$this->id,
-           'remplacer'=>PermanentResource::make($this->permanents),
-           'remplacer'=>PermanentResource::make($this->permanents)
+            $key=>$resources ,
         ];
     }
 }

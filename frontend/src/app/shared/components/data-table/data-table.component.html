@@ -95,7 +95,7 @@
 
                   <td class="ng-wind-data-item whitespace-nowrap font-bold text-gray-800">
                      <div  class="flex  rounded-full h-8 w-8 overflow-hidden border-2 border-gray-500">
-                        @if(rowData?.permanent?.profile?.photo){
+                        @if(rowData?.permanent?.profile?.photo!="null"){
                              <img class="w-full h-full object-contain" [src]="apiImg + rowData?.permanent?.profile?.photo" alt="Profile">
                          }@else{
                            <div
@@ -191,7 +191,7 @@
                            </mat-checkbox>
                         </td> -->
                         <td class=" ng-wind-data-item whitespace-nowrap font-medium text-gray-800">      
-                           @if(collob?.profile?.photo){
+                           @if(collob?.profile?.photo!="null"){
                               <a   [routerLink]="commonService.prepareRouteId(collob.id,appRoutes.Admin, adminRoutes.Elements, elementRoutes.DataTable)"  class=" tooltip relative flex  cursor-pointer rounded-full h-8 w-8 overflow-hidden border-2 border-gray-500">
                                  <img class="w-full h-full object-contain" [src]="apiImg + collob?.profile?.photo" alt="Profile"/>
                                  <span class="tooltip-text w-full">Clic pour voir ces collaborateures</span>
@@ -305,7 +305,7 @@
           <div class="flex items-center gap-3 sticky top-0 bg-white px-8 py-3 shadow-[0_5px_5px_-5px] shadow-gray-600">
            <div class="bg-gray-800 rounded-lg p-1">
                <div  class="flex  w-34 h-32 overflow-hidden border-2 border-gray-500">
-                     @if(rowData?.permanent?.profile?.photo){
+                     @if(dataDetails?.profile?.photo != "null"){
                           <img class="w-full h-full object-contain" [src]="apiImg + dataDetails?.profile?.photo" alt="Profile">
                       }@else{
                         <div class="w-32 h-32 flex items-center justify-center overflow-hidden rounded-full border-2 border-emerald-600">

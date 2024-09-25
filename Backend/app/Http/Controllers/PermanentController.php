@@ -202,7 +202,7 @@ class PermanentController extends Controller
                         if($id!= 0)
                         {                  
                             $permanent = Permanent::find($id);
-                            $permanentARemplacer  = $permanent;
+                           
                             $permanent->profile_id=$profile->id;
                             $permanent->poste_id=$poste->id;
                             $permanent->canal_id=$canal->id;
@@ -226,9 +226,15 @@ class PermanentController extends Controller
                                 }
                                 $prof = Profile::find($remplacer);
                                 $perm = Permanent::where('profile_id',$prof->id)->first();
-                                if($perm->etat == 2 || $perm->etat == 1)
+                                $perRemp = PermanentOfRemplace::where('profile_id',$prof->id)->first();
+                                $perRemp->etat = 0;
+                                $perRemp->save();
+                                if( $perm->etat == 1)
                                 {
                                     $perm->etat = -1; 
+                                }
+                                if($perm->etat == 2 ){
+                                    $perm->etat = 0;
                                 }
                                 $responsable_permanent = Permanent::where('responsable_id',$perm->id)->get();
                                 $responsable_prestataire = Prestataire::where('responsable_id',$perm->id)->get();
@@ -253,8 +259,9 @@ class PermanentController extends Controller
                                     "remplacer"=>$prof->id,
                                     "remplacant"=>$profile->id,
                                 ]);
+                                $permanentARemplacer  = Permanent::find($id);
                                 $permOfRemp = PermanentOfRemplace::firstOrCreate([
-                                    'profile_id'=>$permanentARemplacer->profile_id,
+                                    'profile_id'=>$permanentARemplacer->profile_id],[
                                     'poste_id'=>$permanentARemplacer->poste_id,
                                     'canal_id'=>$permanentARemplacer->canal_id,
                                     'statut_id'=>$permanentARemplacer->statut_id,
@@ -270,8 +277,9 @@ class PermanentController extends Controller
                                     'date'=>$permanentARemplacer->date,
                                     'motif'=>$permanentARemplacer->motif,
                                     'commentaire'=>$permanentARemplacer->commentaire,
+                                    'etat'=>1,
                                 ]);
-                                $message = "permanent remplacer avec succès";
+                                $message = "permanent remplacé avec succès";
                             }
                             $permanent->save();
                             return $this->response->response(Response::HTTP_OK,$message,$permanent);
@@ -302,11 +310,17 @@ class PermanentController extends Controller
                                 }
                                 $prof = Profile::find($remplacer);
                                 $perm = Permanent::where('profile_id',$prof->id)->first();
-                                if($perm->etat == 2 || $perm->etat == 1)
+                                $perRemp = PermanentOfRemplace::where('profile_id',$prof->id)->first();
+                                $perRemp->etat = 0;
+                                if($perm->etat == 1)
                                 {
                                     $perm->etat = -1; 
+                                }if($perm->etat == 2)
+                                {
+                                    $perm->etat = 0;
                                 }
                                 $perm->save();
+                                $perRemp->save();
                                 $responsable_permanent = Permanent::where('responsable_id',$perm->id)->get();
                                 $responsable_prestataire = Prestataire::where('responsable_id',$perm->id)->get();
                                 $responsable_interimaire = Interim::where('responsable_id',$perm->id)->get();
@@ -603,6 +617,7 @@ class PermanentController extends Controller
                             'date'=>$permanentARemplacer->date,
                             'motif'=>$permanentARemplacer->motif,
                             'commentaire'=>$permanentARemplacer->commentaire,
+                            'etat'=>1,
                         ]);
                         
                     }else if($prestataire)
@@ -617,7 +632,6 @@ class PermanentController extends Controller
                 }
                 return $this->response->response(Response::HTTP_BAD_REQUEST,'ce profile n\'existe pas ',$object);
             });
-
         }catch(QueryException $e){
             return $this->response->response(Response::HTTP_BAD_REQUEST,'erreur lors du traitement',$e);
         }
@@ -625,7 +639,7 @@ class PermanentController extends Controller
     public function getSubstitution()
     {
         try{
-            $permanents = PermanentOfRemplace::get();
+            $permanents = PermanentOfRemplace::where('etat',1)->get();
             $data = [
                 "dataPermanent"=>PermanentResource::collection($permanents),
             ];

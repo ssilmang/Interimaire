@@ -22,4 +22,7 @@ class Profile extends Model
     {
         return $this->hasMany(Interim::class,"profile_id");
     }
+    public function permanentOfRemplaces(){
+        return $this->hasMany(PermanentOfRemplace::class,'profile_id');
+    }
 }

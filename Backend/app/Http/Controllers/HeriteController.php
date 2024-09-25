@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Permanent;
+use App\Models\PermanentOfRemplace;
 use App\Models\Profile;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -130,6 +132,28 @@ class HeriteController extends Controller
        }catch(QueryException $e){
          return $this->responseController->response(Response::HTTP_BAD_REQUEST,"erreur",$e->getMessage());
        }
+    }
+    public function remplacementOfPermanent(Request $request,$id){
+        $permanentARemplacer  = Permanent::find($id);
+        $permOfRemp = PermanentOfRemplace::updateOrCreate([
+            'profile_id'=>$permanentARemplacer->profile_id],[
+            'poste_id'=>$permanentARemplacer->poste_id,
+            'canal_id'=>$permanentARemplacer->canal_id,
+            'statut_id'=>$permanentARemplacer->statut_id,
+            'groupe_id'=>$permanentARemplacer->groupe_id,
+            'locau_id'=>$permanentARemplacer->locau_id,
+            'categoriegroupe_id'=>$permanentARemplacer->categoriegroupe_id,
+            'agence_id'=>$permanentARemplacer->agence_id,
+            'direction_id'=>$permanentARemplacer->direction_id,
+            'pole_id'=>$permanentARemplacer->pole_id? $permanentARemplacer->pole_id : null,
+            'departement_id'=>$permanentARemplacer->departement_id? $permanentARemplacer->departement_id : null,
+            'service_id'=>$permanentARemplacer->service_id? $permanentARemplacer->service_id : null,
+            'responsable_id'=>$permanentARemplacer->responsable_id?$permanentARemplacer->responsable_id : null,
+            'date'=>$permanentARemplacer->date,
+            'motif'=>$permanentARemplacer->motif,
+            'commentaire'=>$permanentARemplacer->commentaire,
+            'etat'=>1,
+        ]);
     }
 
 }
