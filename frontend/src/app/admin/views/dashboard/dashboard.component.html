@@ -36,25 +36,23 @@
     <div class="my-5"></div> 
     <div class="card-title ">
         <div class=" flex justify-around border-b-2 border-b-green-700" >
-          <div class="  form-group   relative">
-        
-            <select id="countries" class="bg-gray-50 border form-control border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-              <option selected>Selectionner un poste</option>
-              <option value="US">United States</option>
-              <option value="CA">Canada</option>
-              <option value="FR">France</option>
-              <option value="DE">Germany</option>
+          <div class="form-group   relative">   
+            <select id="canal_id" [(ngModel)]="canal" class="bg-gray-50 border form-control border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                <option selected disabled>Selectionner un canal</option>
+                @for(canal of dataAll?.canals;track canal.id)
+                {
+                  <option [ngValue]="canal">{{ canal.libelle }}</option>
+                }
             </select>
           </div>
           <div class="  form-group  mx-auto relative">
         
-            <select id="service" class="bg-gray-50 border form-control border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-              <option selected>Selectionner un service</option>
-              <option value="US">United States</option>
-              <option value="CA">Canada</option>
-              <option value="FR">France</option>
-              <option value="DE">Germany</option>
-            </select>
+            <select id="service" [(ngModel)]="categorie" class="bg-gray-50 border form-control border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                <option selected disabled>Selectionner une catégorie</option>
+                @for(categ of dataAgenceInterim;track categ.id){
+                  <option [ngValue]="categ">{{ categ.libelle }}</option>
+                }
+              </select>
           </div>
           <div class=" form-group  relative mx-auto ">
             <input [(ngModel)]="libelle" class="border-2 border-gray-300 bg-gray-100 h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none"
@@ -135,7 +133,7 @@
                             </div>
                             } @else {
                             <tbody>
-                               @for (interim of dataInterims |rechercherLibelle:libelle; track interim.id){
+                               @for (interim of dataInterims |rechercherLibelle:libelle|canalCategorie:canal:categorie:'interimaire'; track interim.id){
                                <tr class="border-b mt-5 bg-white hover:bg-gray-50">
                                   <td class="ng-wind-data-item whitespace-nowrap font-medium text-gray-800">
                                     <div
@@ -267,10 +265,10 @@
              </div>
         </section>
     }@else{
-        <mat-table #table [dataSource]="dataRemplacer"  class="mat-elevation-z8 boerder shadow-md" cdkDropList (cdkDropListDropped)="drop($event)"
+        <mat-table #table [dataSource]="dataRemplacer"  class="mat-elevation-z8 border shadow-md" cdkDropList (cdkDropListDropped)="drop($event)"
         cdkDropListData="dataRemplacer">
         <ng-container matColumnDef="Prenom" sticky>
-            <mat-header-cell *matHeaderCellDef> Prenom </mat-header-cell>
+            <mat-header-cell *matHeaderCellDef class="bg-600"> Prenom </mat-header-cell>
             <mat-cell *matCellDef="let element">
                 @for(item of element.remplacer.interimaires;track item.id){
                     <span>{{item.profile.prenom}}</span>

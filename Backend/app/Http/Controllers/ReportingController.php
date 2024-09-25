@@ -35,6 +35,7 @@ class ReportingController extends Controller
     {
         $annes =Annee::all();
         $mois = Mois::all();
+        
         $data = [
             "annee"=>AnneeResource::collection($annes),
             "mois"=>RoleResource::collection($mois),

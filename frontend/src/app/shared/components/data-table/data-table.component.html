@@ -20,22 +20,20 @@
       <div class=" flex justify-around border-b-2 border-orange-600" >
         <div class="  form-group mx-auto  relative">
       
-          <select id="countries" class="bg-gray-50 border form-control border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-            <option selected>Selectionner un poste</option>
-            <option value="US">United States</option>
-            <option value="CA">Canada</option>
-            <option value="FR">France</option>
-            <option value="DE">Germany</option>
+          <select id="countries" [(ngModel)]="canal" class="bg-gray-50 border form-control border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+            <option selected disabled>Selectionner un canal</option>
+              @for(canal of dataAll?.canals;track canal.id){
+                <option [ngValue]="canal">{{ canal.libelle }}</option>
+              }
           </select>
         </div>
         <div class="  form-group  mx-auto relative">
       
-          <select id="service" class="bg-gray-50 border form-control border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-            <option selected>Selectionner un service</option>
-            <option value="US">United States</option>
-            <option value="CA">Canada</option>
-            <option value="FR">France</option>
-            <option value="DE">Germany</option>
+          <select id="service" [(ngModel)]="categorie" class="bg-gray-50 border form-control border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+            <option selected disabled>Selectionner une catégorie</option>
+            @for(categ of dataAll?.categories;track categ.id){
+              <option [ngValue]="categ">{{ categ.libelle }}</option>
+            }
           </select>
         </div>
         <div class=" form-group  relative mx-auto ">
@@ -185,7 +183,7 @@
                   </div> -->
                   
                   <tbody>
-                     @for (collob of rowData?.collaborateurs|rechercherLibelle:libelle; track collob?.id;let i = $index){
+                     @for (collob of rowData?.collaborateurs|rechercherLibelle:libelle|canalCategorie:canal:categorie:'permanent'; track collob?.id;let i = $index){
                      <tr class="border-b text-black  bg-white hover:bg-gray-50">
                         <!-- <td>
                            <mat-checkbox [checked]="collob?.etat"  (change)="update($event.checked, i)">

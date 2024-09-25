@@ -17,6 +17,8 @@ export class PdfPowerpointComponent
 {
   donnee:any
   public userOne: string =Images.LOGO ;
+  public orange:string = Images.Orange;
+  public sonatel:string = Images.sonatel;
   constructor(private dialogRef: MatDialogRef<PdfPowerpointComponent>,@Inject(MAT_DIALOG_DATA) private data:any)
   {
     this.donnee =data;
@@ -205,7 +207,7 @@ export class PdfPowerpointComponent
       {
         x:1,
         y:2.5,
-        color:'#FF8A65',
+        color:'#000000',
         align:'center',
         fontSize:24
       });
@@ -213,12 +215,12 @@ export class PdfPowerpointComponent
         {
           // shape:pptx.ShapeType.round1Rect,
           x:2.8,
-          y:3.3,
+          y:4.7,
           h:0.5,
           w:4,
           align:'center',
-          fontSize:30,
-          color:'#FF7800',
+          fontSize:22,
+          color:'#000000',
           // fill:{
           //   color:'#FF7800',
           //   type:'solid',
@@ -231,6 +233,18 @@ export class PdfPowerpointComponent
           //   angle: 10
           // }
         });
+        slide.addImage({
+          path:this.orange,
+          x:0.3,
+          y:4.6,
+          h:0.7,
+          w:0.8
+        })
+        slide.addImage({
+          path:this.sonatel,
+          x:8.5,
+          y:4.6,
+        })
       let statut = pptx.addSlide();
       statut.addText('Effectifs par Statut',{
         // shape: pptx.ShapeType.ribbon2,
@@ -277,12 +291,18 @@ export class PdfPowerpointComponent
         color:'#ffffff',
         dataLabelColor:'#FFFFFF'
       });
-      
+      statut.addText('Commentaires',{
+        x:1,
+        y:3.7,
+        align:'center',
+        color:'FF7800',
+        underline:{style:'heavy',color:"000000"},
+      })
       statut.addText(`${this.donnee.dataStatut.commentaire}`,
       {
         shape: pptx.ShapeType.round2DiagRect,
         x: 1,              
-        y: 3.7,               
+        y: 3.9,               
         w: 8,              
         h: 1.5,             
         fontSize: 14,  
@@ -361,24 +381,31 @@ export class PdfPowerpointComponent
             color: 'F1F1F1' 
           }
         });
-        agence.addChart(pptx.ChartType.area, 
+        console.log(this.donnee.dataAgence);
+        
+        agence.addChart(pptx.ChartType.bar, 
           [{
             name:'Agence',
             values:this.donnee.dataAgence.data,
             labels:this.donnee.dataAgence.labels,   
+            color:this.donnee.dataAgence.colors,
           }], 
           {
-            chartColors:this.donnee.dataAgence.colors,
+            
             x: 3.7,
             y: 0.9,
             w: 5.7,
             h: 3.2,
-            showLegend:true,
-            legendFontSize:12,
-            legendPos:'r',
-            showPercent:true, 
-            color:'#ffffff',
-            dataLabelColor:'#FFFFFF'
+            showLegend: true,
+            legendFontSize: 12,
+            legendPos: 'r',
+            showPercent: false,
+            dataLabelColor: '#FFFFFF', 
+            barDir: 'col',  
+          
+            color:"FF7800",
+            // chartArea:{fill:{color:"FF7800"}, border: { color: this.donnee.dataAgence.colors, pt: 1 }} ,
+            plotArea:{fill:{color:"ffffff"}}
           });
           agence.addText("Titre : Pourcentage de l'effectif global",
             {
@@ -391,11 +418,18 @@ export class PdfPowerpointComponent
               align:'center',
             }
           )
+          agence.addText('Commentaires',{
+            x:0.8,
+            y:4.3,
+            align:'center',
+            color:'FF7800',
+            underline:{style:'heavy',color:"000000"},
+          })
         agence.addText(`${this.donnee.dataAgence.commentaire}`,
         {
           shape:pptx.ShapeType.round2DiagRect,
           x: 0.5,              
-          y: 4.3,               
+          y: 4.5,               
           w: 9,              
           h: 1,             
           fontSize: 14,      
@@ -507,11 +541,18 @@ export class PdfPowerpointComponent
           color:'#ffffff',
           dataLabelColor:'#FFFFFF'
         });
+        categorie.addText('Commentaires',{
+          x:1,
+          y:3.8,
+          align:'center',
+          color:'FF7800',
+          underline:{style:'heavy',color:"000000"},
+        })
         categorie.addText(this.donnee.dataCategorie.commentaire,
         {
             shape:pptx.ShapeType.round2DiagRect,
             x:0.3,
-            y:3.8,
+            y:4.2,
             w:9,
             h:1.2,
             fontSize: 14,      
@@ -546,7 +587,7 @@ export class PdfPowerpointComponent
           {text:'Total Général',options:{bold:true,fill:'FF7800',color:'ffffff'}},
         ];
         let departement = pptx.addSlide();
-        departement.addText('Effectif par Departement',
+        departement.addText('Effectif par Entités',
           {
             x:1,
             y:0.2,
@@ -563,7 +604,7 @@ export class PdfPowerpointComponent
             x:0.5,
             y:0.6,
             h:0.2,
-            w:9,
+            w:5,
             color:'000000',
             fill:{
               color:'F1F1F1',
@@ -577,16 +618,21 @@ export class PdfPowerpointComponent
               color:'000000'
             }
           })
-          if(this.donnee.dataDepartement.commentaire!="")
-          {
-            let commDepart =pptx.addSlide();
-            commDepart.addText(this.donnee.dataDepartement.commentaire,
+         
+            departement.addText('Commentaires',{
+              x:4.1,
+              y:1,
+              align:'center',
+              color:'FF7800',
+              underline:{style:'heavy',color:"000000"},
+            })
+            departement.addText(this.donnee.dataDepartement.commentaire,
               {
                   shape:pptx.ShapeType.round2DiagRect,
-                  x:0.5,
+                  x:5.7,
                   y:1.2,
-                  w:9,
-                  h:1,
+                  w:4,
+                  h:4,
                   fontSize: 14,      
                   align:'center',
                   color:'#000000',
@@ -599,7 +645,7 @@ export class PdfPowerpointComponent
                       width:1.3
                     },
               });
-          }
+        
         let canal = pptx.addSlide();
         canal.addText('Effectifs par Canal',{
           // shape:pptx.ShapeType.ribbon2,
@@ -643,11 +689,18 @@ export class PdfPowerpointComponent
             color:'000000'
           }
         });
+        canal.addText('Commentaires',{
+          x:1,
+          y:4.2,
+          align:'center',
+          color:'FF7800',
+          underline:{style:'heavy',color:"000000"},
+        })
         canal.addText(this.donnee.dataCanal.commentaire,
         {
             shape:pptx.ShapeType.round2DiagRect,
             x:0.5,
-            y:4.2,
+            y:4.4,
             w:9,
             h:1,
             fontSize: 14,      
@@ -774,12 +827,19 @@ export class PdfPowerpointComponent
               border: { type: 'solid', pt: 1, color: '000000' }
             });
           } 
-          if(this.donnee.dataRang.commentaire!=""){    
+          if(this.donnee.dataRang.commentaire!=""){  
+            currentSlide.addText('Commentaires',{
+              x:1,
+              y:3.4,
+              align:'center',
+              color:'FF7800',
+              underline:{style:'heavy',color:"000000"},
+            })  
             currentSlide.addText(this.donnee.dataRang.commentaire,
             {
                 shape:pptx.ShapeType.round2DiagRect,
                 x:0.5,
-                y:3.3,
+                y:3.7,
                 w:9,
                 h:2,
                 fontSize: 14,      
@@ -807,7 +867,7 @@ export class PdfPowerpointComponent
             });
         }
           let end = pptx.addSlide();
-          end.addText("FIN!", {
+          end.addText("MERCI!", {
             x: 0.89,
             y: 1.5,
             w: 8,
@@ -818,6 +878,18 @@ export class PdfPowerpointComponent
             color: 'FF7800',
             bold: true,
           });
+          end.addImage({
+            path:this.orange,
+            x:0.3,
+            y:4.6,
+            h:0.7,
+            w:0.8
+          })
+          end.addImage({
+            path:this.sonatel,
+            x:8.3,
+            y:4.6,
+          })
       pptx.writeFile({fileName:'reporting.pptx'});
       this.dialogRef.close();
   }

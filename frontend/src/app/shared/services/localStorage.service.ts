@@ -6,7 +6,7 @@ import { PermanentService } from "src/app/_core/services/permanent.service";
 @Injectable({providedIn: "root"})
 
 export class LocalStorageService implements OnInit{
-  constructor(private service:InterimService) { }
+  constructor(private service:InterimService,private serviceShared: PermanentService) { }
   private interimSource = new BehaviorSubject<any>(null);
   currentInterim = this.interimSource.asObservable();
   private interimAgence = new BehaviorSubject<any>(null);
@@ -19,9 +19,10 @@ export class LocalStorageService implements OnInit{
   openModal$ = this.openModal.asObservable();
   private paginate = new BehaviorSubject<any>(null);
   currentPaginate = this.paginate.asObservable();
-
-  ngOnInit(): void {
-    
+  private openChange = new BehaviorSubject<any>(null);
+  currentChange = this.openChange.asObservable();
+  ngOnInit(): void 
+  {
   }
   put(key:string, value: any)
   {
@@ -39,7 +40,7 @@ export class LocalStorageService implements OnInit{
     localStorage.clear();
   }
   changeInterim(interim: any)
- {
+  {
     this.interimSource.next(interim);
   }
   allAgence(data:any)
@@ -81,11 +82,16 @@ export class LocalStorageService implements OnInit{
       }
      });
   }
-  clickIci(value:string){
+  clickIci(value:string)
+  {
     this.openModal.next(value);
   }
-  chargePaginate(value:any){
+  chargePaginate(value:any)
+  {
     this.paginate.next(value);
+  }
+  changePermanent(event:any){
+    this.openChange.next(event)
   }
 }
 

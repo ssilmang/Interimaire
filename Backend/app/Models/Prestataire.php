@@ -10,7 +10,6 @@ class Prestataire extends Model
 {
     use HasFactory,SoftDeletes;
     protected $guarded=['id'];
-    protected $fillable=['etat'];
     public function canal()
     {
         return $this->belongsTo(Canal::class);

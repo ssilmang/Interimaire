@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\PermanentResource;
+use App\Http\Resources\RemplacementResource;
 use App\Models\Agence;
 use App\Models\AgenceCommercial;
 use App\Models\Categorie;
@@ -10,9 +11,12 @@ use App\Models\Contrat;
 use App\Models\Direction;
 use App\Models\Interim;
 use App\Models\Permanent;
+use App\Models\PermanentOfRemplace;
 use App\Models\Poste;
 use App\Models\Prestataire;
 use App\Models\Profile;
+use App\Models\Remplacer;
+use App\Models\RemplacerPermanent;
 use Carbon\Carbon;
 use Faker\Provider\ar_EG\Person;
 use Illuminate\Database\QueryException;
@@ -34,7 +38,7 @@ class PermanentController extends Controller
     {
         $permanents = Permanent::with(['profile', 'poste', 'canal', 'statut', 'groupe', 'categoriegroupe', 'agence', 'direction', 'locau', 'pole', 'departement', 'service', 'agence_commercial', 'responsable'])
         ->findOrFail($id);
-        $collaborateurs = $permanents->collaborateurs()->where('etat',0)->paginate($index);
+        $collaborateurs = $permanents->collaborateurs()->whereIn('etat',[0,2])->paginate($index);
         return response()->json([
             'statut'=>Response::HTTP_OK,
             'message'=>'all permanents',
@@ -58,10 +62,10 @@ class PermanentController extends Controller
         $data =["dvs"=>PermanentResource::make($permanent)];    
         return $this->response->response(Response::HTTP_OK,'index permanent dv',$data);
     }
-    public function store(Request $request,$id=0,$idProfile=0,$upload="null",$contrat_id=0)
+    public function store(Request $request,$id = 0,$idProfile = 0,$upload = "null",$contrat_id = 0,$remplacer = 0)
     {      
         try{
-            return DB::transaction(function() use($request,$id,$idProfile,$upload,$contrat_id)
+            return DB::transaction(function() use($request,$id,$idProfile,$upload,$contrat_id,$remplacer)
             {     
                 $valide = $request->validate([
                     'statut'=>'required',
@@ -91,16 +95,18 @@ class PermanentController extends Controller
                 if($idProfile == 0){
                     $profile =  $this->controller->UserProfile($request,$photo);
                 }else{
-                    $profile =$this->controller->updateUserProfile($request,$photo,$idProfile);
+                    $profile = $this->controller->updateUserProfile($request,$photo,$idProfile);
                 }    
-               if($statut->libelle === "Interimaire")
+               if(strtolower($statut->libelle) === strtolower("Interimaire"))
                {
-                    if($upload == "null"){
+                    if($upload == "null")
+                    {
                         $file->move('uploads/Interims/',$filename);
                     }
-                    if($id!=0){
-                    $int= $this->interimaire->update($request,$id,$statut,$profile,$contrat_id,$categorie,$groupe);
-                    return $int;
+                    if($id!=0)
+                    {
+                        $int= $this->interimaire->update($request,$id,$statut,$profile,$contrat_id,$categorie,$groupe);
+                        return $int;
                     }else{
                         $interim =$this->interimaire->store($request,$statut,$profile,$categorie,$groupe);
                     return $interim;
@@ -114,8 +120,7 @@ class PermanentController extends Controller
                        'statut'=>'required',
                     ]);
                     $canal = $this->controller->store($request->canal,"Canal","Canal");
-                    $agence = $this->controller->store($request->agence,"Agence","Agence");
-                   
+                    $agence = $this->controller->store($request->agence,"Agence","Agence");  
                     $poste = $this->controller->store($request->poste,"Poste","Poste");
                     $locau = $this->controller->store($request->locau,"Locau","locau");         
                     $service = 0; $direction = 0; $pole = 0; $departement = 0; $commercial =0;          
@@ -125,11 +130,9 @@ class PermanentController extends Controller
                     }
                     if(isset($request->pole) && $request->pole !="null" )
                     {
-                        
                         $pole = $this->controller->create($request->pole,'direction_id',$direction->id,"Pole","pole");
                     }
                     if(isset($request->departement) && $request->departement!=="null")
-                    
                     {
                         $departement = $this->controller->create($request->departement,'pole_id',$pole->id,"Departement","departement");
                     }
@@ -142,7 +145,7 @@ class PermanentController extends Controller
                     {
                         $commercial = $this->controller->create($request->agence_commercial,'departement_id',$departement->id,"AgenceCommercial","agenceCommercial");
                     }
-                    if($statut->libelle === "Prestataire")
+                    if(strtolower($statut->libelle) === strtolower("Prestataire"))
                     {
                         if($upload == "null")
                         {
@@ -168,33 +171,38 @@ class PermanentController extends Controller
                         return $this->response->response(Response::HTTP_OK,"Prestataire mise en jour avec succès",$idPrestataire);
                        }
                        else{
-                        $prestataire = Prestataire::firstOrCreate([
-                            'profile_id'=>$profile->id,
-                            'poste_id'=>$poste->id,
-                            'canal_id'=>$canal->id,
-                            'statut_id'=>$statut->id,
-                            'groupe_id'=>$groupe->id,
-                            'locau_id'=>$locau->id,
-                            'categoriegroupe_id'=>$categorie->id,
-                            'agence_id'=>$agence->id,
-                            'direction_id'=>$direction->id,
-                            'pole_id'=>$request->pole? $pole->id :null,
-                            'departement_id'=>$request->departement? $departement->id : null,
-                            'service_id'=>$request->service? $service->id :null,
-                            'agence_commercial_id'=>$request->agence_commercial?$commercial->id:null,
-                            'responsable_id'=>$request->responsable,
-                        ]);
+                       
+                        $prestataire = new Prestataire();
+                        $prestataire->profile_id=$profile->id;
+                        $prestataire->poste_id=$poste->id;
+                        $prestataire->canal_id=$canal->id;
+                        $prestataire->statut_id=$statut->id;
+                        $prestataire->groupe_id=$groupe->id;
+                        $prestataire->locau_id=$locau->id;
+                        $prestataire->categoriegroupe_id=$categorie->id;
+                        $prestataire->agence_id=$agence->id;
+                        $prestataire->direction_id=$direction->id;
+                        $prestataire->pole_id=$pole? $pole->id : null;
+                        $prestataire->departement_id=$departement? $departement->id :null;
+                        $prestataire->service_id=$service? $service->id : null;
+                        $prestataire->agence_commercial_id=$commercial?$commercial->id:null;
+                        $prestataire->responsable_id=$request->responsable;
+                        if(!$prestataire->exists){
+                            $prestataire->save();
+                        }
                         return $this->response->response(Response::HTTP_OK,"prestataire ajouter avec succès",$prestataire);
                        }
-                    }else
+                    }elseif(strtolower($statut->libelle) === strtolower("Permanent"))
                     {
+                        $message = "";
                         if($upload === "null")
                         {
                             $file->move('uploads/higlights/',$filename);
                         }
                         if($id!= 0)
-                        {
-                           $permanent = Permanent::find($id);
+                        {                  
+                            $permanent = Permanent::find($id);
+                            $permanentARemplacer  = $permanent;
                             $permanent->profile_id=$profile->id;
                             $permanent->poste_id=$poste->id;
                             $permanent->canal_id=$canal->id;
@@ -209,10 +217,67 @@ class PermanentController extends Controller
                             $permanent->service_id=$service? $service->id :null;
                             $permanent->agence_commercial_id=$commercial?$commercial->id:null;
                             $permanent->responsable_id=$request->responsable;
+                            $message = "permanent mise en jour avec succès";
+                            if($remplacer != 0)
+                            {
+                                if($permanent->etat == 0)
+                                {
+                                    $permanent->etat = 2;
+                                }
+                                $prof = Profile::find($remplacer);
+                                $perm = Permanent::where('profile_id',$prof->id)->first();
+                                if($perm->etat == 2 || $perm->etat == 1)
+                                {
+                                    $perm->etat = -1; 
+                                }
+                                $responsable_permanent = Permanent::where('responsable_id',$perm->id)->get();
+                                $responsable_prestataire = Prestataire::where('responsable_id',$perm->id)->get();
+                                $responsable_interimaire = Interim::where('responsable_id',$perm->id)->get();
+                                $perm->save();
+                                foreach($responsable_permanent as $permt){
+                                    $perman = Permanent::find($permt->id);
+                                    $perman->responsable_id = $permanent->id;
+                                    $perman->save();
+                                }
+                                foreach($responsable_prestataire as $prest){
+                                    $prestat = Prestataire::find($prest->id);
+                                    $prestat->responsable_id = $permanent->id;
+                                    $prestat->save();
+                                }
+                                foreach($responsable_interimaire as $inter){
+                                    $interi = Interim::find($inter->id);
+                                    $interi->responsable_id = $permanent->id;
+                                    $interi->save();
+                                }
+                                $remplacer_perm = RemplacerPermanent::updateOrCreate([
+                                    "remplacer"=>$prof->id,
+                                    "remplacant"=>$profile->id,
+                                ]);
+                                $permOfRemp = PermanentOfRemplace::firstOrCreate([
+                                    'profile_id'=>$permanentARemplacer->profile_id,
+                                    'poste_id'=>$permanentARemplacer->poste_id,
+                                    'canal_id'=>$permanentARemplacer->canal_id,
+                                    'statut_id'=>$permanentARemplacer->statut_id,
+                                    'groupe_id'=>$permanentARemplacer->groupe_id,
+                                    'locau_id'=>$permanentARemplacer->locau_id,
+                                    'categoriegroupe_id'=>$permanentARemplacer->categoriegroupe_id,
+                                    'agence_id'=>$permanentARemplacer->agence_id,
+                                    'direction_id'=>$permanentARemplacer->direction_id,
+                                    'pole_id'=>$permanentARemplacer->pole_id? $permanentARemplacer->pole_id : null,
+                                    'departement_id'=>$permanentARemplacer->departement_id? $permanentARemplacer->departement_id : null,
+                                    'service_id'=>$permanentARemplacer->service_id? $permanentARemplacer->service_id : null,
+                                    'responsable_id'=>$permanentARemplacer->responsable_id?$permanentARemplacer->responsable_id : null,
+                                    'date'=>$permanentARemplacer->date,
+                                    'motif'=>$permanentARemplacer->motif,
+                                    'commentaire'=>$permanentARemplacer->commentaire,
+                                ]);
+                                $message = "permanent remplacer avec succès";
+                            }
                             $permanent->save();
-                            return $this->response->response(Response::HTTP_OK,"permanent mise en jour avec succès",$permanent);
+                            return $this->response->response(Response::HTTP_OK,$message,$permanent);
                         }
                         else{
+                            $message = "permanent ajouter avec succès";
                             $permanent = Permanent::firstOrCreate([
                                 'profile_id'=>$profile->id,
                                 'poste_id'=>$poste->id,
@@ -229,7 +294,48 @@ class PermanentController extends Controller
                                 'agence_commercial_id'=>$request->agence_commercial?$commercial->id:null,
                                 'responsable_id'=>$request->responsable,
                             ]);
-                            return $this->response->response(Response::HTTP_OK,"permanent ajouter avec succès",$permanent);
+                            if($remplacer != 0)
+                            {
+                                if($permanent->etat == 0)
+                                {
+                                    $permanent->etat = 0;
+                                }
+                                $prof = Profile::find($remplacer);
+                                $perm = Permanent::where('profile_id',$prof->id)->first();
+                                if($perm->etat == 2 || $perm->etat == 1)
+                                {
+                                    $perm->etat = -1; 
+                                }
+                                $perm->save();
+                                $responsable_permanent = Permanent::where('responsable_id',$perm->id)->get();
+                                $responsable_prestataire = Prestataire::where('responsable_id',$perm->id)->get();
+                                $responsable_interimaire = Interim::where('responsable_id',$perm->id)->get();
+                                $perm->save();
+                                foreach($responsable_permanent as $permt)
+                                {
+                                    $perman = Permanent::find($permt->id);
+                                    $perman->responsable_id = $permanent->id;
+                                    $perman->save();
+                                }
+                                foreach($responsable_prestataire as $prest)
+                                {
+                                    $prestat = Prestataire::find($prest->id);
+                                    $prestat->responsable_id = $permanent->id;
+                                    $prestat->save();
+                                }
+                                foreach($responsable_interimaire as $inter)
+                                {
+                                    $interi = Interim::find($inter->id);
+                                    $interi->responsable_id = $permanent->id;
+                                    $interi->save();
+                                }
+                                $remplacer_perm = RemplacerPermanent::updateOrCreate([
+                                    "remplacer"=>$prof->id,
+                                    "remplacant"=>$profile->id,
+                                ]);
+                                $message = "permanent remplacer avec succès";
+                            }
+                            return $this->response->response(Response::HTTP_OK,$message,$permanent);
                         }
                     }
                }
@@ -479,6 +585,26 @@ class PermanentController extends Controller
                     {
                         $permanent->update(['date'=>$request->date,'motif'=>$request->motif,'etat'=>1,'commentaire'=>$request->commentaire]);   
                         $object = $permanent;
+                        $permanentARemplacer = $permanent;
+                        $permOfRemp = PermanentOfRemplace::firstOrCreate([
+                            'profile_id'=>$permanentARemplacer->profile_id,
+                            'poste_id'=>$permanentARemplacer->poste_id,
+                            'canal_id'=>$permanentARemplacer->canal_id,
+                            'statut_id'=>$permanentARemplacer->statut_id,
+                            'groupe_id'=>$permanentARemplacer->groupe_id,
+                            'locau_id'=>$permanentARemplacer->locau_id,
+                            'categoriegroupe_id'=>$permanentARemplacer->categoriegroupe_id,
+                            'agence_id'=>$permanentARemplacer->agence_id,
+                            'direction_id'=>$permanentARemplacer->direction_id,
+                            'pole_id'=>$permanentARemplacer->pole_id? $permanentARemplacer->pole_id : null,
+                            'departement_id'=>$permanentARemplacer->departement_id? $permanentARemplacer->departement_id : null,
+                            'service_id'=>$permanentARemplacer->service_id? $permanentARemplacer->service_id : null,
+                            'responsable_id'=>$permanentARemplacer->responsable_id?$permanentARemplacer->responsable_id : null,
+                            'date'=>$permanentARemplacer->date,
+                            'motif'=>$permanentARemplacer->motif,
+                            'commentaire'=>$permanentARemplacer->commentaire,
+                        ]);
+                        
                     }else if($prestataire)
                     {
                         $prestataire->update(['date'=>$request->date,'motif'=>$request->motif,'etat'=>1,'commentaire'=>$request->commentaire]); 
@@ -494,6 +620,31 @@ class PermanentController extends Controller
 
         }catch(QueryException $e){
             return $this->response->response(Response::HTTP_BAD_REQUEST,'erreur lors du traitement',$e);
+        }
+    }
+    public function getSubstitution()
+    {
+        try{
+            $permanents = PermanentOfRemplace::get();
+            $data = [
+                "dataPermanent"=>PermanentResource::collection($permanents),
+            ];
+            return $this->response->response(Response::HTTP_OK,'succès',$data);
+        }catch(QueryException $e){
+            return $this->response->response(Response::HTTP_BAD_REQUEST,"erreur",$e->getMessage());
+        }
+    }
+    public function getListPermanent(Request $request)
+    {
+        try{
+            $permanents = RemplacerPermanent::all();
+            $perm = RemplacementResource::collection($permanents,"permanent");
+            $permanentResources = $permanents->map(function ($permanent) {
+                return new RemplacementResource($permanent, 'permanent');
+            });
+            return $this->response->response(Response::HTTP_OK,'succès',$permanentResources);
+        }catch(QueryException $e){
+            return  $this->response->response(Response::HTTP_BAD_REQUEST,"erreur",$e->getMessage());
         }
     }
 }

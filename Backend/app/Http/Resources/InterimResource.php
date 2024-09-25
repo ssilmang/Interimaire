@@ -28,7 +28,9 @@ class InterimResource extends JsonResource
             'categorie'=>CategorieResource::make($this->categorie),
             'poste'=>PosteResource::make($this->poste),
             'responsable'=>ResponsableResponsableResource::make($this->responsable),
-            'locau'=>RoleResource::make($this->locau)
+            'locau'=>RoleResource::make($this->locau),
+            'groupe'=>RoleResource::make($this->groupe),
+            'categorieGroupe'=>RoleResource::make($this->categorieGroupe)
         ];
     }
 }

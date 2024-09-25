@@ -2,8 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment.development';
-import { Response } from '../interface/interim';
-import { DataALL, DataPermanent, Permanent, RequestPermanent, RequestSupprimer, ResponsePermanent } from '../interface/permanent';
+import { DataInterim, DataRemplacer, Response } from '../interface/interim';
+import { DataALL, DataPermanent, DataPermanentList, Permanent, RemplacerPermanent, RequestPermanent, RequestSupprimer, ResponsePermanent } from '../interface/permanent';
 
 @Injectable({
   providedIn: 'root'
@@ -21,9 +21,9 @@ export class PermanentService {
   {
     return this._http.get<Response<DataALL>>(`${environment.apiUrl}index/statuts`)
   }
-  store(data:FormData,id?:number,idProfile?:number,upload?:string,contrat_id?:number):Observable<Response<RequestPermanent>>
+  store(data:FormData,id?:number,idProfile?:number,upload?:string,contrat_id?:number,remplcer?:number):Observable<Response<RequestPermanent>>
   {
-    return this._http.post<Response<RequestPermanent>>(`${environment.apiUrl}permanent/${id}/${idProfile}/${upload}/${contrat_id}`,data)
+    return this._http.post<Response<RequestPermanent>>(`${environment.apiUrl}permanent/${id}/${idProfile}/${upload}/${contrat_id}/${remplcer}`,data)
   }
   importer(data:any):Observable<Response<any>>
   {
@@ -33,5 +33,16 @@ export class PermanentService {
   {
     return this._http.post<Response<Permanent>>(`${environment.apiUrl}supprimer/${id}`,data);
   }
-  
+  getSubstitution():Observable<Response<RemplacerPermanent>>
+  {
+    return this._http.get<Response<RemplacerPermanent>>(`${environment.apiUrl}getSubstitution`);
+  }
+  getPermanent():Observable<Response<Permanent[]>>
+  {
+    return this._http.get<Response<Permanent[]>>(`${environment.apiUrl}getpermanent`);
+  }
+  getListPermanent():Observable<Response<DataPermanentList<Permanent>[]>>
+  {
+    return this._http.get<Response<DataPermanentList<Permanent>[]>>(`${environment.apiUrl}getListRemplacer`);
+  }
 }

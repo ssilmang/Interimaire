@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Remplacer extends Model
 {
     use HasFactory;
-    protected $guarded = [];
+    protected $guarded = ['id'];
     public function profileRemplacer()
     {
         return $this->belongsTo(Profile::class,"remplacer_id");

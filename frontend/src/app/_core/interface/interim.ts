@@ -5,10 +5,11 @@ export interface Response<T> {
     message:string
     data:T
 }
-export interface DataInterim{
-    interimaires:Interim[]
+export interface DataInterim<T>{
+    interimaires:T[]
     pagination:pagination
 }
+
 export interface Interim{
     id:number
     etat:string
@@ -17,8 +18,10 @@ export interface Interim{
     categorie:Categorie
     poste:Poste
     statut:Role
+    groupe:Role
+    categorieGroupe:Role
     responsable:Permanent
-    locau:Role
+    locau:Role;
 }
 export interface Contrat{
     id:number
@@ -171,10 +174,10 @@ export interface PeriodicElement {
     {position: 4, name: 'Beryllium', weight: 9.0122, symbol: 'Be', quantity: 100},
   ];
 
-export interface DataRemplacer{
+export interface DataRemplacer<T>{
     id:number
-    remplacer:DataInterim
-    remplacant:DataInterim
+    remplacer:DataInterim<T>
+    remplacant:DataInterim<T>
 }
 export interface Task {
     name: string;

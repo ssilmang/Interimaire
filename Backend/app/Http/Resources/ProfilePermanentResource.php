@@ -15,19 +15,9 @@ class ProfilePermanentResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'poste'=>PosteResource::make($this->poste),
-            'canal'=>RoleResource::make($this->canal),
-            'statut'=>RoleResource::make($this->statut),
-            'groupe'=>RoleResource::make($this->groupe),
-            'categorie'=>RoleResource::make($this->categoriegroupe),
-            'agence'=>AgenceResource::make($this->agence),
-            'direction'=>DirectionResponsableResource::make($this->direction),
-            'locau'=>LocauResource::make($this->locau),
-            'pole'=>PoleResponsableResource::make($this->pole),
-            'departement'=>DepartementResponsableResource::make($this->departement),
-            'service'=>ServiceResponsableResource::make($this->service),
-            'agence_commercial'=>ServiceResponsableResource::make($this->agence_commercial),
-            'responsable'=>ResponsableResource::make($this->responsable),
+           'id'=>$this->id,
+           'remplacer'=>PermanentResource::make($this->permanents),
+           'remplacer'=>PermanentResource::make($this->permanents)
         ];
     }
 }

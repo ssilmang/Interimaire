@@ -417,7 +417,6 @@ class UserController extends Controller
         }
         return $profileData;
        })->toArray();
-    
        $header_style = (new Style())
        ->setFontBold()
        ->setFontColor("FFFFFF")

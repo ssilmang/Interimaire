@@ -30,14 +30,15 @@ class DataReportingController extends Controller
 {
     public function store(Request $request,$annee,$mois)
     {
-        try{
+        try
+        {
             return DB::transaction(function()use($request,$annee,$mois)
             {    
                 $annee_actuel = Annee::firstOrCreate([
                     "libelle"=>$annee
                 ]);
                 $mois_actuel = Mois::where('libelle',$mois)->first();
-                $annee_mois = AnneeMois::where(['annee_id'=>$annee_actuel->id,'mois_id'=>$mois_actuel->id])->first();
+                $annee_mois = AnneeMois::firstOrCreate(['annee_id'=>$annee_actuel->id,'mois_id'=>$mois_actuel->id]);
                 foreach ($request->dataStatut as  $statut){
                     $stat = Statut::where('libelle',$statut['key'])->first();
                     DataStatut::updateOrCreate([

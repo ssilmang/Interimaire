@@ -16,11 +16,13 @@ class RemplacerController extends Controller
         try{
            return DB::transaction(function() use($request){
                 $remplacer = Remplacer::with(['profileRemplacer','profileRemplacant'])->get();
-               
+                $interimResources = $remplacer->map(function ($inte) {
+                    return new RemplacementResource($inte, 'interimaire');
+                });
                 return response()->json([
                     "statut"=>Response::HTTP_OK,
                     "message"=>"all remplcement",
-                    "data"=>RemplacementResource::collection($remplacer)
+                    "data"=>$interimResources
                 ]);
             });
 

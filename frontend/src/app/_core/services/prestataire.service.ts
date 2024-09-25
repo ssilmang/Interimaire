@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { RequestUser, Response, User, dataUser,UserToken } from '../interface/interim';
-import { DataPrestataire, Permanent, RequestSupprimer } from '../interface/permanent';
+import { DataALL, DataPrestataire, Permanent, RequestSupprimer } from '../interface/permanent';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -26,5 +26,9 @@ export class PrestataireService {
   supprimerPersonne(data:RequestSupprimer,id:number):Observable<Response<Permanent>>
   {
     return this._http.post<Response<Permanent>>(`${environment.apiUrl}supprimer/${id}`,data);
+  }
+  indexAll():Observable<Response<DataALL>>
+  {
+    return this._http.get<Response<DataALL>>(`${environment.apiUrl}index/statuts`)
   }
 }

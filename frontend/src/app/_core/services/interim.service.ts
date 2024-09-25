@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { DataInterim, DataRemplacer, Interim, RequestRompre, Response } from '../interface/interim';
 import { environment } from 'src/environments/environment';
 import { Observable } from 'rxjs';
-import { Profile, RequestPermanent } from '../interface/permanent';
+import { DataALL, Profile, RequestPermanent } from '../interface/permanent';
 
 @Injectable({
   providedIn: 'root'
@@ -11,9 +11,9 @@ import { Profile, RequestPermanent } from '../interface/permanent';
 export class InterimService {
 
   constructor(private _http:HttpClient) { }
-  index(taille:number,page:number):Observable<Response<DataInterim>>
+  index(taille:number,page:number):Observable<Response<DataInterim<Interim>>>
   {
-    return this._http.get<Response<DataInterim>>(`${environment.apiUrl}interimaires/${taille}?page=${page}`);
+    return this._http.get<Response<DataInterim<Interim>>>(`${environment.apiUrl}interimaires/${taille}?page=${page}`);
   }
   isCommentaire(data:{commentaire:string},id:number):Observable<Response<Profile>>
   {
@@ -23,13 +23,13 @@ export class InterimService {
   {
     return this._http.put<Response<Interim>>(`${environment.apiUrl}contratRompre/${id}`,data);
   }
-  finContrat(taille:number,page:number):Observable<Response<DataInterim>>
+  finContrat(taille:number,page:number):Observable<Response<DataInterim<Interim>>>
   {
-    return this._http.get<Response<DataInterim>>(`${environment.apiUrl}interim/finContrat/${taille}?page=${page}`);
+    return this._http.get<Response<DataInterim<Interim>>>(`${environment.apiUrl}interim/finContrat/${taille}?page=${page}`);
   }
-  processusKangourou(taille:number,page:number):Observable<Response<DataInterim>>
+  processusKangourou(taille:number,page:number):Observable<Response<DataInterim<Interim>>>
   {
-    return this._http.get<Response<DataInterim>>(`${environment.apiUrl}processusKangourou/${taille}?page=${page}`);
+    return this._http.get<Response<DataInterim<Interim>>>(`${environment.apiUrl}processusKangourou/${taille}?page=${page}`);
   }
   export(permanent:string,prestataire:string,interim:string): Observable<Blob>
   {
@@ -39,8 +39,12 @@ export class InterimService {
   {
     return this._http.post<Response<RequestPermanent>>(`${environment.apiUrl}interim/remplacer/${user}`,data)
   }
-  indexRemplacer():Observable<Response<DataRemplacer[]>>
+  indexRemplacer():Observable<Response<DataRemplacer<Interim>[]>>
   {
-    return this._http.get<Response<DataRemplacer[]>>(`${environment.apiUrl}remplacements`);
+    return this._http.get<Response<DataRemplacer<Interim>[]>>(`${environment.apiUrl}remplacements`);
+  }
+  indexAll():Observable<Response<DataALL>>
+  {
+    return this._http.get<Response<DataALL>>(`${environment.apiUrl}index/statuts`)
   }
 }

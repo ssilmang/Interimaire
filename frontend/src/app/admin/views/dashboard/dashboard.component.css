@@ -154,3 +154,6 @@
   width: 90px;
   height: 60px;
 }
+mat-header-cell{
+  background-color: green;
+}

@@ -1,5 +1,5 @@
 import { AfterViewInit, ChangeDetectorRef, Component, DestroyRef, OnInit } from '@angular/core';
-import { Permanent } from 'src/app/_core/interface/permanent';
+import { DataALL, Permanent } from 'src/app/_core/interface/permanent';
 import { IColumn, TableData } from '../data-table/table.data';
 import { CommonModule, NgClass } from '@angular/common';
 import { DataPrestataireComponent } from 'src/app/shared/components/data-prestataire/data-prestataire.component';
@@ -18,6 +18,7 @@ export class AdminDataPrestataireComponent implements OnInit, AfterViewInit {
   public dataPrestataire:Permanent[]=[]
   public pages: number[] = TableData.pageNumber;
   public columnData:IColumn[] = TableData.columnData;
+  public dataAll?:DataALL
   currentPage: number = 0;
   taille:number = 4;
   total!:number;
@@ -27,7 +28,8 @@ export class AdminDataPrestataireComponent implements OnInit, AfterViewInit {
 
   }
   ngOnInit(): void {
-    this.isPrestataire(this.taille,this.currentPage)
+    this.isPrestataire(this.taille,this.currentPage);
+    this.index();
   }
   ngAfterViewInit(): void {
     this.shared.currentPaginate.pipe(takeUntilDestroyed(this.crefDestroy)).subscribe(element=>{
@@ -57,6 +59,8 @@ export class AdminDataPrestataireComponent implements OnInit, AfterViewInit {
   }
   suppEvent(data:any)
   {
+    console.log(data);
+    
     this.service.supprimerPersonne(data.form,data.id).pipe(takeUntilDestroyed(this.crefDestroy)).subscribe({
       next:(response)=>{
         console.log(response);
@@ -72,6 +76,15 @@ export class AdminDataPrestataireComponent implements OnInit, AfterViewInit {
          this.prestataireData = this.dataPrestataire;
         }
       } 
+    })
+  }
+  index(){
+    this.service.indexAll().subscribe({
+      next:(data=>{
+        console.log(data);
+        
+        this.dataAll = data.data;
+      })
     })
   }
 }

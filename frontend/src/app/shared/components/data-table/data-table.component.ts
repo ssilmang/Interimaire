@@ -1,6 +1,6 @@
 import { CommonModule, NgClass, NgIf } from '@angular/common';
 import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, computed, inject, signal } from '@angular/core';
-import { DataPermanent, Permanent } from 'src/app/_core/interface/permanent';
+import { DataALL, DataPermanent, DataPermanentList, Permanent } from 'src/app/_core/interface/permanent';
 import { environment } from 'src/environments/environment.development';
 import { ModalComponent } from '../modal/modal.component';
 import { ModalModule } from '../modal/modal.module';
@@ -18,10 +18,11 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { map, Observable, startWith } from 'rxjs';
 import { RechercherLibellePipe } from 'src/app/admin/pipe/rechercher-libelle.pipe';
 import * as  XLSX from 'xlsx';
-import {  TaskPermanent } from 'src/app/_core/interface/interim';
+import {  Role, TaskPermanent } from 'src/app/_core/interface/interim';
 import {MatButtonToggleChange, MatButtonToggleModule} from '@angular/material/button-toggle';
 import { AlertComponent } from '../alert/alert.component';
 import { AlertType } from '../alert/alert.type';
+import { CanalCategoriePipe } from 'src/app/admin/pipe/canal-categorie.pipe';
 @Component({
   selector: 'data-table',
   standalone: true,
@@ -37,6 +38,7 @@ import { AlertType } from '../alert/alert.type';
      MatCheckboxModule,
      MatButtonToggleModule,
      AlertComponent,
+     CanalCategoriePipe,
     ],
   templateUrl: './data-table.component.html',
   styleUrl: './data-table.component.css',
@@ -46,6 +48,7 @@ export class DataTableComponent implements OnInit,AfterViewInit{
   @Input() rowData?: DataPermanent;
   @Input() pageData: number[] = [];
   @Output() supprimerEvent = new EventEmitter<any>();
+  @Input() dataAll?:DataALL;
   libelle:string=''
   apiImg=environment.apiImg;
   showModal:boolean = false;
@@ -83,7 +86,9 @@ export class DataTableComponent implements OnInit,AfterViewInit{
   idProfile!:number
   @Input() message:string =''
   closed:boolean = false;
-  readonly alertType = AlertType
+  readonly alertType = AlertType;
+  canal!:Role;
+  categorie!:Role;
   readonly taskPermanent = signal<TaskPermanent>({
     name:'parent',
     completed:false,
@@ -278,6 +283,7 @@ export class DataTableComponent implements OnInit,AfterViewInit{
   editer(permanent?:Permanent)
   {
     this.shared.changeInterim(permanent);
+    this.shared.clickIci("Modifier");
     this.router.navigateByUrl('/admin/elements/forms');
   }
   export()
@@ -421,7 +427,6 @@ export class DataTableComponent implements OnInit,AfterViewInit{
   }
   getUserInitials(prenom:string,nom:string):string {
     if (!prenom || !nom) return '';
-
     const initials = prenom.charAt(0).toUpperCase() + nom.charAt(0).toUpperCase();
     return initials;
   }
@@ -440,7 +445,6 @@ export class DataTableComponent implements OnInit,AfterViewInit{
   }
   selectMotif=(event:MatButtonToggleChange)=>{
     let select = event.value
-    
     this.autre = select ==='autre'  
   }
   ajoutCommentaire(){
@@ -462,12 +466,10 @@ export class DataTableComponent implements OnInit,AfterViewInit{
     this.footer = true;
     this.couleur =  "bg-red-600  hover:bg-red-700"
     const index = this.rowData?.collaborateurs.findIndex(ele=>ele.profile.id===this.idProfile);
-    if(index!=-1 && index!=undefined){
-      console.log(this.message);
-      
-      setTimeout(()=>{
-        this.rowData?.collaborateurs.splice(index,1)
-      },6000)
-    }
+      if(index!=-1 && index!=undefined){
+        setTimeout(()=>{
+          this.rowData?.collaborateurs.splice(index,1)
+        },6000)
+      }
   }
 }

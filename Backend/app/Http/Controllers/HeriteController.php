@@ -69,7 +69,13 @@ class HeriteController extends Controller
     }
     public function index($model){
         $class = "\\App\\Models\\" . $model;
-        $statut =  $class::all();
+        $statut = null;
+        if($model !='Permanent'){
+            $statut =  $class::all();
+
+        }else{
+            $statut = $class::where('etat',0)->get();
+        } 
         return $statut;
     }
     public function UserProfile(Request $request,$photo){

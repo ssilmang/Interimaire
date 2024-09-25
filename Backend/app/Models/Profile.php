@@ -20,6 +20,6 @@ class Profile extends Model
     }
     public function interimaires()
     {
-        return $this->hasMany(Interim::class);
+        return $this->hasMany(Interim::class,"profile_id");
     }
 }

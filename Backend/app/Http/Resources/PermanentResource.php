@@ -16,6 +16,9 @@ class PermanentResource extends JsonResource
     {
         return [
             'id'=>$this->id,
+            'date'=>$this->date,
+            'motif'=>$this->motif,
+            'commentaire'=>$this->commentaire,
             'profile'=>ProfileResource::make($this->profile),
             'poste'=>PosteResource::make($this->poste),
             'etat'=>$this->etat?true:false,

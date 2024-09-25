@@ -9,6 +9,8 @@ export class Images {
   public static readonly mainLogo: string = './assets/images/logo/my-logo.png';
   public static readonly bannerLogo: string = './assets/images/logo/login.png';
   public static readonly LOGO: string = './assets/images/logo/Image1.jpg';
+  public static readonly Orange: string = './assets/images/logo/ORANGE.png';
+  public static readonly sonatel: string = './assets/images/logo/loginn.png';
 
   public static readonly auth: IAuth = {
     signup: './assets/images/authpage/signup.jpg',

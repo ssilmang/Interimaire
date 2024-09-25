@@ -66,7 +66,7 @@ export class ReportingRhComponent
   legendPosition = 'right';
   dataSource:any
   colorScheme: any = this.generateRandomColors(3);
-  colorAgence:string[] =this.generateRandomColors(10);
+  colorAgence:string[] =this.generateRandomColors(9);
   colorCategorie = this.generateRandomColors(5);
   isCommentaire:boolean=false
   dataCanal:any=[]
@@ -107,6 +107,11 @@ export class ReportingRhComponent
   footer:boolean =false;
   couleur:string="bg-green-700  hover:bg-green-800";
   message:string = 'ftftftyftyfy';
+  showEng:boolean = false;
+  footerEng:boolean = false;
+  formeValide:boolean = true;
+  moisSelect:any="";
+  anneeSelect:any="";
   frenchMonthNames = [
     'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
     'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
@@ -259,13 +264,26 @@ export class ReportingRhComponent
     
     this.dialog.open(PdfPowerpointComponent,dialogConfig);
   }
-  validerArchive(event:string){
-    if(event ==="Oui"){
+  validerEng(event:string)
+  {
+    this.show =!this.show
+    this.footer= !this.footer;
+  }
+  closeEng(event :boolean)
+  {
+    this.showEng = event;
+    this.footerEng =event;
+    this.anneeSelect ="";
+    this.moisSelect = "";
+  }
+  validerArchive(event:string)
+  {
+    if(event ==="Oui")
+    {
       const dataStatut =Object.keys(this.dataStatut).map((key)=>({
         key,
         value:`${this.dataStatut[key]?.en_cours},${this.dataStatut[key]?.rompre},${this.dataStatut[key]?.terminer}`
       }));
-      console.log(dataStatut);
       const dataAgence =this.dataSource;
       const dataDepartement = this.transformeDataDepartement;
       const dataCommentaire = {
@@ -285,13 +303,23 @@ export class ReportingRhComponent
         dataDepartement:dataDepartement,
         dataCanal:dataCanal,
         dataCommentaire:dataCommentaire,
-      }
+      } 
+      console.log(this.anneeActuel);
+          
       this.service.archiveReporting(data,this.anneeActuel,this.moisActuel).pipe(takeUntilDestroyed(this.crefDestroy)).subscribe({
         next:(response)=>{
           console.log(response);
+          if(response.statut===200){
+            this.show = !this.show
+            this.showEng = !this.showEng
+            this.footer = false;
+            this.footerEng = false;
+            this.anneeSelect ="";
+            this.moisSelect = "";
+            this.formeValide =true;
+          }
         }
       })
-      this.show = !this.show
     }
     
   }
@@ -340,14 +368,14 @@ export class ReportingRhComponent
               }
             }
           }
+          this.anneeActuel = this.annee.annee
+          this.moisActuel = this.mois.libelle;
         }
       }
     })
   }
   selectMois(event:Event){
     if (this.annee && this.mois) {
-      console.log(this.mois);
-      
       if (this.mois?.id && this.annee?.annee) {
         this.searchArchive(this.annee.annee, this.mois.id);
       }
@@ -368,8 +396,28 @@ export class ReportingRhComponent
     this.footer = event;
   }
   archive=()=>{
-    this.show =!this.show
-    this.footer= !this.footer;
+   
+    this.showEng = !this.showEng;
+    this.footerEng = !this.footerEng;
+  }
+  selectYear=()=>{
+    if(this.anneeSelect && this.anneeSelect.annee)
+    { 
+      this.anneeActuel= this.anneeSelect.annee;
+      if( this.moisSelect){
+        this.formeValide = false;
+      }
+    }   
+  }
+  selectMonth=()=>{
+    if(this.moisSelect && this.moisSelect.libelle)
+    {
+      this.moisActuel = this.moisSelect.libelle;
+      if(this.anneeSelect)
+      {
+        this.formeValide = false;
+      } 
+    }
   }
   // loadCharData() {
   //   this.service.loadSalesData().subscribe({
@@ -515,13 +563,6 @@ export class ReportingRhComponent
           if(this.dataMois.length!=0){
             this.mois = this.dataMois.find((el:any)=>el.libelle.toUpperCase() === this.moisActuel.toString().toUpperCase())
           }
-          console.log(this.annee);
-          console.log(this.dataAnnee);
-          console.log(this.dataMois);
-          
-          console.log(this.mois);
-          
-          
       }
     })
   }

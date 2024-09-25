@@ -4,7 +4,7 @@ import { DataTableComponent } from 'src/app/shared/components/data-table/data-ta
 import { IColumn, IProduct, TableData } from './table.data';
 import { PermanentService } from 'src/app/_core/services/permanent.service';
 import { ModalComponent } from 'src/app/shared/components/modal/modal.component';
-import { DataPermanent, Permanent, RequestSupprimer } from 'src/app/_core/interface/permanent';
+import { DataALL, DataPermanent, DataPermanentList, Permanent, RequestSupprimer } from 'src/app/_core/interface/permanent';
 import { environment } from 'src/environments/environment.development';
 import { ActivatedRoute } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -22,6 +22,7 @@ export class AdminDataTableComponent  implements OnInit{
   collaborateurServiceVisible = false;
   public dataDV?:DataPermanent;
   public message:string="";
+  public dataAll?:DataALL;
   dataDetails?:Permanent;
   apiImg=environment.apiImg;
   pole:boolean=true;
@@ -36,16 +37,21 @@ export class AdminDataTableComponent  implements OnInit{
   public columnData:IColumn[] = TableData.columnData;
   taille:number=4;
   page:number = 1;
-  dataPermanent?:DataPermanent
-  route=inject(ActivatedRoute)
-  constructor(private service:PermanentService,private crefDestroy:DestroyRef,private crefDetecte:ChangeDetectorRef){
+  dataPermanent?:DataPermanent;
+  route=inject(ActivatedRoute);
+  
+  constructor(private service:PermanentService,private crefDestroy:DestroyRef,private crefDetecte:ChangeDetectorRef)
+  {
     this.modalCompnent = new ModalComponent();
   }
-  ngOnInit(): void {
+  ngOnInit(): void
+  {
     this.id = this.route.snapshot.paramMap.get('id');
-    this.indexPermanent(this.id)
+    this.indexPermanent(this.id);
+    this.index();
   }
-  ngOnChanges(){
+  ngOnChanges()
+  {
     this.dataDV =this.dataPermanent
   }
   indexPermanent(id:string|null)
@@ -56,24 +62,37 @@ export class AdminDataTableComponent  implements OnInit{
       })
     })
   }
-
   suppEvent(data:any)
   {
     this.service.supprimerPersonne(data.form,data.id).pipe(takeUntilDestroyed(this.crefDestroy)).subscribe({
       next:(response)=>{
-        console.log(response);
         this.message= response.message
+        console.log(response);
+        
         setTimeout(()=>{
           this.message =""
         },5000);        
-        const index = this.dataDV?.collaborateurs.findIndex(ele => ele.profile.id === response.data.profile.id);
-        console.log(index);
-        if (index !== -1 && index!=undefined) 
-        {            
-         this.dataDV?.collaborateurs.splice(index,1)    
-         this.dataPermanent = this.dataDV;
+        if(response.statut===200){
+          const index = this.dataDV?.collaborateurs.findIndex(ele => ele.profile.id === response.data.profile.id);
+          if (index !== -1 && index!=undefined) 
+          {            
+          this.dataDV?.collaborateurs.splice(index,1)    
+          this.dataPermanent = this.dataDV;
+          }
         }
-      } 
+      },error(err) {
+        console.error(err);
+        
+      }, 
     })
   }
+  index()
+  {
+    this.service.indexAll().pipe(takeUntilDestroyed(this.crefDestroy)).subscribe({
+      next:(response=>{
+        this.dataAll = response.data;
+      })
+    })
+  }
+ 
 }

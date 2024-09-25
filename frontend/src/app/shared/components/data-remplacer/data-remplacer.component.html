@@ -1,1 +1,408 @@
-<p>data-remplacer works!</p>
+<app-modal 
+[show]="show" 
+[premierButtonText]="'Valider'"
+[deuxiemeButtonText]="'Annuler'"
+(clickCommentaire)="valider($event)"
+(closeModal)="close($event)"
+[footer]="true"
+[couleur]="'bg-green-600'"
+
+[formeValide]="formeValide"
+>
+<div class="overflow-y-auto" style="max-height: 70vh;">
+
+    <table class="overflow-y-auto" mat-table [dataSource]="dataResponsable" class="mat-elevation-z8">
+    
+        <ng-container matColumnDef="prenom">
+          <th mat-header-cell *matHeaderCellDef> Prénom </th>
+          <td mat-cell *matCellDef="let element"> {{ element?.profile?.prenom }} </td>
+        </ng-container>
+        <ng-container matColumnDef="nom">
+          <th mat-header-cell *matHeaderCellDef> Nom </th>
+          <td mat-cell *matCellDef="let element"> {{ element?.profile?.nom }} </td>
+        </ng-container>
+        <ng-container matColumnDef="matricule">
+          <th mat-header-cell *matHeaderCellDef> Matricule </th>
+          <td mat-cell *matCellDef="let element"> {{ element?.profile?.matricule }} </td>
+        </ng-container>
+        <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef> Action </th>
+            <td mat-cell *matCellDef="let element">
+              <mat-radio-button 
+                [value]="element"
+                
+                (change)="selectRow(element)">
+              </mat-radio-button>
+            </td>
+          </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      
+    </table>
+</div>
+<mat-radio-button (change)="selectOther()" class="example-radio-button" >Autre</mat-radio-button>
+
+</app-modal>
+<div class="card-title ">
+    <div class=" flex justify-around border-b-2 border-orange-600" >
+      <div class="  form-group mx-auto  relative">
+    
+        <select id="countries" [(ngModel)]="canal" class="bg-gray-50 border form-control border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+          <option selected disabled>Selectionner un canal</option>
+            <!-- @for(canal of dataAll?.canals;track canal.id){ -->
+              <option > canal.libelle </option>
+            <!-- } -->
+        </select>
+      </div>
+      <div class="  form-group  mx-auto relative">
+    
+        <select id="service" [(ngModel)]="categorie" class="bg-gray-50 border form-control border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+          <option selected disabled>Selectionner une catégorie</option>
+          <!-- @for(categ of dataAll?.categories;track categ.id){ -->
+            <option > categ.libelle </option>
+          <!-- } -->
+        </select>
+      </div>
+      <div class=" form-group  relative mx-auto ">
+        <input [(ngModel)]="libelle" class="border-2 border-gray-300 bg-gray-100 h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none"
+        type="search"   placeholder="Rechercher">
+        <button type="submit" class="absolute right-0 top-0 mt-5 mr-4">
+          <svg  class="text-gray-600 h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg"
+              xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px"
+              viewBox="0 0 56.966 56.966" style="enable-background:new 0 0 56.966 56.966;margin-top: -6px;" xml:space="preserve"
+              width="512px" height="512px">
+              <path
+              d="M55.146,51.887L41.588,37.786c3.486-4.144,5.396-9.358,5.396-14.786c0-12.682-10.318-23-23-23s-23,10.318-23,23  s10.318,23,23,23c4.761,0,9.298-1.436,13.177-4.162l13.661,14.208c0.571,0.593,1.339,0.92,2.162,0.92  c0.779,0,1.518-0.297,2.079-0.837C56.255,54.982,56.293,53.08,55.146,51.887z M23.984,6c9.374,0,17,7.626,17,17s-7.626,17-17,17  s-17-7.626-17-17S14.61,6,23.984,6z" />
+          </svg>
+        </button>
+      </div>
+      <div class=" form-group  relative mx-auto ">
+       <select (click)="remplace($event)" [(ngModel)]="change"  id="states" class="block w-full form-control border-gray-500 rounded-lg bg-gray-100  px-2 py-2.5  text-gray-900">
+          <option value="remplacer">Remplacer</option>
+          <option value="remplacement">Remplacement</option>
+       </select>
+      </div>
+    </div>
+</div>
+@if(change=="remplacer"){
+ <section  class=" mx-auto  w-full rounded-lg bg-white p-4 shadow-lg">
+            <div class="mt-1">
+                <div class="sm:rounded-lg">
+                   <div class="data-table">
+                      <div class="table-containe border-r-4">
+                         <table class="ng-wind-table w-full relative">
+                            <thead class="ng-wind-table-header bg-green-800   text-white border rounded-b-md">
+                               <tr>
+                                  <th scope="col" class="">
+                                    
+                                     <!-- <button (click)="sortingUp()" *ngIf="shorting === false" class="ml-2 text-lg">
+                                        <i class="bi bi-arrow-down-short"></i>
+                                     </button>
+                                     <button (click)="sortingDown()" *ngIf="shorting === true" class="ml-2 text-lg">
+                                        <i class="bi bi-arrow-up-short"></i>
+                                     </button> -->
+                                  </th>
+                                  <th scope="col" class=" ng-wind-header-item text-center">
+                                     Prenom
+                                  </th>
+                                  <th scope="col" class="ng-wind-header-item text-center">
+                                     Nom
+                                  </th>
+                                  <th scope="col" class="ng-wind-header-item text-center">
+                                    Matricule
+                                 </th>
+                                  <th scope="col" class="ng-wind-header-item text-center">
+                                     Action
+                                  </th>
+                               </tr>
+                            </thead>
+          
+                            @if( dataPermanents.length == 0 || dataPermanents.length == undefined){
+                            <div class="absolute top-52 w-full text-center">
+                               <button disabled type="button"
+                                  class="me-2 inline-flex items-center rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:text-blue-700 focus:ring-2 focus:ring-blue-700">
+                                  <svg aria-hidden="true" role="status"
+                                     class="me-3 inline h-4 w-4 animate-spin text-gray-200 dark:text-gray-600"
+                                     viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                     <path
+                                        d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                                        fill="currentColor" />
+                                     <path
+                                        d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                                        fill="#1C64F2" />
+                                  </svg>
+                                  Loading...
+                               </button>
+                            </div>
+                             } @else {
+                             <tbody>
+                               @for (permanent of dataPermanents; track permanent.id){
+                               <tr class="border-b mt-5 bg-white hover:bg-gray-50">
+                                  <td class="ng-wind-data-item whitespace-nowrap font-medium text-gray-800">
+                                    <div
+                                        class="w-9 h-9 ml-5 rounded-full flex items-center justify-center overflow-hidden  border-2 border-gray-500">
+                                        @if(permanent?.profile?.photo){
+                                            <div  class="flex  w-34 h-32 overflow-hidden border-2 border-gray-500">
+                                              <img class="w-full h-full object-contain" [src]="apiImag +permanent?.profile?.photo " alt="Profile">
+                                          </div>
+                                          }@else{
+                                            <!-- <div
+                                                    class="w-32 h-32 flex items-center justify-center overflow-hidden rounded-full border-2 border-emerald-600">
+                                                    <span  class="rounded-2xl w-10 h-10 bg-gray-400 flex items-center justify-center text-white font-semibold">
+                                                       {{   getUserInitials( permanent?.profile?.prenom || '', interim?.profile?.nom || '')}} 
+                                                      </span>
+                                               
+                                                </div> -->
+                                          }
+                                    </div>
+                                    </td>
+                                    <td class="ng-wind-data-item text-center">
+                                        {{permanent?.profile?.prenom}}
+                                    </td>
+                                    <td class="ng-wind-data-item text-center">
+                                        {{permanent?.profile?.nom}}
+                                    </td>
+                                    <td class="ng-wind-data-item text-center">
+                                        {{permanent?.profile?.matricule}}
+                                    </td>
+                                    <td class="ng-wind-data-item text-center space-x-5">
+                                        <button class="tooltip relative w-7 h-7 " >
+                                            <svg xmlns="http://www.w3.org/2000/svg"   (click)="afficherDetails(permanent)" class="mt-2  text-green-700 hover:text-green-800" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="currentColor" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM216 336h24V272H216c-13.3 0-24-10.7-24-24s10.7-24 24-24h48c13.3 0 24 10.7 24 24v88h8c13.3 0 24 10.7 24 24s-10.7 24-24 24H216c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-208a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"/>
+                                            </svg>
+                                            <span class="tooltip-text">Détails</span>
+                                         </button>
+                                        <!-- @if(permanent?.etat == true){ -->
+                                            <button (click)="substitution(permanent)" class ="tooltip relative w-5 h-5 cursor-default">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="text-cyan-700" viewBox="0 0 512 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="currentColor" d="M32 96l320 0 0-64c0-12.9 7.8-24.6 19.8-29.6s25.7-2.2 34.9 6.9l96 96c6 6 9.4 14.1 9.4 22.6s-3.4 16.6-9.4 22.6l-96 96c-9.2 9.2-22.9 11.9-34.9 6.9s-19.8-16.6-19.8-29.6l0-64L32 160c-17.7 0-32-14.3-32-32s14.3-32 32-32zM480 352c17.7 0 32 14.3 32 32s-14.3 32-32 32l-320 0 0 64c0 12.9-7.8 24.6-19.8 29.6s-25.7 2.2-34.9-6.9l-96-96c-6-6-9.4-14.1-9.4-22.6s3.4-16.6 9.4-22.6l96-96c9.2-9.2 22.9-11.9 34.9-6.9s19.8 16.6 19.8 29.6l0 64 320 0z"/></svg>
+                                                <span class="tooltip-text">substituer</span>
+                                            </button> 
+                                        <!-- }   -->
+                                    </td>
+                                  <td class="ng-wind-data-item  text-center space-x-4">
+                                    
+                                  </td>
+                               </tr>
+                               }
+                            </tbody> 
+                            } 
+                         </table>
+                      </div>
+                   </div>
+                  
+                </div>
+             </div>
+ </section>
+}@else{
+     <mat-table  #table [dataSource]="dataPermanentList"  class="mat-elevation-z8 border shadow-md" cdkDropList (cdkDropListDropped)="drop($event)"
+     cdkDropListData="dataPermanentList">
+     <ng-container matColumnDef="Prenom" sticky>
+         <mat-header-cell *matHeaderCellDef class="bg-600"> Prenom </mat-header-cell>
+         <mat-cell *matCellDef="let element">
+             @for(item of element.remplacer.permanents;track item.id){
+                 <span>{{item.profile.prenom}}</span>
+             }
+         </mat-cell>
+     </ng-container>
+     <ng-container matColumnDef="Nom">
+         <mat-header-cell *matHeaderCellDef> Nom </mat-header-cell>
+         <mat-cell *matCellDef="let element">
+             @for(item of element.remplacer.permanents;track item.id){
+             {{item.profile.nom}} 
+             }
+         </mat-cell>
+     </ng-container>
+     <ng-container matColumnDef="Action">
+         <mat-header-cell *matHeaderCellDef> Action </mat-header-cell>
+         <mat-cell *matCellDef="let element">
+            <div class=" space-x-4 flex justify-center -mt-3 items-center">
+                @for(item of element.remplacer.permanents;track item.id){
+                    <button class="tooltip relative w-7 h-7 " >
+                        <svg xmlns="http://www.w3.org/2000/svg"   (click)="afficherDetails(item)" class="mt-2  text-green-700 hover:text-green-800" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="currentColor" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM216 336h24V272H216c-13.3 0-24-10.7-24-24s10.7-24 24-24h48c13.3 0 24 10.7 24 24v88h8c13.3 0 24 10.7 24 24s-10.7 24-24 24H216c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-208a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"/>
+                        </svg>
+                        <span class="tooltip-text">Détails</span>
+                     </button>
+                }
+                <button class ="tooltip relative w-5 h-5  mt-4 cursor-default ">
+                <svg xmlns="http://www.w3.org/2000/svg"  class="text-cyan-700" viewBox="0 0 512 512"><path fill="currentColor" d="M32 96l320 0 0-64c0-12.9 7.8-24.6 19.8-29.6s25.7-2.2 34.9 6.9l96 96c6 6 9.4 14.1 9.4 22.6s-3.4 16.6-9.4 22.6l-96 96c-9.2 9.2-22.9 11.9-34.9 6.9s-19.8-16.6-19.8-29.6l0-64L32 160c-17.7 0-32-14.3-32-32s14.3-32 32-32zM480 352c17.7 0 32 14.3 32 32s-14.3 32-32 32l-320 0 0 64c0 12.9-7.8 24.6-19.8 29.6s-25.7 2.2-34.9-6.9l-96-96c-6-6-9.4-14.1-9.4-22.6s3.4-16.6 9.4-22.6l96-96c9.2-9.2 22.9-11.9 34.9-6.9s19.8 16.6 19.8 29.6l0 64 320 0z"/></svg>
+                <span class="tooltip-text mt-3">Remplacé</span>
+                </button> 
+                
+                @for(item of element.remplacant.permanents;track item.id){
+                    <button class="tooltip relative w-7 h-7 " >
+                        <svg xmlns="http://www.w3.org/2000/svg"   (click)="afficherDetails(item)" class="mt-2  text-green-700 hover:text-green-800" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="currentColor" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM216 336h24V272H216c-13.3 0-24-10.7-24-24s10.7-24 24-24h48c13.3 0 24 10.7 24 24v88h8c13.3 0 24 10.7 24 24s-10.7 24-24 24H216c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-208a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"/>
+                        </svg>
+                        <span class="tooltip-text">Détails</span>
+                     </button>
+                }
+            </div>
+        </mat-cell>
+         </ng-container>
+         <ng-container matColumnDef="Prénom">
+             <mat-header-cell *matHeaderCellDef> Prenom </mat-header-cell>
+             <mat-cell *matCellDef="let element">
+             @for(item of element.remplacant.permanents;track item.id){
+             {{item.profile.prenom}} 
+             }
+             </mat-cell>
+         </ng-container>
+     <ng-container matColumnDef="nom">
+         <mat-header-cell *matHeaderCellDef> Nom </mat-header-cell>
+         <mat-cell *matCellDef="let element">
+             @for(item of element.remplacant.permanents;track item.id){
+                         {{item.profile.nom}} 
+             }
+         </mat-cell>
+     </ng-container>
+     <mat-header-row *matHeaderRowDef="displayedColumn" class="bg-green-600"></mat-header-row>
+     <mat-row *matRowDef="let row; columns: displayedColumn;" cdkDrag [cdkDragData]="row"></mat-row>
+     </mat-table>
+     
+ }
+
+ <app-modal
+ [show]="showModal"
+  (closeModal)="onModalCloseHandler($event)" 
+  (clickCommentaire)="clickCommentaire($event)"
+  [premierButtonText]="isCommentaire ? 'Enregistrer':'Commentaire'"
+  [deuxiemeButtonText]="annuler ? 'Fermer' : 'Annuler'"
+  [couleur]="couleur"
+  [footer]="footer"
+  >
+   <div class="sm:flex sm:items-start">
+      <div class="flex justify-between space-x-12">
+          <div class="flex items-center gap-3 sticky top-0 bg-white px-8 py-3 shadow-[0_5px_5px_-5px] shadow-gray-600">
+           <div class="bg-gray-800 rounded-lg p-1">
+               <div  class="flex  w-34 h-32 overflow-hidden border-2 border-gray-500">
+                     @if(dataDetails?.profile?.photo){
+                          <img class="w-full h-full object-contain" [src]="apiImag + dataDetails?.profile?.photo" alt="Profile">
+                      }@else{
+                        <div class="w-32 h-32 flex items-center justify-center overflow-hidden rounded-full border-2 border-emerald-600">
+                                 <span  class="rounded-2xl w-10 h-10 bg-gray-400 flex items-center justify-center text-white font-semibold">
+                                   {{   getUserInitials( dataDetails?.profile?.prenom || '', dataDetails?.profile?.nom || '')}} 
+                                 </span>
+                        </div>
+                      }
+               </div>
+           </div>
+          </div>
+          <div class="space-y-2 mt-3 justify-end">
+              <div class="font-mono text-xl font-bold flex">
+                  <div>{{dataDetails?.profile?.prenom}} {{dataDetails?.profile?.nom}}</div>
+              </div>
+              <div class="flex">
+                  <div><strong>Matricule &nbsp;:</strong> </div>
+                  <div>&nbsp;{{dataDetails?.profile?.matricule}}</div>
+              </div>
+              <div class="flex ">
+               <div>Structure &nbsp;: &nbsp;</div>
+                   @if(dataDetails?.service!=null){
+                       @if(dataDetails?.service?.departement?.pole?.libelle == 'N/A'){
+                           <button  class="cursor-default">{{ dataDetails?.service?.departement?.pole?.direction?.libelle}}/{{ dataDetails?.service?.departement?.libelle }}/{{ dataDetails?.service?.libelle }}</button>
+                       }@else{
+                       <button  class="cursor-default">{{ dataDetails?.service?.departement?.pole?.direction?.libelle}}/{{ dataDetails?.service?.departement?.pole?.libelle }}/{{ dataDetails?.service?.departement?.libelle }}/{{ dataDetails?.service?.libelle }}</button>
+                       }
+                   }
+                   @else if(dataDetails?.departement!=null){
+                       @if(dataDetails?.departement?.pole?.libelle == 'N/A'){
+                           <button  class="cursor-default">{{ dataDetails?.departement?.pole?.direction?.libelle}}/{{ dataDetails?.departement?.libelle }}</button>
+                       }@else{
+                       <button  class="cursor-default">{{ dataDetails?.departement?.pole?.direction?.libelle}}/{{ dataDetails?.departement?.pole?.libelle }}/{{ dataDetails?.departement?.libelle }}</button>
+                       }
+                   }
+                   @else if(dataDetails?.pole!=null){
+                       @if(dataDetails?.pole?.libelle == 'N/A'){
+                           <button  class="cursor-default">{{ dataDetails?.pole?.direction?.libelle}}</button>
+                       }@else{
+                       <button  class="cursor-default">{{ dataDetails?.pole?.direction?.libelle}}/{{ dataDetails?.pole?.libelle }}</button>
+                       } 
+                   }
+                   @else if(dataDetails?.direction!=null){                     
+                           <button  class="cursor-default" >{{ dataDetails?.direction?.libelle}}</button>        
+                   }                
+               </div>
+               <div class="profile-dropdown relative inline-block space-y-1">
+                     <div>
+                        <button type="button" class="flex mr-3 text-sm  rounded-full md:mr-0 focus:ring-4 focus:ring-gray-300 btn btn-outline-secondary py-1" id="user-menu-button" aria-expanded="false" data-dropdown-toggle="user-dropdown" data-dropdown-placement="bottom" (click)="toggleDropdown()" >Contact</button>
+                     </div>
+                  <div class="profile-dropdown-list absolute  text-white  mr-3 text-sm bg-gray-900  md:mr-0    py-1  border rounded-lg border-gray-700" [hidden]="isDropdownOpen">
+                     <div class="flex flex-col text-sm">
+                        <div>
+                              <a title="Numéro Téléphone" class="block   px-4 py-2 text-sm text-white hover:bg-gray-600 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">{{ dataDetails?.profile?.telephone }} </a>     
+                        </div>
+                     </div>
+                     <div class="border-t border-slate-500/30"></div>
+                     <div class="flex flex-col text-sm">                    
+                           <a  title="Numéro Téléphone Pro" class="block px-4 py-2 text-sm text-white hover:bg-gray-600 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">{{ dataDetails?.profile?.telephone_pro }}</a>                    
+                     </div>
+                     <div class="border-t border-slate-500/30"></div>
+                     <div class="">                  
+                           <a title="Mail Professionnel" class="block px-4 py-2 text-sm text-white hover:bg-gray-1
+                           600 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">{{ dataDetails?.profile?.email }}</a>                  
+                     </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div> 
+  <div class="mt-1 flex ml-1">
+     <div> Poste &nbsp;:&nbsp; </div>
+      <button type="button" class="btn btn-outline-secondary py-1  ">  {{dataDetails?.poste?.libelle}}</button>
+  </div>
+
+   @if(faireCommentaire){
+      <div class="flex space-x-3 mt-5">
+         <div>
+              <div>Statut : </div>
+              <button type="button" class="btn btn-outline-secondary me-2">{{dataDetails?.statut?.libelle }}</button>
+         </div>
+         <div  class="flex flex-col">
+              <div class="">Groupe :</div>
+              <button type="button" class="btn btn-outline-secondary me-2 tooltip relative">{{dataDetails?.groupe?.libelle }}
+                 
+              </button>
+          </div>
+          <div  class="flex flex-col">
+              <div class=" tooltip relative">Categorie : </div>
+              <button type="button" class="btn btn-outline-secondary me-2">{{dataDetails?.categorie?.libelle }}
+              </button>
+          </div>
+          <div  class="flex flex-col">
+               <div class=" tooltip relative">Agence : </div>
+               <button type="button" class="btn btn-outline-secondary me-2">{{dataDetails?.agence?.libelle }}</button>
+           </div>
+      
+      </div> 
+        <div class=" flex space-x-3 mt-5">
+            <div>
+                <div  class="tooltip relative">Lieu :
+                    <span class="tooltip-text absolute bg-green-600 py-1 px-5 text-white text-xs rounded  whitespace-nowrap  bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300">
+                        lieu d'execution
+                    </span>
+                </div>
+                @if(dataDetails?.locau!=null){
+                    <button type="button" class="btn btn-outline-secondary me-2">{{dataDetails?.locau?.libelle}}</button>
+                 }
+            </div>
+            @if(dataDetails?.responsable !=null){
+                <div>
+                   <div >Responsable :</div>
+                   <button type="button" class="btn btn-outline-secondary me-2">{{dataDetails?.responsable?.profile?.prenom }} {{dataDetails?.responsable?.profile?.nom}}</button>
+               </div>
+            }
+            <div>
+                <div>Canal :</div>
+                <button type="button" class="btn btn-outline-secondary me-2">{{dataDetails?.canal?.libelle }}</button>
+            </div>
+        </div>
+        @if(dataDetails?.profile?.commentaire !== null){
+         <div class="flex w-full mt-3 flex-col">
+             <button class="" > Commentaire :</button> 
+             <textarea name="" readonly  class="border w-full border-gray-600 bg-gray-100">{{ dataDetails?.profile?.commentaire }}</textarea>
+         </div>
+         }
+    }
+    <div class="border-2 card">dfrre</div>
+  
+      <!-- <textarea [(ngModel)]="commentaire"  class="m-3 w-full h-32 border border-gray-600" name="" id=""></textarea> -->
+
+</app-modal>

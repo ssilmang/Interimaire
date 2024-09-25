@@ -1,8 +1,8 @@
 import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild, inject } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Images } from 'src/assets/data/images';
-import { Agence, DataDepartement, DataPole, DataService, Pole } from 'src/app/_core/interface/interim';
-import { DataALL } from 'src/app/_core/interface/permanent';
+import { Agence, DataDepartement, DataPole, DataService, Pole, Role } from 'src/app/_core/interface/interim';
+import { DataALL, Permanent } from 'src/app/_core/interface/permanent';
 import { PermanentService } from 'src/app/_core/services/permanent.service';
 import { AlertComponent } from 'src/app/shared/components/alert/alert.component';
 import { AlertType } from 'src/app/shared/components/alert/alert.type';
@@ -69,7 +69,7 @@ export class FormsComponent implements AfterViewInit,OnInit
   commercialExiste:boolean = false;
   autreCommercial:boolean = true;
   interimCategorie:boolean = false
-  enregistre:boolean = true;
+  enregistre:string = "Enregistrer";
   color:string = 'btn-primary';
   idInterim:number = 0;
   idProfile:number = 0;
@@ -83,6 +83,16 @@ export class FormsComponent implements AfterViewInit,OnInit
   kangourou:boolean = false;
   numeroTelephone:string = "";
   numeroTelephonePro:string ='';
+  profileChange?:Permanent;
+  profileChanged?:Permanent;
+  show:boolean = false;
+  remplacer_id:number = 0;
+  dataPole?:Role[] 
+  dataDepartement?:Role[] 
+  dataService?:Role[]
+  isEditer:boolean=false;
+  isEditDepartement:boolean=false;
+  isEditService:boolean=false;
   @ViewChild('checkboxRef',{static:false}) checkboxRef!:ElementRef<HTMLInputElement>;
   constructor(
     private sharedService:LocalStorageService,
@@ -125,20 +135,33 @@ export class FormsComponent implements AfterViewInit,OnInit
       cout_unitaire:['',Validators.required],
     })
   }
-  ngAfterViewInit(): void {
+  ngOnInit(): void
+  {  
+    this.index() 
+  }
+  ngAfterViewInit(): void
+  {
+
     this.sharedService.currentInterim.subscribe(interim=>{
       if(interim){ 
+        console.log(interim);
+        
+        this.profileChanged = interim;
         this.formPermanent.reset();
+        
         this.formPermanent.patchValue(interim)
-        this.enregistre = false;
-        this.color = "btn-success"
+        this.enregistre = "Modifier";
+        this.color = "btn-success";
         this.idInterim=interim.id;
         this.idProfile = interim.profile.id;
-        if (interim.responsable && interim.responsable.id) {
+        
+        if (interim.responsable && interim.responsable.id)
+        {
           this.responsable  = false
           this.checkboxRef.nativeElement.checked =true;
         }
-        if(interim.statut.libelle ==="Interimaire"){
+        if(interim.statut.libelle ==="Interimaire")
+        {
           this.contrat_id = interim.contrats.id;
           this.interimaire = true;
           this.kangourou =true;
@@ -171,14 +194,39 @@ export class FormsComponent implements AfterViewInit,OnInit
         this.formPermanent.get('telephone')?.patchValue(interim.profile.telephone)
         this.formPermanent.get('telephone_pro')?.patchValue(interim.profile.telephone_pro)
         this.formPermanent.get('adresse')?.patchValue(interim.profile.adresse)
-      
+        if(interim.pole){
+          this.notExistPole = true;     
+          this.autrePole = false ;
+          this.isEditer = true
+        }
+        if(interim.departement){
+          this.isEditDepartement = true;
+          this.notExistDepartement = true;
+          this.autreDepartement = false;
+        }
+        if(interim.service){
+          this.isEditService = true;
+          this.notExistService = true;
+          this.autreService = false;
+        }  
         this.cdRef.detectChanges();
       }
     })
+    this.sharedService.currentChange.subscribe(change=>{
+     if(change)
+      {
+        this.profileChange = change;
+        this.remplacer_id = change.profile.id;
+        if(this.remplacer_id)
+        {
+            this.enregistre = "Remplacer";
+        }
+          this.formPermanent.get('poste')?.setValue(change.poste);
+          this.cdRef.detectChanges();
+     }
+    })
   }
-  ngOnInit(): void {  
-    this.index() 
-  }
+ 
   compare=function(option:any,value:any)
   { 
     return option && value ? option.id === value.id : option===value
@@ -225,8 +273,10 @@ export class FormsComponent implements AfterViewInit,OnInit
     this.service.indexAll().subscribe({
       next:(response=>{
         console.log(response);
-        this.dataAll = response.data
-        
+        this.dataAll = response.data; 
+        this.dataPole = this.dataAll?.poles
+        this.dataDepartement = this.dataAll?.departements;
+        this.dataService = this.dataAll?.services
       })
     })
   }
@@ -337,6 +387,7 @@ export class FormsComponent implements AfterViewInit,OnInit
     let select =this.formPermanent.get('direction')?.value;
     let data = this.dataAll?.directions.find(element=>element.libelle.toLowerCase() === select.libelle.toLowerCase())
       this.poles = data?.poles;
+      this.dataPole = this.dataAll?.poles; 
       if(this.poles?.length == 0){
         this.notExistPole = false    
       }else{
@@ -350,6 +401,7 @@ export class FormsComponent implements AfterViewInit,OnInit
     let select = this.formPermanent.get('pole')?.value;
     let data = this.poles?.find(ele=>ele.libelle.toLowerCase() ===select.libelle.toLowerCase())
     this.departements = data?.departements;
+    this.dataDepartement = this.dataAll?.departements
     if(this.departements?.length ==0){
       this.notExistDepartement = false;
     }else{
@@ -362,7 +414,7 @@ export class FormsComponent implements AfterViewInit,OnInit
   {
     let departement = this.formPermanent.get('departement')?.value;
     let data = this.departements?.find(element=>element.libelle.toLowerCase()=== departement.libelle.toLowerCase());
-    
+    this.dataService = this.dataAll?.services;
       this.commercialExiste = false;
       this.autreService = true
       this.services = data?.services;    
@@ -504,6 +556,25 @@ export class FormsComponent implements AfterViewInit,OnInit
       numeroTelephone=value;
       }
   }
+  valider(event:string)
+  {
+     this.enregistrer()
+     this.show = !this.show;
+     this.enregistre = "Enregistrer";
+  }
+  closed(event:boolean)
+  {
+    this.show = event;
+  }
+  save=(event:Event)=>{
+    let button = (event.target as HTMLButtonElement).textContent;
+    if(button?.toLowerCase()=="Remplacer".toLowerCase())
+    {
+      this.show = !this.show;
+    }else{
+      this.enregistrer()
+    }
+  }
   enregistrer=()=>
   {
     const formData :FormData = new FormData();
@@ -614,56 +685,63 @@ export class FormsComponent implements AfterViewInit,OnInit
     formData.append('telephone_pro',this.formPermanent.get('telephone_pro')?.value.trim().replace(/\s/g,''));
     formData.append('date_debut_contrat',this.formPermanent.get('date_debut_contrat')?.value)
     formData.append('date_fin_contrat',this.formPermanent.get('date_fin_contrat')?.value)
-    if(this.formPermanent.get('DA')?.value){
+    if(this.formPermanent.get('DA')?.value)
+    {
       formData.append('DA',this.formPermanent.get('DA')?.value.trim().replace(/\s/g,''));
     }
-    formData.append('DA_kangourou',this.formPermanent.get('DA_kangourou')?.value.trim().replace(/\s/g,''))
-    formData.append('duree_kangourou',this.formPermanent.get('duree_kangourou')?.value.trim().replace(/\s/g,''))
-    formData.append('montant_kangourou',this.formPermanent.get('montant_kangourou')?.value.trim().replace(/\s/g,''))
-    formData.append('temps_presence_autre_structure_sonatel',this.formPermanent.get('temps_presence_autre_structure_sonatel')?.value)
-    formData.append('interimaireCategorie',this.formPermanent.get('interimaireCategorie')?.value)
-    formData.append('cout_unitaire',this.formPermanent.get('cout_unitaire')?.value.trim().replace(/\s/g,''))
+    if(statut.libelle.toLowerCase() =="Interimaire".toLowerCase())
+    {
+      formData.append('DA_kangourou',this.formPermanent.get('DA_kangourou')?.value.trim().replace(/\s/g,''))
+      formData.append('duree_kangourou',this.formPermanent.get('duree_kangourou')?.value.trim().replace(/\s/g,''))
+      formData.append('montant_kangourou',this.formPermanent.get('montant_kangourou')?.value.trim().replace(/\s/g,''))
+      formData.append('temps_presence_autre_structure_sonatel',this.formPermanent.get('temps_presence_autre_structure_sonatel')?.value)
+      formData.append('interimaireCategorie',this.formPermanent.get('interimaireCategorie')?.value)
+      formData.append('cout_unitaire',this.formPermanent.get('cout_unitaire')?.value.trim().replace(/\s/g,''))
+    }
     let categInterim = this.formPermanent.get('categorieInterim')?.value;
-    if(categInterim!=null){
+    if(categInterim!=null)
+    {
       formData.append('categorieInterim',this.formPermanent.get('categorieInterim')?.value.id)
     }
-    this.service.store(formData,this.idInterim,this.idProfile,this.upload,this.contrat_id).subscribe({
+    this.service.store(formData,this.idInterim,this.idProfile,this.upload,this.contrat_id,this.remplacer_id).subscribe({
       next:(response=>{
         if(response.statut===200)
           {  
             this.message = response.message;
           setTimeout(()=>{
             this.message =""
-          },5000)
+          },2000)
           this.formPermanent.reset();
           this.formPermanent.get('photo')?.setValue(this.userOne);
           this.responsable =false;
         }
-        else if(response.statut === 221){
-          // this.toastr.success(response.message)
+        else if(response.statut === 221)
+        {
           this.visible = true
           this.messageInfo = response.message;
           setTimeout(()=>{
             this.visible = false
             this.messageInfo =""
           },10000)
+          console.log(response);
+          
         }else{
-          // this.toastr.warning(response.message)
           this.visible = true
           this.messageAttention = response.message;
           setTimeout(()=>{
             this.visible = false
             this.messageAttention =""
           },10000)
+          console.log(response); 
         }
       }),error:(error=>{
-        // this.toastr.error(error.error.message)
         this.visible = true
         this.messageError = error.error.message;
         setTimeout(()=>{
           this.messageError = "";
           this.visible = false
         },10000)
+        console.log(error);
       })
     })
   }

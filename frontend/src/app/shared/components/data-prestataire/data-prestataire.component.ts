@@ -1,6 +1,6 @@
 import {  CommonModule, NgClass, NgIf } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output, signal } from '@angular/core';
-import { Permanent } from 'src/app/_core/interface/permanent';
+import { DataALL, Permanent } from 'src/app/_core/interface/permanent';
 import { ModalModule } from '../modal/modal.module';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -13,10 +13,13 @@ import { map, Observable, startWith } from 'rxjs';
 import { MatInputModule } from '@angular/material/input';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { RechercherLibellePipe } from 'src/app/admin/pipe/rechercher-libelle.pipe';
-import { Interim } from 'src/app/_core/interface/interim';
+import { Interim, Role } from 'src/app/_core/interface/interim';
 
 import { MatButtonToggleChange, MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { AlertType } from '../alert/alert.type';
+import { AlertComponent } from '../alert/alert.component';
+import { CanalCategoriePipe } from 'src/app/admin/pipe/canal-categorie.pipe';
 
 @Component({
   selector: 'data-prestataire',
@@ -32,6 +35,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     RechercherLibellePipe,
     MatButtonToggleModule,
     MatCheckboxModule,
+    AlertComponent,
+    CanalCategoriePipe,
   ],
   templateUrl: './data-prestataire.component.html',
   styleUrl: './data-prestataire.component.css'
@@ -44,7 +49,8 @@ export class DataPrestataireComponent implements OnInit {
   @Input() taille!:number;
   @Input() total!:number;
   @Output() supprimerEvent = new EventEmitter<any>();
-  @Input() message:string =""
+  @Input() message:string ="";
+  @Input() dataAll?:DataALL;
   shorting: boolean = false;
   showModal:boolean = false;
   isDropdownOpen:boolean = true;
@@ -61,20 +67,26 @@ export class DataPrestataireComponent implements OnInit {
   arretPermt :boolean=false
   ajoutComm:boolean = true;
   hiddern:string = 'hidden';
-  idProfile!:number
+  idProfile!:number;
+  canal!:Role;
+  categorie!:Role
   myControl=new FormControl('4');
   options: string[] = ['4','9','15','20','30','40','50','60','70','80','90','100'];
   filteredOptions!: Observable<string[]>;
   libelle:string='';
   formSupprimer:FormGroup
   autre:boolean = false;
+  closed:boolean = false;
+  dataCanal:Role[]=[];
+  dataCategorieGroupe:Role[]=[];
+  readonly alertType = AlertType;
   hideSelectionIndicator = signal(false);
   constructor(private service :InterimService,private shared:LocalStorageService,private router:Router,private fb:FormBuilder){
     this.modalCompnent = new ModalComponent();
     this.formSupprimer= this.fb.group({
       motif:[,[Validators.required]],
       date:[,[Validators.required]],
-      commentaire:[]
+      commentaire:[],
     })
   }
   ngOnInit(): void {
@@ -82,6 +94,12 @@ export class DataPrestataireComponent implements OnInit {
       startWith(''),
       map(value => this._filter(value))
     );
+    // this.shared.currentDataCanalCategorieGroupe.subscribe(ele=>{
+    //   console.log(ele);
+    //   this.dataCanal = ele.canal;
+    //   this.dataCategorieGroupe= ele.categorieGroupe;
+      
+    // })
   }
   private _filter(value: any): string[] {
     const filterValue = value.toLowerCase();
@@ -244,12 +262,13 @@ export class DataPrestataireComponent implements OnInit {
   AutreMotif=()=>{
     this.autre= true;
   }
-  selectMotif=(event:MatButtonToggleChange)=>{
+  selectMotif=(event:MatButtonToggleChange)=>
+  {
     let select = event.value
-    
     this.autre = select ==='autre'  
   }
-  ajoutCommentaire(){
+  ajoutCommentaire()
+  {
     this.ajoutComm = !this.ajoutComm
     this.faireCommentaire = false
   }
@@ -261,19 +280,18 @@ export class DataPrestataireComponent implements OnInit {
     }
     this.supprimerEvent.emit(data);
     this.showModal = false;
-    this.faireCommentaire = false
-    this.annuler = true
+    this.faireCommentaire = false;
+    this.annuler = true;
     this.isCommentaire = false;
     this.arretPermt=false;
     this.footer = true;
-    this.couleur =  "bg-red-600  hover:bg-red-700"
+    this.couleur =  "bg-red-600  hover:bg-red-700";
     const index = this.rowData?.findIndex(ele=>ele.profile.id===this.idProfile);
-    if(index!=-1 && index!=undefined){
-       console.log(this.message);
-      
+    if(index!=-1 && index!=undefined)
+    {
       setTimeout(()=>{
         this.rowData?.splice(index,1)
-      },6000)
+      },6000);
     }
   }
 }

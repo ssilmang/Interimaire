@@ -8,6 +8,10 @@ export interface DataPermanent{
     collaborateurs:Permanent[]
     pagination:pagination
 }
+export interface DataPermanentList<T>{
+    permanents:T[]
+    pagination:pagination
+  }
 
 export interface Permanent{
     id:number
@@ -25,6 +29,9 @@ export interface Permanent{
     departement:Departement
     service:Service
     responsable:Responsable
+    date:string
+    motif:string
+    commentaire:string
     // collaborateurs:Permanent[]
 }
 export interface Responsable{
@@ -54,6 +61,10 @@ export interface DataALL{
     directions:DataDirection[]
     responsable:Responsable[]
     locaux:Locau[]
+    poles:Role[]
+    departements:Role[]
+    services:Role[]
+
 }
 export interface RequestPermanent{
     prenom:string
@@ -87,4 +98,7 @@ export interface RequestSupprimer{
     date:string
     motif:string
     commentaire:string
+}
+export interface RemplacerPermanent{
+    dataPermanent:Permanent[]
 }

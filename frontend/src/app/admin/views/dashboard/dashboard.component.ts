@@ -3,7 +3,7 @@ import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, D
 import { AbstractControl, FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
 import { Chart, registerables } from 'chart.js';
 import { Images } from 'docs/assets/data/images';
-import { Agence, DataRemplacer, ELEMENT_DATA, Interim, PeriodicElement, RequestRompre } from 'src/app/_core/interface/interim';
+import { Agence, DataInterim, DataRemplacer, ELEMENT_DATA, Interim, PeriodicElement, RequestRompre, Role } from 'src/app/_core/interface/interim';
 import { InterimService } from 'src/app/_core/services/interim.service';
 import { AlertComponent } from 'src/app/shared/components/alert/alert.component';
 import { ModalComponent } from 'src/app/shared/components/modal/modal.component';
@@ -30,6 +30,8 @@ import { MatTableModule,MatTable} from '@angular/material/table'
 import {MatIconModule} from '@angular/material/icon'
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop'
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { DataALL, DataPermanent } from 'src/app/_core/interface/permanent';
+import { CanalCategoriePipe } from '../../pipe/canal-categorie.pipe';
 // import { ExcelService } from 'src/app/excel-service';
 Chart.register(...registerables);
 
@@ -51,7 +53,8 @@ Chart.register(...registerables);
     CdkDrag,
     MatTableModule,
     MatIconModule,
-    MatFormFieldModule
+    MatFormFieldModule,
+    CanalCategoriePipe,
   ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
@@ -97,6 +100,7 @@ export class DashboardComponent implements OnInit, AfterViewInit
   activeCours:string="";
   activeKangourou:string="";
   dataAgence:Agence[]=[];
+  dataAgenceInterim:Agence[]=[];
   isDropdownOpen:boolean=true;
   kangourouInterim:Interim[]=[];
   backg:string = "";
@@ -112,12 +116,14 @@ export class DashboardComponent implements OnInit, AfterViewInit
   remplacement:string=''
   numeroTelephone:string=""
   numeroTelephonePro:string="";
-  dataRemplacer:DataRemplacer[]=[]
+  dataRemplacer:DataRemplacer<Interim>[]=[]
   isVisible:boolean=true
-
-  @ViewChild('table', {static: true}) table!: MatTable<DataRemplacer>;
+  dataAll?:DataALL;
+  canal!:Role;
+  categorie!:Role;
+  @ViewChild('table', {static: true}) table!: MatTable<DataRemplacer<Interim>>;
   displayedColumns: string[] = ['Prenom', 'Nom', 'Action', 'Prénom', 'nom'];
-  dataSource:DataRemplacer[] =[];
+  dataSource:DataRemplacer<Interim>[] =[];
   private destroyRef= inject(DestroyRef)
   constructor(
     private sharedService: LocalStorageService,
@@ -150,7 +156,7 @@ export class DashboardComponent implements OnInit, AfterViewInit
     })
   }
   ngOnInit(): void 
-  {
+  {  
     this.myControl.setValue('3');
     this.filteredOptions = this.myControl.valueChanges.pipe(
       startWith(''),
@@ -202,7 +208,8 @@ export class DashboardComponent implements OnInit, AfterViewInit
     // });
     this.index(this.taille,this.currentPage);
     this.allAgence();
-    this.indexRemplacer()
+    this.indexRemplacer();
+  
   }
   drop(event: CdkDragDrop<string>) {
     const previousIndex = this.dataSource.findIndex(d => d === event.item.data);
@@ -343,7 +350,13 @@ export class DashboardComponent implements OnInit, AfterViewInit
   {
     this.serve.indexAll().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next:(response=>{
-        this.dataAgence = response.data.agences       
+        this.dataAgence = response.data.agences ;
+        this.dataAll = response.data;  
+        if(this.dataAll){
+          this.dataAgenceInterim = this.dataAll!.agences.filter((ele)=>{
+            return ele.categories.length !=0;
+         })
+        }     
       })
     })
   }
