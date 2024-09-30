@@ -143,20 +143,15 @@ export class FormsComponent implements AfterViewInit,OnInit
   }
   ngAfterViewInit(): void
   {
-
     this.sharedService.currentInterim.pipe(takeUntilDestroyed(this.cref)).subscribe(interim=>{
       if(interim){ 
-        console.log(interim);
-        
         this.profileChanged = interim;
-        this.formPermanent.reset();
-        
+        this.formPermanent.reset(); 
         this.formPermanent.patchValue(interim)
         this.enregistre = "Modifier";
         this.color = "btn-success";
         this.idInterim=interim.id;
         this.idProfile = interim.profile.id;
-        
         if (interim.responsable && interim.responsable.id)
         {
           this.responsable  = false
@@ -229,7 +224,6 @@ export class FormsComponent implements AfterViewInit,OnInit
      }
     })
   }
- 
   compare=function(option:any,value:any)
   { 
     return option && value ? option.id === value.id : option===value
@@ -275,7 +269,6 @@ export class FormsComponent implements AfterViewInit,OnInit
   {
     this.service.indexAll().subscribe({
       next:(response=>{
-        console.log(response);
         this.dataAll = response.data; 
         this.dataPole = this.dataAll?.poles
         this.dataDepartement = this.dataAll?.departements;
@@ -384,11 +377,7 @@ export class FormsComponent implements AfterViewInit,OnInit
       {
         this.suitedirection = true;  
       }
-    }  
-  }
-  clickSuitedirection(){
-    let select =this.formPermanent.get('direction')?.value;
-    let data = this.dataAll?.directions.find(element=>element.libelle.toLowerCase() === select.libelle.toLowerCase())
+      let data = this.dataAll?.directions.find(element=>element.libelle.toLowerCase() === select.libelle.toLowerCase())
       this.poles = data?.poles;
       this.dataPole = this.dataAll?.poles; 
       if(this.poles?.length == 0){
@@ -398,20 +387,16 @@ export class FormsComponent implements AfterViewInit,OnInit
         this.autrePole = false  
       }
       this.suitedirection = false;
+    }  
+  }
+  clickSuitedirection(){
+    let select =this.formPermanent.get('direction')?.value;
+    
   }
   clickSuitepole()
   {
     let select = this.formPermanent.get('pole')?.value;
-    let data = this.poles?.find(ele=>ele.libelle.toLowerCase() ===select.libelle.toLowerCase())
-    this.departements = data?.departements;
-    this.dataDepartement = this.dataAll?.departements
-    if(this.departements?.length ==0){
-      this.notExistDepartement = false;
-    }else{
-      this.notExistDepartement = true;
-      this.autreDepartement = false;
-    }
-    this.suitepole = false;
+   
   }
   clickSuitedepartement()
   {
@@ -447,6 +432,16 @@ export class FormsComponent implements AfterViewInit,OnInit
 
        this.suitepole = true;
       }
+      let data = this.poles?.find(ele=>ele.libelle.toLowerCase() ===select.libelle.toLowerCase())
+      this.departements = data?.departements;
+      this.dataDepartement = this.dataAll?.departements
+      if(this.departements?.length ==0){
+        this.notExistDepartement = false;
+      }else{
+        this.notExistDepartement = true;
+        this.autreDepartement = false;
+      }
+      this.suitepole = false;
     }
   }
   selectedDepartement(event:Event)

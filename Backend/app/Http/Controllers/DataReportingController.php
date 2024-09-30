@@ -149,10 +149,12 @@ class DataReportingController extends Controller
             $dataComment = [];
             $totalPermanent=[
                 'en_cours'=>0,
+                'rompre'=>0,
                 'terminer'=>0,
             ];
             $totalPrestataire=[
                 'en_cours'=>0,
+                'rompre'=>0,
                 'terminer'=>0,
             ];
             $totalInterimaire=[
@@ -184,11 +186,13 @@ class DataReportingController extends Controller
                 if($statut['statut']['libelle']=="Permanent")
                 {
                     $totalPermanent["en_cours"] +=(int)$explode[0];
+                    $totalPermanent["rompre"] +=(int)$explode[1];
                     $totalPermanent["terminer"] +=(int)$explode[2];
                 }
                 if($statut['statut']['libelle']=="Prestataire")
                 {  
                     $totalPrestataire["en_cours"] +=(int)$explode[0];
+                    $totalPrestataire["rompre"] +=(int)$explode[1];
                     $totalPrestataire["terminer"] +=(int)$explode[2];
                 }
                 if($statut['statut']['libelle']=="Interimaire")

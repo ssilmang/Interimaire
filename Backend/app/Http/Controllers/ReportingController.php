@@ -35,7 +35,7 @@ class ReportingController extends Controller
     {
         $annes =Annee::all();
         $mois = Mois::all();
-        
+
         $data = [
             "annee"=>AnneeResource::collection($annes),
             "mois"=>RoleResource::collection($mois),
@@ -48,15 +48,16 @@ class ReportingController extends Controller
         $totalPermanent=[
             'en_cours'=>0,
             'terminer'=>0,
+            'rompre'=>0,
         ];
         $totalPrestataire=[
             'en_cours'=>0,
             'terminer'=>0,
+            'rompre'=>0,
         ];
         $totalInterimaire=[
             'en_cours'=>0,
             'rompre'=>0,
-            // 'kangourou'=>0,
             'terminer'=>0,
         ];
         $kangourou =null;
@@ -67,13 +68,15 @@ class ReportingController extends Controller
             $effectStatutInter = Interim::where('statut_id',$statut->id)->first();
             if($effectStatutPerma)
             {
-                $totalPermanent['en_cours'] += $effectStatutPerma->where(['etat'=>0])->count();
-                $totalPermanent['terminer'] += $effectStatutPerma->where(['etat'=>1])->count();        
+                $totalPermanent['en_cours'] += $effectStatutPerma->where(['etat'=>0])->count();       
+                $totalPermanent['rompre'] += $effectStatutPerma->whereIn('etat',[1,2])->count();        
+                $totalPermanent['terminer'] += $effectStatutPerma->where(['etat'=>-1])->count();        
             }
             if($effectStatutPrest)
             {
                 $totalPrestataire['en_cours'] += $effectStatutPrest->where(['etat'=>0])->count();
-                $totalPrestataire['terminer'] += $effectStatutPrest->where(['etat'=>1])->count();
+                $totalPrestataire['rompre'] += $effectStatutPrest->whereIn('etat',[1,2])->count();        
+                $totalPrestataire['terminer'] += $effectStatutPrest->where(['etat'=>-1])->count();  
             }
             if($effectStatutInter)
             {
@@ -110,13 +113,13 @@ class ReportingController extends Controller
         $data =[];
         foreach ($agences as $key => $agence) 
         {
-            $permant = Permanent::where('agence_id',$agence->id)->count();
-            $prestataire = Prestataire::where('agence_id',$agence->id)->count();
+            $permant = Permanent::where('agence_id',$agence->id)->where('etat',0)->count();
+            $prestataire = Prestataire::where('agence_id',$agence->id)->where('etat',0)->count();
             $interim =0;
             $categorie = Categorie::where('agence_id',$agence->id)->get()->pluck('id');
             if($categorie)
             {
-                $interim += Interim::whereIn('categorie_id',$categorie)->whereIn('etat',['rompre','en cours','terminer'])->get()->count();
+                $interim += Interim::whereIn('categorie_id',$categorie)->where('etat','en cours')->count();
             }
             if(!isset($data[$agence->libelle]))
             {
@@ -140,14 +143,14 @@ class ReportingController extends Controller
     {
         $departements =Departement::all();
         $data =[];
-        foreach ($departements as $key => $departement )
+        foreach ($departements as $key => $departement)
         {
-            $permanents = Permanent::where('departement_id',$departement->id)->get();
-            $prestataires = Prestataire::where('departement_id',$departement->id)->get();
-            $interimaires = Interim::whereIn('responsable_id',$permanents->pluck('id'))->get();
+            $permanents = Permanent::where('departement_id',$departement->id)->where('etat',0)->get();
+            $prestataires = Prestataire::where('departement_id',$departement->id)->where('etat',0)->get();
+            $interimaires = Interim::where(['etat'=> 'en cours'])->whereIn('responsable_id',$permanents->pluck('id'))->get();
             $data[$departement->libelle]["permanent"] = $permanents->count();
             $data[$departement->libelle]["prestataire"] = $prestataires->count();
-            $data[$departement->libelle]["interimaire"] = $interimaires->count();
+            $data[$departement->libelle]["interimaire"] = +$interimaires->count();
         }
        
         return $this->response->response(Response::HTTP_OK,'tous',$data);
@@ -160,10 +163,10 @@ class ReportingController extends Controller
         $groupes = Groupe::all();
         foreach($canals as $canal)
         {
-            $permanent = Permanent::where('canal_id',$canal->id)->get();
-            $prestataire = Prestataire::where('canal_id',$canal->id)->count();
+            $permanent = Permanent::where('canal_id',$canal->id)->where('etat',0)->get();
+            $prestataire = Prestataire::where('canal_id',$canal->id)->where('etat',0)->count();
             $inerim = Interim::whereIn('responsable_id',$permanent->pluck('id'))
-                                ->whereIn('etat',['rompre','en cours','terminer'])->get();
+                                ->where('etat','en cours')->get();
             $data[$canal->libelle]['permanent'] =+ $permanent->count(); 
             $data[$canal->libelle]['prestataire'] =+ $prestataire; 
             $data[$canal->libelle]['interimaire'] =+ $inerim->count();   
@@ -171,11 +174,11 @@ class ReportingController extends Controller
             {       
                 if($canal->libelle)
                 {
-                    $permanentgroupe = Permanent::where('canal_id',$canal->id);
-                    $prestatairegroupe = Prestataire::where(['canal_id'=>$canal->id,'groupe_id'=>$groupe->id])->count();
+                    $permanentgroupe = Permanent::where('canal_id',$canal->id)->where('etat',0);
+                    $prestatairegroupe = Prestataire::where(['canal_id'=>$canal->id,'groupe_id'=>$groupe->id])->where('etat',0)->count();
                     $interimgroupe = Interim::whereIn('responsable_id',$permanentgroupe->pluck('id'))
                                     ->where('groupe_id',$groupe->id)
-                                    ->whereIn('etat', ['rompre', 'en cours', 'terminer'])
+                                    ->where('etat', 'en cours')
                                     ->count(); 
                     $dataRangs[$canal->libelle][$groupe->libelle]['permanent'] = $permanentgroupe->where('groupe_id',$groupe->id)->count();
                     $dataRangs[$canal->libelle][$groupe->libelle]['prestataire'] = $prestatairegroupe;
@@ -194,19 +197,13 @@ class ReportingController extends Controller
         $categories = Categoriegroupe::all();
         $data = [];;
         foreach ($categories as $key => $categorie) {
-            $permanent = Permanent::where('categoriegroupe_id',$categorie->id)->get();
-            $prestataire = Prestataire::where('categoriegroupe_id',$categorie->id)->get();
-            $interim = Interim::where('categoriegroupe_id',$categorie->id)->whereIn('etat', ['rompre', 'en cours', 'terminer'])->get();
+            $permanent = Permanent::where('categoriegroupe_id',$categorie->id)->where('etat',0)->get();
+            $prestataire = Prestataire::where('categoriegroupe_id',$categorie->id)->where('etat',0)->get();
+            $interim = Interim::where('categoriegroupe_id',$categorie->id)->where('etat','en cours')->get();
             $data[$categorie->libelle]['permanent']= +$permanent->count();
             $data[$categorie->libelle]['prestataire']= +$prestataire->count();
             $data[$categorie->libelle]['interimaire']= +$interim->count();
         }
         return $this->response->response(Response::HTTP_OK,'Categorie groupe recupérer',$data);
     }
-
-
-
-
-
-
 }

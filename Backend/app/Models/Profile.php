@@ -25,4 +25,7 @@ class Profile extends Model
     public function permanentOfRemplaces(){
         return $this->hasMany(PermanentOfRemplace::class,'profile_id');
     }
+    public function prestataireOfRemplaces(){
+        return $this->hasMany(PrestataireOfRemplace::class,'profile_id');
+    }
 }

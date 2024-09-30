@@ -174,10 +174,6 @@
       </div>
     </div>
   </div>
-  
-
-
-
  <app-modal
   [show]="showModal" 
   (closeModal)="onModalCloseHandler($event)" 
@@ -243,7 +239,7 @@
                 </div>
                 <div class="profile-dropdown relative inline-block space-y-1">
                       <div>
-                         <button type="button" class="flex mr-3 text-sm  rounded-full md:mr-0 focus:ring-4 focus:ring-gray-300 btn btn-outline-secondary py-1" id="user-menu-button" aria-expanded="false" data-dropdown-toggle="user-dropdown" data-dropdown-placement="bottom" (click)="toggleDropdown()" >Contact</button>
+                         <button type="button" class="flex mr-3 text-sm  rounded-full md:mr-0 focus:ring-4 focus:ring-gray-300 btn btn-outline-secondary py-1" id="user-menu-button" aria-expanded="false" data-dropdown-toggle="user-dropdown" data-dropdown-placement="bottom" (click)="toggleDropdown()" >Contacts</button>
                       </div>
                    <div class="profile-dropdown-list absolute  text-white  mr-3 text-sm bg-gray-900  md:mr-0    py-1  border rounded-lg border-gray-700" [hidden]="isDropdownOpen">
                       <div class="flex flex-col text-sm">
@@ -314,7 +310,8 @@
               <button type="button" class="btn btn-outline-secondary me-2">{{dataDetails?.canal?.libelle }}</button>
           </div>
       </div>
-      @if(dataDetails?.profile?.commentaire !== null){
+      @if(dataDetails?.profile?.commentaire !== null)
+      {
        <div class="flex w-full flex-col">
            <button class="" > Commentaire :</button> 
            <textarea name="" readonly  class="border w-full border-gray-600 bg-gray-100">{{ dataDetails?.profile?.commentaire }}</textarea>
@@ -374,7 +371,6 @@
     <!-- <textarea [(ngModel)]="commentaire"  class="m-3 w-full h-32 border border-gray-600" name="" id=""></textarea> -->
   }
  </app-modal>
- 
   <div id="popup-modal" tabindex="-1" class="{{ hiddern }} flex fixed  top-32 right-12 left-36 z-50 justify-center items-center isset-0">
       <div class="relative p-4 w-full max-w-md max-h-full ">
           <div class="relative bg-white rounded-lg shadow dark:bg-gray-700  border-2 border-orange-600">
@@ -397,4 +393,3 @@
           </div>
       </div>
   </div>
-  

@@ -12,6 +12,7 @@ use App\Http\Resources\RoleResource;
 use App\Http\Resources\UserResource;
 use App\Models\Canal;
 use App\Models\Permanent;
+use App\Models\Prestataire;
 use App\Models\Statut;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -61,9 +62,14 @@ class StatutController extends Controller
         ];
         return $this->response->response(Response::HTTP_OK,"All",$data);   
     }
-    public function getResponse()
+    public function getResponse($statut)
     {
-        $permanent = Permanent::where('etat',0)->get();
-        return $this->response->response(Response::HTTP_OK,"All",PermanentResource::collection($permanent));
+        $data = [];
+        if($statut == "prestataire"){
+            $data = Prestataire::where('etat',0)->get();
+        }else{
+            $data = Permanent::where('etat',0)->get();
+        }
+        return $this->response->response(Response::HTTP_OK,"All",PermanentResource::collection($data));
     }
 }

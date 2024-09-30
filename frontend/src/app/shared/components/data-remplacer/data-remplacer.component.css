@@ -28,3 +28,17 @@
     visibility: visible;
     opacity: 1;
   }
+  mat-header-cell{
+    background-color: orangered;
+  }
+  /* .custom-header {
+    background-color: #bf2929;
+    --tw-text-opacity: 1;
+    color: rgb(185 28 28 / var(--tw-text-opacity)); 
+    font-weight: bold;
+}
+.bg-600 {
+  --tw-text-opaacity:1;
+  color: rgb(21 128 61 / var(--tw-text-opacity));
+  font-weight: bold;
+} */

@@ -21,6 +21,6 @@ export class Images {
 
   };
   public static readonly photo: Image = {
-    img: './assets/images/authpage/massar.jpg',
+    img: './assets/images/authpage/Image-photo.jpg',
   };
 }

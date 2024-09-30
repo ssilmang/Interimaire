@@ -24,14 +24,21 @@ export class AdminDataPrestataireComponent implements OnInit, AfterViewInit {
   total!:number;
   public message:string="";
   prestataireData!: Permanent[];
-  constructor(private service:PrestataireService,private crefDestroy:DestroyRef,private shared:LocalStorageService,private cref:ChangeDetectorRef){
+  constructor(
+    private service:PrestataireService,
+    private crefDestroy:DestroyRef,
+    private shared:LocalStorageService,
+    private cref:ChangeDetectorRef
+  ){
 
   }
-  ngOnInit(): void {
+  ngOnInit(): void
+  {
     this.isPrestataire(this.taille,this.currentPage);
     this.index();
   }
-  ngAfterViewInit(): void {
+  ngAfterViewInit(): void
+  {
     this.shared.currentPaginate.pipe(takeUntilDestroyed(this.crefDestroy)).subscribe(element=>{
      if(element){
       this.currentPage = element.currentPage;
@@ -59,11 +66,8 @@ export class AdminDataPrestataireComponent implements OnInit, AfterViewInit {
   }
   suppEvent(data:any)
   {
-    console.log(data);
-    
     this.service.supprimerPersonne(data.form,data.id).pipe(takeUntilDestroyed(this.crefDestroy)).subscribe({
       next:(response)=>{
-        console.log(response);
         this.message= response.message
         setTimeout(()=>{
           this.message =""
@@ -81,8 +85,6 @@ export class AdminDataPrestataireComponent implements OnInit, AfterViewInit {
   index(){
     this.service.indexAll().subscribe({
       next:(data=>{
-        console.log(data);
-        
         this.dataAll = data.data;
       })
     })

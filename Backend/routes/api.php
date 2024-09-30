@@ -99,8 +99,8 @@ Route::middleware('auth:sanctum')->prefix('Interim')->group(function()
         Route::get('dv','getPermanent');
         Route::post('import/employeur','import');
         Route::post('supprimer/{id}','supprimer');
-        Route::get('getSubstitution','getSubstitution');
-        Route::get('/getListRemplacer','getListPermanent');
+        Route::get('getSubstitution/{statut}','getSubstitution');
+        Route::get('/getListRemplacer/{statut}','getListPermanent');
     });
     Route::controller(PrestataireController::class)->group(function()
     {
@@ -147,7 +147,7 @@ Route::middleware('auth:sanctum')->prefix('Interim')->group(function()
     {
         Route::post('statut','store');
         Route::get('index/statuts','index');
-        Route::get('/getpermanent','getResponse');
+        Route::get('/getpermanent/{statut}','getResponse');
     });
     Route::controller(CanalController::class)->group(function()
     {

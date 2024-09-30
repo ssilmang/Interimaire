@@ -33,16 +33,16 @@ export class PermanentService {
   {
     return this._http.post<Response<Permanent>>(`${environment.apiUrl}supprimer/${id}`,data);
   }
-  getSubstitution():Observable<Response<RemplacerPermanent>>
+  getSubstitution(statut:string):Observable<Response<RemplacerPermanent>>
   {
-    return this._http.get<Response<RemplacerPermanent>>(`${environment.apiUrl}getSubstitution`);
+    return this._http.get<Response<RemplacerPermanent>>(`${environment.apiUrl}getSubstitution/${statut}`);
   }
-  getPermanent():Observable<Response<Permanent[]>>
+  getPermanent(statut:string):Observable<Response<Permanent[]>>
   {
-    return this._http.get<Response<Permanent[]>>(`${environment.apiUrl}getpermanent`);
+    return this._http.get<Response<Permanent[]>>(`${environment.apiUrl}getpermanent/${statut}`);
   }
-  getListPermanent():Observable<Response<DataPermanentList<Permanent>[]>>
+  getListPermanent(statut:string):Observable<Response<DataPermanentList<Permanent>[]>>
   {
-    return this._http.get<Response<DataPermanentList<Permanent>[]>>(`${environment.apiUrl}getListRemplacer`);
+    return this._http.get<Response<DataPermanentList<Permanent>[]>>(`${environment.apiUrl}getListRemplacer/${statut}`);
   }
 }

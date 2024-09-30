@@ -66,9 +66,7 @@ export class AdminDataTableComponent  implements OnInit{
   {
     this.service.supprimerPersonne(data.form,data.id).pipe(takeUntilDestroyed(this.crefDestroy)).subscribe({
       next:(response)=>{
-        this.message= response.message
-        console.log(response);
-        
+        this.message= response.message;
         setTimeout(()=>{
           this.message =""
         },5000);        
@@ -82,7 +80,6 @@ export class AdminDataTableComponent  implements OnInit{
         }
       },error(err) {
         console.error(err);
-        
       }, 
     })
   }

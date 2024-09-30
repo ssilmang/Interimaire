@@ -21,14 +21,16 @@ class ProfileRemplacerResource extends JsonResource
     }
     public function toArray(Request $request): array
     {
-        
-        
         $resources = null;
         $key ='interimaires';
         if($this->statut == "permanent"){
             $key = 'permanents';
             $resources =  PermanentResource::collection($this->permanentOfRemplaces);
-        }else{
+        }elseif($this->statut === "prestataire"){
+            $key = 'permanents';
+            $resources =  PermanentResource::collection($this->prestataireOfRemplaces);
+        }
+        else{
             $resources = InterimResource::collection($this->interimaires);
         }
         return [

@@ -46,7 +46,14 @@ export class HeaderComponent implements AfterViewInit{
     this.dataUser= JSON.parse(this.shared.get('user')); 
   }
   theme=()=>{
-    this.themeBackground="bg-red"
+    // this.isOpen = !this.isOpen;
+    // this.shared.theme(this.isOpen);
+    // if(this.isOpen){
+    //   this.themeBackground = "bg-black text-white";
+    // }else{
+    //   this.themeBackground = "bg-white text-black"
+    // }
+
   }
   getUserInitials(name:string)
   {

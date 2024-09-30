@@ -117,8 +117,8 @@ export class ReportingRhComponent
     'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
   ];
   total:number=0;
-  constructor(private service: ReportingService, public dialog:MatDialog,private crefDestroy:DestroyRef)
-  {}
+  messageArchive: string ="";
+  
   displayedColumns: string[] = ['key','value'];
   displayedColumnsCanal: string[] = ['key', 'permanent', 'prestataire', 'interimaire','totalGeneral'];
   displayedColumnsCategorie:string[]= ['ele', 'permanent', 'prestataire','interimaire','totalGeneral'];
@@ -159,6 +159,8 @@ export class ReportingRhComponent
   public pieChartOptions: ChartOptions<'pie'> = {
     responsive: false,
   };
+  constructor(private service: ReportingService, public dialog:MatDialog,private crefDestroy:DestroyRef)
+  {}
   ngAfterViewInit(): void
   {
   }
@@ -260,8 +262,6 @@ export class ReportingRhComponent
           commentaire:this.commentaireRan
       }
     }
-    console.log(dialogConfig);
-    
     this.dialog.open(PdfPowerpointComponent,dialogConfig);
   }
   validerEng(event:string)
@@ -303,25 +303,26 @@ export class ReportingRhComponent
         dataDepartement:dataDepartement,
         dataCanal:dataCanal,
         dataCommentaire:dataCommentaire,
-      } 
-      console.log(this.anneeActuel);
-          
+      }   
       this.service.archiveReporting(data,this.anneeActuel,this.moisActuel).pipe(takeUntilDestroyed(this.crefDestroy)).subscribe({
         next:(response)=>{
-          console.log(response);
-          if(response.statut===200){
-            this.show = !this.show
+          if(response.statut===200)
+          {
+            this.show = true
             this.showEng = !this.showEng
             this.footer = false;
             this.footerEng = false;
             this.anneeSelect ="";
             this.moisSelect = "";
+            setTimeout(() => {   
+              this.messageArchive = "";
+              this.show = !this.show;
+            }, 1000);
             this.formeValide =true;
           }
         }
       })
     }
-    
   }
   searchArchive=(annee:string,mois:number)=>
   {
@@ -374,9 +375,12 @@ export class ReportingRhComponent
       }
     })
   }
-  selectMois(event:Event){
-    if (this.annee && this.mois) {
-      if (this.mois?.id && this.annee?.annee) {
+  selectMois(event:Event)
+  {
+    if (this.annee && this.mois)
+    {
+      if (this.mois?.id && this.annee?.annee)
+      {
         this.searchArchive(this.annee.annee, this.mois.id);
       }
     }
@@ -395,8 +399,7 @@ export class ReportingRhComponent
     this.show= event
     this.footer = event;
   }
-  archive=()=>{
-   
+  archive=()=>{ 
     this.showEng = !this.showEng;
     this.footerEng = !this.footerEng;
   }
@@ -404,7 +407,8 @@ export class ReportingRhComponent
     if(this.anneeSelect && this.anneeSelect.annee)
     { 
       this.anneeActuel= this.anneeSelect.annee;
-      if( this.moisSelect){
+      if( this.moisSelect)
+      {
         this.formeValide = false;
       }
     }   
@@ -591,21 +595,25 @@ export class ReportingRhComponent
       }
     })
   }
-  allStatut(response:any){
-    this.dataStatut = response
-    console.log(this.dataStatut);
-    
+  allStatut(response:any)
+  {
+    this.dataStatut = response;
     let donnee=[
       this.getTotal(this.dataStatut.permanent),
       this.getTotal(this.dataStatut.prestataire),
       this.getTotal(this.dataStatut.interimaire),
+    ]
+    let dataEnCours = [
+      this.dataStatut.permanent.en_cours,
+      this.dataStatut.prestataire.en_cours,
+      this.dataStatut.interimaire.en_cours,
     ]
     const data  ={
       interimaire:this.getTotal(this.dataStatut.interimaire),
       prestataire:this.getTotal(this.dataStatut.prestataire),
       permanent:this.getTotal(this.dataStatut.permanent)
     }
-    this.chartSeries = donnee;
+    this.chartSeries = dataEnCours;
   }
   drop(event: CdkDragDrop<string>,data:any,table:any)
   {
@@ -705,6 +713,7 @@ export class ReportingRhComponent
   {
     return (interim?.en_cours??0) +( interim?.terminer??0) +( interim?.rompre??0)
   }
+ 
   faireComm()
   {
     this.isCommentaire= !this.isCommentaire 

@@ -26,10 +26,14 @@ class RemplacementResource extends JsonResource
         $remplacer  = $this->profileRemplacer;
         $remplacant = $this->profileRemplacant;
          if($this->statut=="permanent"){
-            $remplacer = Profile::find($this->remplacer);
+            $remplacer =$this->profileRemplacerPermanent;
             $remplacant = Profile::find($this->remplacant);
         }
-
+        if($this->statut == "prestataire")
+        {
+            $remplacer = $this->profileRemplacerPrestataire;
+            $remplacant = Profile::find($this->remplacant);
+        }
         return [
             'id' => $this->id,
             "rem"=>$this->remplacer,

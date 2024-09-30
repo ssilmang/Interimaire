@@ -15,6 +15,7 @@ import { FormsModule } from '@angular/forms';
 import { LocalStorageService } from '../../services/localStorage.service';
 import { Router } from '@angular/router';
 import { DataRemplacer } from 'src/app/_core/interface/interim';
+import { RechercherLibellePipe } from 'src/app/admin/pipe/rechercher-libelle.pipe';
 @Component({
   selector: 'app-data-remplacer',
   standalone: true,
@@ -28,7 +29,8 @@ import { DataRemplacer } from 'src/app/_core/interface/interim';
     MatTableModule,
     MatCheckboxModule,
     MatRadioModule,
-    FormsModule
+    FormsModule,
+    RechercherLibellePipe,
   ],
   templateUrl: './data-remplacer.component.html',
   styleUrl: './data-remplacer.component.css'
@@ -36,6 +38,7 @@ import { DataRemplacer } from 'src/app/_core/interface/interim';
 export class DataRemplacerComponent implements AfterViewInit, OnInit{
   dataPermanents:Permanent[]=[];
   apiImag :string = environment.apiImg;
+  imagePresta:string = environment.apiPrestataire;
   show:boolean=false;
   formeValide = true;
   permanentData!:Permanent;
@@ -57,6 +60,7 @@ export class DataRemplacerComponent implements AfterViewInit, OnInit{
   annuler:boolean = true;
   couleur:string = "bg-white";
   footer:boolean = true;
+  statut:string ="permanent";
   dataPermanentList:DataPermanentList<Permanent>[] = [];
   dataDetails?:Permanent;
   isDropdownOpen:boolean = true;
@@ -79,11 +83,16 @@ export class DataRemplacerComponent implements AfterViewInit, OnInit{
   }
   index()
   {
-    this.service.getPermanent().pipe(takeUntilDestroyed(this.crefDestroy)).subscribe({
+    this.service.getPermanent(this.statut).pipe(takeUntilDestroyed(this.crefDestroy)).subscribe({
       next:(data=>{
         this.dataResponsable = data.data;
       })
     })
+  }
+  selectStat=()=>{
+    this.index()
+    this.getSubstitution();
+    this.getListRemplacement();
   }
   selectRow(element: Permanent)
   {
@@ -96,13 +105,16 @@ export class DataRemplacerComponent implements AfterViewInit, OnInit{
   }
   getSubstitution()
   {
-    this.service.getSubstitution().pipe(takeUntilDestroyed(this.crefDestroy)).subscribe({
+    this.service.getSubstitution(this.statut).pipe(takeUntilDestroyed(this.crefDestroy)).subscribe({
       next:(response=>{
         this.dataPermanents = response.data.dataPermanent;
       })
     })
   }
   afficherDetails(permanent:Permanent){
+    if(this.statut=="prestataire"){
+      this.apiImag = this.imagePresta
+    }
     this.dataDetails = permanent;
     this.showModal = !this.showModal;
     this.faireCommentaire = true
@@ -141,7 +153,7 @@ export class DataRemplacerComponent implements AfterViewInit, OnInit{
   }
   getListRemplacement=()=>
   {
-    this.service.getListPermanent().pipe(takeUntilDestroyed(this.crefDestroy)).subscribe({
+    this.service.getListPermanent(this.statut).pipe(takeUntilDestroyed(this.crefDestroy)).subscribe({
       next:(response=>{
         console.log(response);
         this.dataPermanentList = response.data;

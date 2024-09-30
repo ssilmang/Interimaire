@@ -94,12 +94,6 @@ export class DataPrestataireComponent implements OnInit {
       startWith(''),
       map(value => this._filter(value))
     );
-    // this.shared.currentDataCanalCategorieGroupe.subscribe(ele=>{
-    //   console.log(ele);
-    //   this.dataCanal = ele.canal;
-    //   this.dataCategorieGroupe= ele.categorieGroupe;
-      
-    // })
   }
   private _filter(value: any): string[] {
     const filterValue = value.toLowerCase();

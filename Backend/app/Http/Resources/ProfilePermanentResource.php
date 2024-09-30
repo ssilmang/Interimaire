@@ -27,7 +27,11 @@ class ProfilePermanentResource extends JsonResource
         if($this->statut == "permanent"){
             $key = 'permanents';
             $resources =  PermanentResource::collection($this->permanents);
-        }else{
+        }elseif($this->statut == "prestataire"){
+            $key = 'permanents';
+            $resources =  PermanentResource::collection($this->prestataires);
+        }
+        else{
             $resources = InterimResource::collection($this->interimaires);
         }
         return [

@@ -625,6 +625,9 @@ export class DashboardComponent implements OnInit, AfterViewInit
       {  
         this.messageExport = 'Vous voulez exporter tous les interimaires qui sont dans le processus de kangourou'
       }
+      if(this.remplacement){
+        this.messageExport = "Vous voulez exporter tous les interimaires qui ont été remplacer";
+      }
 
     }
   }
@@ -638,6 +641,9 @@ export class DashboardComponent implements OnInit, AfterViewInit
     if(this.activeKangourou)
     {  
        this.exportContrat('Interim_kangourou')
+    }
+    if(this.remplacement){
+      // this.exportContrat('Interim_remplacer');
     }
     console.log(this.activeCours);
     

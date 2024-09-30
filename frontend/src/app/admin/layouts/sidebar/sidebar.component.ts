@@ -3,6 +3,7 @@ import {
   Component,
   ElementRef,
   EventEmitter,
+  Input,
   OnDestroy,
   OnInit,
   Output,
@@ -31,7 +32,7 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnDestroy {
   readonly elementRoutes = ElementRoutes;
   readonly element = ElementData;
   private routerSubscription: Subscription = new Subscription();
-
+  @Input() background:string ="";
   @Output() sidebarCollapsed = new EventEmitter<boolean>();
 
   constructor(

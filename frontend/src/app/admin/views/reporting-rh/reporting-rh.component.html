@@ -46,6 +46,7 @@
         </h6>
      
     </app-alert>
+    {{ messageArchive }}
 
 @if(footer){
     <p> Voulez-vous vraiment enregistrer le reporting</p>
@@ -160,7 +161,6 @@
 <div id="reporting">
     <div class="card bg-white border shadow p-9 -mt-3">
         <div class="flex space-x-5 justify-center">
-            <!-- <h3 class="text-orange-600" style="text-decoration:underline;">DV/PPCO/PRC</h3> -->
             <h4>Reporting RH {{ moisActuel }}  {{ anneeActuel }}</h4>
         </div>
         <div class=" ">
@@ -169,9 +169,10 @@
         <h6 class="text-orange-600 text-center items-center bg-gray-100 border rounded-md">Effectifs par Statut</h6>
        <div class="flex flex-1 space-x-12 justify-center">
             <div >
-                <div *ngIf="showDetails" class="absolute -mt-10 justify-center  border border-black items-center bg-gray-100 shadow-2xl w-48  text-black  rounded-lg ">
+                <div *ngIf="showDetails" class="absolute -mt-10 justify-center  border border-black items-center bg-gray-100 shadow-2xl w-64  text-black  rounded-lg ">
                     <div class="ml-3 mt-1"><p><strong>Contrat en Cours &nbsp;:</strong> &nbsp; <mat-chip class="px-2 py-1" > {{ dataStatut.permanent.en_cours }}</mat-chip></p></div>
-                    <div class=" ml-3"><p><strong>Fin Contrat &nbsp;:</strong>&nbsp; <mat-chip >{{ dataStatut.permanent.terminer }}</mat-chip></p></div>
+                    <div class=" ml-3"><p><strong>A remplacer &nbsp;:</strong>&nbsp; <mat-chip >{{ dataStatut.permanent.rompre }}</mat-chip></p></div>
+                    <div class=" ml-3"><p><strong>Remplacer &nbsp;:</strong>&nbsp; <mat-chip >{{ dataStatut.permanent.terminer }}</mat-chip></p></div>
                     
                   </div>
                 <div
@@ -198,9 +199,10 @@
                 <div class="text-center items-center mt-1"><mat-chip >Permanent</mat-chip></div>
             </div>
             <div >
-                <div *ngIf="showPrestat" class="absolute -mt-10 justify-center  border border-black items-center bg-gray-100 shadow-2xl w-48  text-black  rounded-lg ">
-                    <div class="ml-3 mt-1"><p><strong>Contrat en Cours &nbsp;:</strong> &nbsp; <mat-chip class="px-2 py-1" > {{ dataStatut.prestataire.en_cours }}</mat-chip></p></div>
-                    <div class=" ml-3"><p><strong>Fin Contrat &nbsp;:</strong>&nbsp; <mat-chip >{{ dataStatut.prestataire.terminer }}</mat-chip></p></div>
+                <div *ngIf="showPrestat" class="absolute -mt-10 justify-center  border border-black items-center bg-gray-100 shadow-2xl w-64  text-black  rounded-lg ">
+                    <div class="ml-3 mt-1 text-nowrap"><p><strong>Contrat en Cours &nbsp;:</strong> &nbsp; <mat-chip class="px-2 py-1" > {{ dataStatut.prestataire.en_cours }}</mat-chip></p></div>
+                    <div class=" ml-3 text-nowrap"><p><strong>A remplacer &nbsp;:</strong>&nbsp; <mat-chip >{{ dataStatut.prestataire.rompre }}</mat-chip></p></div>
+                    <div class=" ml-3 "><p><strong>Remplacer &nbsp;:</strong>&nbsp; <mat-chip >{{ dataStatut.prestataire.terminer }}</mat-chip></p></div>
                     
                 </div>
                 <div 
@@ -229,10 +231,10 @@
                 <div class="text-center items-center mt-1"> <mat-chip >Prestataire</mat-chip></div>
             </div>
             <div >
-                <div *ngIf="showInterim" class="absolute -mt-10 justify-center  border border-black items-center bg-gray-100 shadow-2xl w-48  text-black  rounded-lg ">
+                <div *ngIf="showInterim" class="absolute -mt-10 justify-center  border border-black items-center bg-gray-100 shadow-2xl w-64  text-black  rounded-lg ">
                     <div class="ml-3 mt-1"><p><strong>Contrat en Cours &nbsp;:</strong> &nbsp; <mat-chip class="px-2 py-1" > {{ dataStatut.interimaire.en_cours }}</mat-chip></p></div>
                     <div class=" ml-3"><p><strong>Rompu &nbsp;:</strong>&nbsp; <mat-chip >{{ dataStatut.interimaire.rompre }}</mat-chip></p></div>
-                    <div class=" ml-3"><p><strong>Fin Contrat &nbsp;:</strong>&nbsp; <mat-chip >{{ dataStatut.interimaire.terminer }}</mat-chip></p></div>
+                    <div class=" ml-3"><p><strong>Terminer &nbsp;:</strong>&nbsp; <mat-chip >{{ dataStatut.interimaire.terminer }}</mat-chip></p></div>
                     
                 </div>
                 <div 
@@ -404,7 +406,7 @@
         }
     </div>
     <div class=" flex items-center justify-center" style="width: 100%;">
-        <div id="agence_id" class="   w-8/12 h-2/12 mt-2">
+        <div id="agence_id" class="   w-9/12 h-2/12 mt-2">
             <!-- <canvas id="piechart" ></canvas> -->
             <apx-chart style="width: 100%;" class=" -mt-1" [series]="chartSeri" [chart]="chartBar" [labels]="label" [colors]="colorAgence" [title]="chartTitle" [dataLabels]="chartDataLabels"></apx-chart>
             <div class="justify-center flex font-bold underline -mt-5">Titre : Pourcentage de l'effectif global</div>

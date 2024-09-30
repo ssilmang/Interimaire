@@ -155,15 +155,21 @@ class UserController extends Controller
         $relaltions=[$permanents,$prestataires,$interims];
         if ($permanents!='null')
         {
-            $permanentsIds = Profile::whereHas('permanents')->pluck('id')->toArray();
+            $permanentsIds = Profile::whereHas('permanents',function($query){
+                $query->where('etat',0);
+            })->pluck('id')->toArray();
         }
         if ($prestataires!="null") 
         {
-            $prestatairesIds = Profile::whereHas('prestataires')->pluck('id')->toArray();
+            $prestatairesIds = Profile::whereHas('prestataires',function($query){
+                $query->where('etat',0);
+            })->pluck('id')->toArray();
         }
         if ($interims!='null') 
         {
-            $interimsIds = Profile::whereHas('interimaires')->pluck('id')->toArray();
+            $interimsIds = Profile::whereHas('interimaires',function($query){
+                $query->where('etat',0);
+            })->pluck('id')->toArray();
         }
         $allProfileIds = array_merge($permanentsIds, $prestatairesIds, $interimsIds);
         $allProfileIds = array_unique($allProfileIds);

@@ -9,8 +9,7 @@
    [couleur]="'bg-green-600'"
    
    [formeValide]="false"
-   >
-       
+   >     
       <div> Vous êtes sur le point de remplacer <span class="font-bold text-xl">{{ profileChange?.profile?.prenom }} &nbsp; {{ profileChange?.profile?.nom }}</span></div>
       <div> par <span class="font-bold text-xl">{{ profileChanged?.profile?.prenom }} &nbsp;{{ profileChanged?.profile?.nom }}</span></div>
    </app-modal>
@@ -217,11 +216,10 @@
                            <div class="text-center">
                               <div class="  flex text-sm leading-6 text-gray-600">
                                  <label for="img" class="image-frame">
-                                    <img [src]="avatars"  class="w-44 h-44 object-contain"  alt=""   >                              
+                                    <img [src]="avatars"  class="w-44 h-44 object-contain"  alt="photo"   >                              
                                     <input type="file" id="img" formControlName="photo"  (change)="selectedAvatar($event)" style="display: none;" 
                                     [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('photo')?.invalid &&(formPermanent.get('photo')?.touched || formPermanent.get('photo')?.dirty),
                                     'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('photo')?.valid &&(formPermanent.get('photo')?.touched || formPermanent.get('photo')?.dirty)}"
-                       
                                     />
                                 </label>
                               </div>
@@ -296,7 +294,6 @@
                      @for(statut of dataAll?.statuts;track statut?.id){
                         <option [ngValue]="statut">{{ statut?.libelle }}</option>   
                      }
-                     <option value="Autre">autre</option>
                   </select>
                   @if(formPermanent.get('statut')?.invalid && formPermanent.get('statut')?.touched){
                      @if(formPermanent.get('statut')?.hasError('required')){
@@ -594,10 +591,9 @@
             <label for="base-input" class="form-label required">Lieu d'execution</label>
          </div>
          <div class="max-w-screen-md w-full">
-            <label for="lieu" class="form-label">
-            </label>
+            <label for="lieu" class="form-label"></label>
             @if(!autreLocau){
-               <select id="lieu" (click)="selectedLocau($event)" formControlName="locau" class="form-select" [compareWith]="compare"
+               <select id="lieu" (click)="selectedLocau($event)" formControlName="locau" class="form-select px-4" [compareWith]="compare"
                [ngClass]="{'floating_outlined_error  dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600':formPermanent.get('locau')?.invalid &&(formPermanent.get('locau')?.touched || formPermanent.get('locau')?.dirty),
                'floating_outlined_success  dark:border-green-500 border-green-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600':formPermanent.get('locau')?.valid &&(formPermanent.get('locau')?.touched || formPermanent.get('locau')?.dirty)}"
                >
@@ -751,7 +747,7 @@
                            @for(pole of (poles?.length ? poles : dataPole);track pole.id){
                               <option [ngValue]="pole">{{ pole.libelle }}</option>
                            }
-                              <option value="Autre">Autre</option>
+                              <option value="Autre">autre</option>
                            </select>
                            @if(formPermanent.get('pole')?.invalid && formPermanent.get('pole')?.touched){
                               @if(formPermanent.get('pole')?.hasError('required')){
@@ -809,7 +805,7 @@
                      @for(departement of (departements?.length ? departements:dataDepartement);track departement.id){
                         <option [ngValue]="departement">{{ departement?.libelle }}</option>
                      }
-                        <option value="Autre">Autre</option>
+                        <option value="Autre">autre</option>
                      </select>
                      @if(formPermanent.get('departement')?.invalid && formPermanent.get('departement')?.touched){
                         @if(formPermanent.get('departement')?.hasError('required')){
@@ -871,7 +867,7 @@
                           @for(service of (services?.length ? services : dataService);track service.id){
                            <option [ngValue]="service">{{ service?.libelle }}</option>
                           }
-                           <option value="Autre">Autre</option>
+                           <option value="Autre">autre</option>
                         </select> 
                         @if(formPermanent.get('service')?.invalid && formPermanent.get('service')?.touched){
                            @if(formPermanent.get('service')?.hasError('required')){
@@ -1044,7 +1040,7 @@
                @for(responsable of dataAll?.responsable;track responsable.id){
                   <option [ngValue]="responsable">{{ responsable?.profile?.prenom }} {{ responsable?.profile?.nom }}</option>
                }
-                  <option>Autre</option>
+                  <!-- <option>Autre</option> -->
                </select>       
                @if(formPermanent.get('responsable')?.invalid && formPermanent.get('responsable')?.touched){
                   @if(formPermanent.get('responsable')?.hasError('required')){
@@ -1062,5 +1058,3 @@
       </div>
   </form>
 </div>
-   
-  

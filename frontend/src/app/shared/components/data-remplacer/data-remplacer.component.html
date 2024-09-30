@@ -1,91 +1,50 @@
-<app-modal 
-[show]="show" 
-[premierButtonText]="'Valider'"
-[deuxiemeButtonText]="'Annuler'"
-(clickCommentaire)="valider($event)"
-(closeModal)="close($event)"
-[footer]="true"
-[couleur]="'bg-green-600'"
-
-[formeValide]="formeValide"
->
-<div class="overflow-y-auto" style="max-height: 70vh;">
-
-    <table class="overflow-y-auto" mat-table [dataSource]="dataResponsable" class="mat-elevation-z8">
-    
-        <ng-container matColumnDef="prenom">
-          <th mat-header-cell *matHeaderCellDef> Prénom </th>
-          <td mat-cell *matCellDef="let element"> {{ element?.profile?.prenom }} </td>
-        </ng-container>
-        <ng-container matColumnDef="nom">
-          <th mat-header-cell *matHeaderCellDef> Nom </th>
-          <td mat-cell *matCellDef="let element"> {{ element?.profile?.nom }} </td>
-        </ng-container>
-        <ng-container matColumnDef="matricule">
-          <th mat-header-cell *matHeaderCellDef> Matricule </th>
-          <td mat-cell *matCellDef="let element"> {{ element?.profile?.matricule }} </td>
-        </ng-container>
-        <ng-container matColumnDef="action">
-            <th mat-header-cell *matHeaderCellDef> Action </th>
-            <td mat-cell *matCellDef="let element">
-              <mat-radio-button 
-                [value]="element"
-                
-                (change)="selectRow(element)">
-              </mat-radio-button>
-            </td>
-          </ng-container>
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-      
-    </table>
-</div>
-<mat-radio-button (change)="selectOther()" class="example-radio-button" >Autre</mat-radio-button>
-
-</app-modal>
 <div class="card-title ">
-    <div class=" flex justify-around border-b-2 border-orange-600" >
-      <div class="  form-group mx-auto  relative">
-    
+    <div class=" card  flex justify-around items-center border-b-2  border-orange-600" >
+    <!-- <div class="  form-group mx-auto  relative">
         <select id="countries" [(ngModel)]="canal" class="bg-gray-50 border form-control border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-          <option selected disabled>Selectionner un canal</option>
-            <!-- @for(canal of dataAll?.canals;track canal.id){ -->
-              <option > canal.libelle </option>
-            <!-- } -->
+        <option selected disabled>Selectionner un canal</option>
+        
+            <option > canal.libelle </option>
+        
         </select>
-      </div>
-      <div class="  form-group  mx-auto relative">
-    
+    </div>
+    <div class="  form-group  mx-auto relative">
         <select id="service" [(ngModel)]="categorie" class="bg-gray-50 border form-control border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-          <option selected disabled>Selectionner une catégorie</option>
-          <!-- @for(categ of dataAll?.categories;track categ.id){ -->
+        <option selected disabled>Selectionner une catégorie</option>
             <option > categ.libelle </option>
-          <!-- } -->
+        
         </select>
-      </div>
-      <div class=" form-group  relative mx-auto ">
+    </div> -->
+    <div class="  form-group  mx-auto relative mt-2">
+        <select id="service" (change)="selectStat()" [(ngModel)]="statut" class=" bg-gray-50 border form-control border-gray-300 text--900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white">
+        <option selected disabled>Selectionner un Statut</option>
+            <option  value="permanent"> Permanent </option>
+            <option value="prestataire" > Prestataire </option>
+        </select>
+    </div>
+    <div class=" form-group  relative mx-auto mt-2">
         <input [(ngModel)]="libelle" class="border-2 border-gray-300 bg-gray-100 h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none"
         type="search"   placeholder="Rechercher">
         <button type="submit" class="absolute right-0 top-0 mt-5 mr-4">
-          <svg  class="text-gray-600 h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg"
-              xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px"
-              viewBox="0 0 56.966 56.966" style="enable-background:new 0 0 56.966 56.966;margin-top: -6px;" xml:space="preserve"
-              width="512px" height="512px">
-              <path
-              d="M55.146,51.887L41.588,37.786c3.486-4.144,5.396-9.358,5.396-14.786c0-12.682-10.318-23-23-23s-23,10.318-23,23  s10.318,23,23,23c4.761,0,9.298-1.436,13.177-4.162l13.661,14.208c0.571,0.593,1.339,0.92,2.162,0.92  c0.779,0,1.518-0.297,2.079-0.837C56.255,54.982,56.293,53.08,55.146,51.887z M23.984,6c9.374,0,17,7.626,17,17s-7.626,17-17,17  s-17-7.626-17-17S14.61,6,23.984,6z" />
-          </svg>
+        <svg  class="text-gray-600 h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px"
+            viewBox="0 0 56.966 56.966" style="enable-background:new 0 0 56.966 56.966;margin-top: -6px;" xml:space="preserve"
+            width="512px" height="512px">
+            <path  d="M55.146,51.887L41.588,37.786c3.486-4.144,5.396-9.358,5.396-14.786c0-12.682-10.318-23-23-23s-23,10.318-23,23  s10.318,23,23,23c4.761,0,9.298-1.436,13.177-4.162l13.661,14.208c0.571,0.593,1.339,0.92,2.162,0.92  c0.779,0,1.518-0.297,2.079-0.837C56.255,54.982,56.293,53.08,55.146,51.887z M23.984,6c9.374,0,17,7.626,17,17s-7.626,17-17,17  s-17-7.626-17-17S14.61,6,23.984,6z" />
+        </svg>
         </button>
-      </div>
-      <div class=" form-group  relative mx-auto ">
-       <select (click)="remplace($event)" [(ngModel)]="change"  id="states" class="block w-full form-control border-gray-500 rounded-lg bg-gray-100  px-2 py-2.5  text-gray-900">
-          <option value="remplacer">A remplacer</option>
-          <option value="remplacement">Remplacé</option>
-       </select>
-      </div>
+    </div>
+    <div class=" form-group  relative mx-auto mt-2 ">
+    <select (click)="remplace($event)" [(ngModel)]="change"  id="state" class="block bg-gray-50  w-full form-control border-gray-500 rounded-lg   px-2 py-2.5  text-gray-900">
+        <option selected disabled>Selectionner une option</option>
+        <option value="remplacer">A remplacer</option>
+        <option value="remplacement">Remplacé</option>
+    </select>
+    </div>
     </div>
 </div>
 @if(change=="remplacer"){
- <section  class=" mx-auto  w-full rounded-lg bg-white p-4 shadow-lg">
+ <section  class=" mx-auto  w-full rounded-lg bg-white -mt-2 p-4 shadow-lg">
             <div class="mt-1">
                 <div class="sm:rounded-lg">
                    <div class="data-table">
@@ -110,6 +69,9 @@
                                   </th>
                                   <th scope="col" class="ng-wind-header-item text-center">
                                     Matricule
+                                 </th>
+                                 <th scope="col" class="ng-wind-header-item text-center">
+                                    Structure
                                  </th>
                                   <th scope="col" class="ng-wind-header-item text-center">
                                      Action
@@ -136,7 +98,7 @@
                             </div>
                              } @else {
                              <tbody>
-                               @for (permanent of dataPermanents; track permanent.id){
+                               @for (permanent of dataPermanents|rechercherLibelle:libelle; track permanent.id){
                                <tr class="border-b mt-5 bg-white hover:bg-gray-50">
                                   <td class="ng-wind-data-item whitespace-nowrap font-medium text-gray-800">
                                     <div
@@ -164,6 +126,32 @@
                                     </td>
                                     <td class="ng-wind-data-item text-center">
                                         {{permanent?.profile?.matricule}}
+                                    </td>
+                                    <td class="ng-wind-data-item text-center">
+                                        @if(permanent?.service!=null){
+                                            @if(permanent?.service?.departement?.pole?.libelle == 'N/A'){
+                                                <button  class="cursor-default">{{ permanent?.service?.departement?.pole?.direction?.libelle}}/{{ permanent?.service?.departement?.libelle }}/{{ permanent?.service?.libelle }}</button>
+                                            }@else{
+                                            <button  class="cursor-default">{{ permanent?.service?.departement?.pole?.direction?.libelle}}/{{ permanent?.service?.departement?.pole?.libelle }}/{{ permanent?.service?.departement?.libelle }}/{{ permanent?.service?.libelle }}</button>
+                                            }
+                                        }
+                                        @else if(permanent?.departement!=null){
+                                            @if(permanent?.departement?.pole?.libelle == 'N/A'){
+                                                <button  class="cursor-default">{{ permanent?.departement?.pole?.direction?.libelle}}/{{ permanent?.departement?.libelle }}</button>
+                                            }@else{
+                                            <button  class="cursor-default">{{ permanent?.departement?.pole?.direction?.libelle}}/{{ permanent?.departement?.pole?.libelle }}/{{ permanent?.departement?.libelle }}</button>
+                                            }
+                                        }
+                                        @else if(permanent?.pole!=null){
+                                            @if(permanent?.pole?.libelle == 'N/A'){
+                                                <button  class="cursor-default">{{ permanent?.pole?.direction?.libelle}}</button>
+                                            }@else{
+                                            <button  class="cursor-default">{{ permanent?.pole?.direction?.libelle}}/{{ permanent?.pole?.libelle }}</button>
+                                            } 
+                                        }
+                                        @else if(permanent?.direction!=null){                     
+                                                <button  class="cursor-default" >{{ permanent?.direction?.libelle}}</button>        
+                                        }     
                                     </td>
                                     <td class="ng-wind-data-item text-center space-x-5">
                                         <button class="tooltip relative w-7 h-7 " >
@@ -196,69 +184,67 @@
      <mat-table  #table [dataSource]="dataPermanentList"  class="mat-elevation-z8 border shadow-md" cdkDropList (cdkDropListDropped)="drop($event)"
      cdkDropListData="dataPermanentList">
      <ng-container matColumnDef="Prenom" sticky>
-         <mat-header-cell *matHeaderCellDef class="bg-600"> Prenom </mat-header-cell>
+         <mat-header-cell *matHeaderCellDef class="custom-header"> Prenom </mat-header-cell>
          <mat-cell *matCellDef="let element">
-             @for(item of element.remplacer.permanents;track item.id){
+             @for(item of element.remplacer.permanents|rechercherLibelle:libelle;track item.id){
                  <span>{{item.profile.prenom}}</span>
              }
          </mat-cell>
      </ng-container>
      <ng-container matColumnDef="Nom">
-         <mat-header-cell *matHeaderCellDef> Nom </mat-header-cell>
+         <mat-header-cell *matHeaderCellDef class="custom-header"> Nom </mat-header-cell>
          <mat-cell *matCellDef="let element">
-             @for(item of element.remplacer.permanents;track item.id){
+             @for(item of element.remplacer.permanents|rechercherLibelle:libelle;track item.id){
              {{item.profile.nom}} 
              }
          </mat-cell>
      </ng-container>
      <ng-container matColumnDef="Action">
-         <mat-header-cell *matHeaderCellDef> Action </mat-header-cell>
+         <mat-header-cell *matHeaderCellDef class=""> <span class="ml-6"> Action </span></mat-header-cell>
          <mat-cell *matCellDef="let element">
             <div class=" space-x-4 flex justify-center -mt-3 items-center">
                 @for(item of element.remplacer.permanents;track item.id){
                     <button class="tooltip relative w-7 h-7 " >
-                        <svg xmlns="http://www.w3.org/2000/svg"   (click)="afficherDetails(item)" class="mt-2  text-green-700 hover:text-green-800" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="currentColor" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM216 336h24V272H216c-13.3 0-24-10.7-24-24s10.7-24 24-24h48c13.3 0 24 10.7 24 24v88h8c13.3 0 24 10.7 24 24s-10.7 24-24 24H216c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-208a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"/>
+                        <svg xmlns="http://www.w3.org/2000/svg"   (click)="afficherDetails(item)" class="mt-2  text-red-700 hover:text-red-800" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="currentColor" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM216 336h24V272H216c-13.3 0-24-10.7-24-24s10.7-24 24-24h48c13.3 0 24 10.7 24 24v88h8c13.3 0 24 10.7 24 24s-10.7 24-24 24H216c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-208a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"/>
                         </svg>
-                        <span class="tooltip-text">Détails</span>
+                        <!-- <span class="tooltip-text">Détails</span> -->
                      </button>
                 }
-                <button class ="tooltip relative w-5 h-5  mt-4 cursor-default ">
-                <svg xmlns="http://www.w3.org/2000/svg"  class="text-cyan-700" viewBox="0 0 512 512"><path fill="currentColor" d="M32 96l320 0 0-64c0-12.9 7.8-24.6 19.8-29.6s25.7-2.2 34.9 6.9l96 96c6 6 9.4 14.1 9.4 22.6s-3.4 16.6-9.4 22.6l-96 96c-9.2 9.2-22.9 11.9-34.9 6.9s-19.8-16.6-19.8-29.6l0-64L32 160c-17.7 0-32-14.3-32-32s14.3-32 32-32zM480 352c17.7 0 32 14.3 32 32s-14.3 32-32 32l-320 0 0 64c0 12.9-7.8 24.6-19.8 29.6s-25.7 2.2-34.9-6.9l-96-96c-6-6-9.4-14.1-9.4-22.6s3.4-16.6 9.4-22.6l96-96c9.2-9.2 22.9-11.9 34.9-6.9s19.8 16.6 19.8 29.6l0 64 320 0z"/></svg>
-                <span class="tooltip-text mt-3">Remplacé</span>
+                <button class ="tooltip relative w-5 h-4  mt-1 cursor-default ">
+                    <svg xmlns="http://www.w3.org/2000/svg"   viewBox="0 0 512 512" class="text-red-700" ><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="currentColor" d="M334.5 414c8.8 3.8 19 2 26-4.6l144-136c4.8-4.5 7.5-10.8 7.5-17.4s-2.7-12.9-7.5-17.4l-144-136c-7-6.6-17.2-8.4-26-4.6s-14.5 12.5-14.5 22l0 72L32 192c-17.7 0-32 14.3-32 32l0 64c0 17.7 14.3 32 32 32l288 0 0 72c0 9.6 5.7 18.2 14.5 22z"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="text-green-700 -mt-1"  viewBox="0 0 512 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="currentColor" d="M177.5 414c-8.8 3.8-19 2-26-4.6l-144-136C2.7 268.9 0 262.6 0 256s2.7-12.9 7.5-17.4l144-136c7-6.6 17.2-8.4 26-4.6s14.5 12.5 14.5 22l0 72 288 0c17.7 0 32 14.3 32 32l0 64c0 17.7-14.3 32-32 32l-288 0 0 72c0 9.6-5.7 18.2-14.5 22z"/></svg>
                 </button> 
                 
                 @for(item of element.remplacant.permanents;track item.id){
                     <button class="tooltip relative w-7 h-7 " >
                         <svg xmlns="http://www.w3.org/2000/svg"   (click)="afficherDetails(item)" class="mt-2  text-green-700 hover:text-green-800" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="currentColor" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM216 336h24V272H216c-13.3 0-24-10.7-24-24s10.7-24 24-24h48c13.3 0 24 10.7 24 24v88h8c13.3 0 24 10.7 24 24s-10.7 24-24 24H216c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-208a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"/>
                         </svg>
-                        <span class="tooltip-text">Détails</span>
+                        <!-- <span class="tooltip-text">Détails</span> -->
                      </button>
                 }
             </div>
         </mat-cell>
          </ng-container>
          <ng-container matColumnDef="Prénom">
-             <mat-header-cell *matHeaderCellDef> Prenom </mat-header-cell>
+             <mat-header-cell *matHeaderCellDef class="bg-600"> Prenom </mat-header-cell>
              <mat-cell *matCellDef="let element">
-             @for(item of element.remplacant.permanents;track item.id){
+             @for(item of element.remplacant.permanents|rechercherLibelle:libelle;track item.id){
              {{item.profile.prenom}} 
              }
              </mat-cell>
          </ng-container>
      <ng-container matColumnDef="nom">
-         <mat-header-cell *matHeaderCellDef> Nom </mat-header-cell>
+         <mat-header-cell *matHeaderCellDef class="bg-600"> Nom </mat-header-cell>
          <mat-cell *matCellDef="let element">
-             @for(item of element.remplacant.permanents;track item.id){
+             @for(item of element.remplacant.permanents|rechercherLibelle:libelle;track item.id){
                          {{item.profile.nom}} 
              }
          </mat-cell>
      </ng-container>
      <mat-header-row *matHeaderRowDef="displayedColumn" class="bg-green-600"></mat-header-row>
      <mat-row *matRowDef="let row; columns: displayedColumn;" cdkDrag [cdkDragData]="row"></mat-row>
-     </mat-table>
-     
- }
-
+     </mat-table>   
+}
  <app-modal
  [show]="showModal"
   (closeModal)="onModalCloseHandler($event)" 
@@ -322,7 +308,7 @@
                </div>
                <div class="profile-dropdown relative inline-block space-y-1">
                      <div>
-                        <button type="button" class="flex mr-3 text-sm  rounded-full md:mr-0 focus:ring-4 focus:ring-gray-300 btn btn-outline-secondary py-1" id="user-menu-button" aria-expanded="false" data-dropdown-toggle="user-dropdown" data-dropdown-placement="bottom" (click)="toggleDropdown()" >Contact</button>
+                        <button type="button" class="flex mr-3 text-sm  rounded-full md:mr-0 focus:ring-4 focus:ring-gray-300 btn btn-outline-secondary py-1" id="user-menu-button" aria-expanded="false" data-dropdown-toggle="user-dropdown" data-dropdown-placement="bottom" (click)="toggleDropdown()" >Contacts</button>
                      </div>
                   <div class="profile-dropdown-list absolute  text-white  mr-3 text-sm bg-gray-900  md:mr-0    py-1  border rounded-lg border-gray-700" [hidden]="isDropdownOpen">
                      <div class="flex flex-col text-sm">
@@ -422,4 +408,47 @@
   
       <!-- <textarea [(ngModel)]="commentaire"  class="m-3 w-full h-32 border border-gray-600" name="" id=""></textarea> -->
 
+</app-modal>
+<!--  -->
+<app-modal 
+[show]="show" 
+[premierButtonText]="'Valider'"
+[deuxiemeButtonText]="'Annuler'"
+(clickCommentaire)="valider($event)"
+(closeModal)="close($event)"
+[footer]="true"
+[couleur]="'bg-green-600'"
+
+[formeValide]="formeValide"
+>
+<div class="overflow-y-auto" style="max-height: 60vh;">
+    <table class="overflow-y-auto" mat-table [dataSource]="dataResponsable" class="mat-elevation-z8">  
+        <ng-container matColumnDef="prenom">
+          <th mat-header-cell *matHeaderCellDef> Prénom </th>
+          <td mat-cell *matCellDef="let element"> {{ element?.profile?.prenom }} </td>
+        </ng-container>
+        <ng-container matColumnDef="nom">
+          <th mat-header-cell *matHeaderCellDef> Nom </th>
+          <td mat-cell *matCellDef="let element"> {{ element?.profile?.nom }} </td>
+        </ng-container>
+        <ng-container matColumnDef="matricule">
+          <th mat-header-cell *matHeaderCellDef> Matricule </th>
+          <td mat-cell *matCellDef="let element"> {{ element?.profile?.matricule }} </td>
+        </ng-container>
+        <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef> Action </th>
+            <td mat-cell *matCellDef="let element">
+              <mat-radio-button 
+                [value]="element"
+                
+                (change)="selectRow(element)">
+              </mat-radio-button>
+            </td>
+          </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      
+    </table>
+</div>
+<mat-radio-button (change)="selectOther()" class="example-radio-button" >Autre</mat-radio-button>
 </app-modal>

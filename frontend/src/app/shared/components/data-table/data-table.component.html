@@ -334,7 +334,7 @@
                        <button  class="cursor-default">{{ dataDetails?.service?.departement?.pole?.direction?.libelle}}/{{ dataDetails?.service?.departement?.pole?.libelle }}/{{ dataDetails?.service?.departement?.libelle }}/{{ dataDetails?.service?.libelle }}</button>
                        }
                    }
-                   @else if(dataDetails?.departement!=null){
+                   @else if( dataDetails?.departement && (dataDetails?.departement?.libelle !== 'POLE DV' && dataDetails?.departement?.libelle !== 'POLE DOC')){
                        @if(dataDetails?.departement?.pole?.libelle == 'N/A'){
                            <button  class="cursor-default">{{ dataDetails?.departement?.pole?.direction?.libelle}}/{{ dataDetails?.departement?.libelle }}</button>
                        }@else{
@@ -354,7 +354,7 @@
                </div>
                <div class="profile-dropdown relative inline-block space-y-1">
                      <div>
-                        <button type="button" class="flex mr-3 text-sm  rounded-full md:mr-0 focus:ring-4 focus:ring-gray-300 btn btn-outline-secondary py-1" id="user-menu-button" aria-expanded="false" data-dropdown-toggle="user-dropdown" data-dropdown-placement="bottom" (click)="toggleDropdown()" >Contact</button>
+                        <button type="button" class="flex mr-3 text-sm  rounded-full md:mr-0 focus:ring-4 focus:ring-gray-300 btn btn-outline-secondary py-1" id="user-menu-button" aria-expanded="false" data-dropdown-toggle="user-dropdown" data-dropdown-placement="bottom" (click)="toggleDropdown()" >Contacts</button>
                      </div>
                   <div class="profile-dropdown-list absolute  text-white  mr-3 text-sm bg-gray-900  md:mr-0    py-1  border rounded-lg border-gray-700" [hidden]="isDropdownOpen">
                      <div class="flex flex-col text-sm">

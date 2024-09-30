@@ -21,6 +21,8 @@ export class LocalStorageService implements OnInit{
   currentPaginate = this.paginate.asObservable();
   private openChange = new BehaviorSubject<any>(null);
   currentChange = this.openChange.asObservable();
+  private openTheme = new BehaviorSubject<boolean>(false);
+  currentTheme = this.openTheme.asObservable();
   ngOnInit(): void 
   {
   }
@@ -92,6 +94,9 @@ export class LocalStorageService implements OnInit{
   }
   changePermanent(event:any){
     this.openChange.next(event)
+  }
+  theme=(event:boolean)=>{
+    this.openTheme.next(event)
   }
 }
 
